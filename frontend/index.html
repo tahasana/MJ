@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MJ - Biochemistry AI Tool</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">🧬 MJ</h1>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#tools">Tools</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <h2>Welcome to MJ</h2>
+            <p>AI-Powered Biochemistry Analysis Tool</p>
+            <p class="subtitle">Analyze sequences, data, and more with cutting-edge AI</p>
+            <a href="#tools" class="btn btn-primary">Get Started</a>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>🧬 Sequence Analysis</h3>
+                    <p>Analyze DNA, RNA, and protein sequences with detailed reports</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📊 Data Analysis</h3>
+                    <p>Process experimental data and generate statistical insights</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📄 Report Generation</h3>
+                    <p>Create professional reports in multiple formats</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🔍 Protocol Search</h3>
+                    <p>Find laboratory protocols and procedures (Coming Soon)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tools" class="tools">
+        <div class="container">
+            <h2>Tools</h2>
+            
+            <div class="tool-section">
+                <h3>Sequence Analyzer</h3>
+                <textarea id="sequenceInput" placeholder="Enter DNA/RNA/Protein sequence..." rows="5"></textarea>
+                <button class="btn btn-primary" onclick="analyzeSequence()">Analyze Sequence</button>
+                <div id="sequenceResult" class="result-box"></div>
+            </div>
+
+            <div class="tool-section">
+                <h3>Health Check</h3>
+                <button class="btn btn-primary" onclick="checkHealth()">Check API Status</button>
+                <div id="healthResult" class="result-box"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 MJ - Biochemistry AI Tool. All rights reserved.</p>
+            <p>Built with ❤️ for science</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
