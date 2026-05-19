@@ -86,11 +86,11 @@ async function analyzeSequence() {
     const resultBox = document.getElementById('sequenceResult');
     
     if (!sequence) {
-    
+        resultBox.innerHTML = '<div style="color: red; background: #ffe6e6; padding: 10px; border-radius: 5px; border: 1px solid red;">Please enter a sequence first.</div>';
         return;
     }
 
-    resultBox.innerHTML = '<p style="color: black !important; display: block !important;">Analyzing sequence...</p>';
+    resultBox.innerHTML = '<div style="color: blue; background: #e6f3ff; padding: 10px; border-radius: 5px; border: 1px solid blue;">Analyzing sequence... please wait.</div>';
 
     try {
         const response = await fetch(`${API_URL}/api/analyze-sequence`, {
@@ -100,24 +100,23 @@ async function analyzeSequence() {
         });
 
         const data = await response.json();
-            
+
+        if (data.success) {
             resultBox.innerHTML = `
-                <div style="color: black !important; display: block !important; background: #f0f0f0; padding: 10px; margin-top: 10px;">
-                    <h4>Analysis Complete:</h4>
+                <div style="color: black !important; background-color: white !important; border: 2px solid #28a745 !important; padding: 15px !important; margin-top: 15px !important; border-radius: 8px !important; display: block !important; visibility: visible !important;">
+                    <h4 style="color: #28a745; margin-top: 0;">Analysis Complete:</h4>
                     <p><strong>Classification:</strong> ${data.analysis.sequence_type}</p>
                     <p><strong>Length:</strong> ${data.analysis.length} residues</p>
                     <p><strong>GC Content:</strong> ${data.analysis.gc_content}%</p>
-                    <hr>
-                    <p>${data.analysis.summary.replace(/\n/g, '<br>')}</p>
+                    <hr style="border-top: 1px solid #ccc;">
+                    <p style="margin-bottom: 0;">${data.analysis.summary.replace(/\n/g, '<br>')}</p>
                 </div>
             `;
         } else {
-            alert("Analysis failed: " + data.error);
-            resultBox.innerHTML = `<p style="color:red;">Analysis failed: ${data.error}</p>`;
+            resultBox.innerHTML = `<div style="color: red; background: #ffe6e6; padding: 10px; border-radius: 5px; border: 1px solid red;">Analysis failed: ${data.error}</div>`;
         }
     } catch (error) {
-        alert("Network Error. Trying to reach server...");
-        resultBox.innerHTML = `<p style="color:red;">Network Error: Backend is waking up. Try again in 30 seconds!</p>`;
+        resultBox.innerHTML = `<div style="color: red; background: #ffe6e6; padding: 10px; border-radius: 5px; border: 1px solid red;">Network Error: Backend is waking up. Try again in 30 seconds!</div>`;
     }
 }
 </script>
