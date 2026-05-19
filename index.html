@@ -86,11 +86,11 @@ async function analyzeSequence() {
     const resultBox = document.getElementById('sequenceResult');
     
     if (!sequence) {
-        resultBox.innerHTML = '<p style="color:red;">Please enter a sequence first.</p>';
+        alert("Please enter a sequence first!");
         return;
     }
 
-    resultBox.innerHTML = '<p>Analyzing sequence locally...</p>';
+    resultBox.innerHTML = '<p style="color: black !important; display: block !important;">Analyzing sequence...</p>';
 
     try {
         const response = await fetch(`${API_URL}/api/analyze-sequence`, {
@@ -102,18 +102,25 @@ async function analyzeSequence() {
         const data = await response.json();
 
         if (data.success) {
+            // This alert will force the results to show in a browser popup window
+            alert("Analysis Successful!\nType: " + data.analysis.sequence_type + "\nGC Content: " + data.analysis.gc_content + "%");
+            
             resultBox.innerHTML = `
-                <h4>Analysis Complete:</h4>
-                <p><strong>Classification:</strong> ${data.analysis.sequence_type}</p>
-                <p><strong>Length:</strong> ${data.analysis.length} residues</p>
-                <p><strong>GC Content:</strong> ${data.analysis.gc_content}%</p>
-                <hr>
-                <p>${data.analysis.summary.replace(/\n/g, '<br>')}</p>
+                <div style="color: black !important; display: block !important; background: #f0f0f0; padding: 10px; margin-top: 10px;">
+                    <h4>Analysis Complete:</h4>
+                    <p><strong>Classification:</strong> ${data.analysis.sequence_type}</p>
+                    <p><strong>Length:</strong> ${data.analysis.length} residues</p>
+                    <p><strong>GC Content:</strong> ${data.analysis.gc_content}%</p>
+                    <hr>
+                    <p>${data.analysis.summary.replace(/\n/g, '<br>')}</p>
+                </div>
             `;
         } else {
+            alert("Analysis failed: " + data.error);
             resultBox.innerHTML = `<p style="color:red;">Analysis failed: ${data.error}</p>`;
         }
     } catch (error) {
+        alert("Network Error. Trying to reach server...");
         resultBox.innerHTML = `<p style="color:red;">Network Error: Backend is waking up. Try again in 30 seconds!</p>`;
     }
 }
