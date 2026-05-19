@@ -1,7 +1,7 @@
 // MJ - Biochemistry AI Tool
 // Frontend JavaScript
 
-const API_URL = "http://localhost:5000";
+const API_URL = "https://mj-7.onrender.com";
 
 // Analyze Sequence Function
 async function analyzeSequence() {
