@@ -6,59 +6,59 @@
     <title>MJ - Biochemistry AI Tool</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f8f9fa; color: #333; line-height: 1.6; }
+        body { background-color: #fbf9f5; color: #4a3e3d; line-height: 1.6; }
         .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
         
-        /* Header & Navigation */
-        .navbar { background: linear-gradient(135deg, #4b0082, #300056); color: white; padding: 20px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        /* Header & Navigation - Retro Dark Espresso Espresso */
+        .navbar { background: linear-gradient(135deg, #5d4037, #2d1a12); color: #f5efe6; padding: 20px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-bottom: 3px solid #8c4a32; }
         .navbar .container { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 24px; font-weight: bold; }
+        .logo { font-size: 24px; font-weight: bold; letter-spacing: 1px; color: #f5efe6; }
         .nav-links { display: flex; gap: 20px; list-style: none; }
-        .nav-links a { color: rgba(255,255,255,0.8); text-decoration: none; font-weight: 600; }
-        .nav-links a:hover { color: white; }
+        .nav-links a { color: rgba(245,239,230,0.8); text-decoration: none; font-weight: 600; transition: color 0.2s; }
+        .nav-links a:hover { color: #f5efe6; }
 
-        /* Hero Welcome Panel */
-        .hero { background: white; padding: 60px 0; text-align: center; border-bottom: 1px solid #eaeaea; }
-        .hero h2 { font-size: 36px; color: #4b0082; margin-bottom: 10px; }
-        .hero p { color: #666; font-size: 18px; margin-bottom: 20px; }
+        /* Hero Welcome Panel - Soft Warm Vintage Cream */
+        .hero { background: #fdfbf7; padding: 60px 0; text-align: center; border-bottom: 1px solid #e7dfd5; }
+        .hero h2 { font-size: 36px; color: #5d4037; margin-bottom: 10px; font-weight: 700; }
+        .hero p { color: #8c736c; font-size: 18px; margin-bottom: 20px; }
 
         /* Features Dashboard Grid */
-        .features { padding: 50px 0; text-align: center; }
-        .features h2 { color: #4b0082; margin-bottom: 30px; font-size: 28px; }
+        .features { padding: 50px 0; text-align: center; background: #fbf9f5; }
+        .features h2 { color: #5d4037; margin-bottom: 30px; font-size: 28px; }
         .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-        .feature-card { background: white; padding: 25px; border-radius: 8px; border: 1px solid #e0e0e0; }
-        .feature-card h3 { color: #4b0082; margin-bottom: 10px; font-size: 18px; }
-        .feature-card p { color: #666; font-size: 13px; }
+        .feature-card { background: white; padding: 25px; border-radius: 8px; border: 1px solid #e7dfd5; box-shadow: 0 2px 4px rgba(0,0,0,0.01); }
+        .feature-card h3 { color: #8c4a32; margin-bottom: 10px; font-size: 18px; }
+        .feature-card p { color: #7c6864; font-size: 13px; }
 
-        /* TABBED UTILITY NAVIGATOR PANEL */
+        /* TABBED UTILITY NAVIGATOR STRIP - Autumn Autumn Tones */
         .tabs-nav { display: flex; justify-content: center; gap: 10px; margin: 30px auto 10px auto; max-width: 850px; flex-wrap: wrap; padding: 0 10px; }
-        .tab-btn { padding: 12px 20px; font-size: 14px; font-weight: bold; background: #e2d9f3; color: #4b0082; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s ease-in-out; }
-        .tab-btn:hover { background: #d3c4ec; }
-        .tab-btn.active { background: #4b0082; color: white; box-shadow: 0 4px 10px rgba(75,0,130,0.2); }
+        .tab-btn { padding: 12px 20px; font-size: 14px; font-weight: bold; background: #e7dfd5; color: #5d4037; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s ease-in-out; border-bottom: 2px solid #cdbfb0; }
+        .tab-btn:hover { background: #decbba; color: #2d1a12; }
+        .tab-btn.active { background: #8c4a32; color: white; border-bottom: 2px solid #5d2211; box-shadow: 0 4px 10px rgba(140,74,50,0.25); }
 
         /* Computational Interfaces Workspace */
-        .tools { padding: 20px 0 40px 0; background: white; text-align: center; }
-        .tools h2 { color: #4b0082; margin-bottom: 25px; font-size: 28px; }
+        .tools { padding: 20px 0 40px 0; background: white; text-align: center; border-top: 1px solid #e7dfd5; }
+        .tools h2 { color: #5d4037; margin-bottom: 25px; font-size: 28px; }
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
 
-        .tool-section { max-width: 750px; margin: 0 auto 30px auto; padding: 25px; background: #fdfdfd; border: 1px solid #e8e8e8; border-radius: 8px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .tool-section h3 { color: #4b0082; margin-bottom: 15px; font-size: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; }
-        .tool-section p { font-size: 14px; color: #555; margin-bottom: 15px; }
+        .tool-section { max-width: 750px; margin: 0 auto 30px auto; padding: 25px; background: #fdfcf9; border: 1px solid #e7dfd5; border-radius: 8px; text-align: left; box-shadow: 0 3px 6px rgba(0,0,0,0.01); }
+        .tool-section h3 { color: #8c4a32; margin-bottom: 15px; font-size: 20px; border-bottom: 2px solid #e7dfd5; padding-bottom: 8px; }
+        .tool-section p { font-size: 14px; color: #6e5d5a; margin-bottom: 15px; }
         
-        textarea { width: 100%; height: 120px; padding: 15px; border: 2px solid #dcdcdc; border-radius: 6px; font-family: monospace; font-size: 14px; margin-bottom: 15px; resize: vertical; outline: none; }
-        textarea:focus { border-color: #4b0082; }
+        textarea { width: 100%; height: 120px; padding: 15px; border: 2px solid #dcd5cc; border-radius: 6px; font-family: monospace; font-size: 14px; margin-bottom: 15px; resize: vertical; outline: none; background-color: white; color: #332928; }
+        textarea:focus { border-color: #8c4a32; }
         
-        input[type="number"], input[type="text"], select { width: 100%; padding: 10px; border: 2px solid #dcdcdc; border-radius: 6px; font-size: 14px; margin-bottom: 15px; outline: none; }
-        input[type="number"]:focus, input[type="text"]:focus, select:focus { border-color: #4b0082; }
-        label { font-size: 13px; font-weight: bold; color: #4b0082; display: block; margin-bottom: 5px; }
+        input[type="number"], input[type="text"], select { width: 100%; padding: 10px; border: 2px solid #dcd5cc; border-radius: 6px; font-size: 14px; margin-bottom: 15px; outline: none; background-color: white; color: #332928; }
+        input[type="number"]:focus, input[type="text"]:focus, select:focus { border-color: #8c4a32; }
+        label { font-size: 13px; font-weight: bold; color: #5d4037; display: block; margin-bottom: 5px; }
 
-        /* Control Buttons */
-        .btn { padding: 10px 22px; font-size: 14px; font-weight: bold; border-radius: 4px; border: none; cursor: pointer; display: inline-block; }
-        .btn-primary { background-color: #4b0082; color: white; margin-right: 10px; }
-        .btn-primary:hover { background-color: #360062; }
-        .btn-secondary { background-color: #6c757d; color: white; margin-right: 10px; }
-        .btn-secondary:hover { background-color: #5a6268; }
+        /* Autumn Control Action Buttons */
+        .btn { padding: 10px 22px; font-size: 14px; font-weight: bold; border-radius: 4px; border: none; cursor: pointer; display: inline-block; transition: background 0.2s; }
+        .btn-primary { background-color: #8c4a32; color: white; margin-right: 10px; }
+        .btn-primary:hover { background-color: #6f3724; }
+        .btn-secondary { background-color: #7c6c64; color: white; margin-right: 10px; }
+        .btn-secondary:hover { background-color: #63554e; }
 
         .result-box { margin-top: 15px; display: none; padding: 15px; border-radius: 4px; text-align: left; }
 
@@ -72,10 +72,10 @@
 
     <nav class="navbar">
         <div class="container">
-            <div class="logo">🧬 MJ</div>
+            <div class="logo">🧬 MJ WORKSPACE</div>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
-                <li><a href="#features">Features</a></li>
+                <li><a href="#features">Architecture</a></li>
                 <li><a href="#tools">Tools</a></li>
             </ul>
         </div>
@@ -377,7 +377,7 @@
                         <button class="btn btn-primary" onclick="searchProtocol()">Load Guide Sheet</button>
                         <button class="btn btn-secondary" onclick="clearProtocolBox()">Clear View</button>
                     </div>
-                    <div id="protocolResultContainer" class="result-box" style="white-space: pre-wrap; font-family: monospace; max-height: 350px; overflow-y: auto; line-height: 1.5; background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 4px;"></div>
+                    <div id="protocolResultContainer" class="result-box" style="white-space: pre-wrap; font-family: monospace; max-height: 350px; overflow-y: auto; line-height: 1.5; background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 4px; color: #332928;"></div>
                 </div>
             </div>
 
@@ -385,7 +385,7 @@
     </section>
 
     <footer>
-        <div class="container" style="padding: 30px 0; text-align: center; font-size: 14px; color: #777;">
+        <div class="container" style="padding: 40px 0 30px 0; text-align: center; font-size: 14px; color: #8c736c; border-top: 1px solid #e7dfd5;">
             <p>&copy; 2026 MJ - Biochemistry AI Tool. All rights reserved.</p>
             <p>Built with ❤️ for science</p>
         </div>
@@ -410,7 +410,7 @@
         var aaDatabase = {
             'A': { name: "Alanine", triple: "Ala", mass: "89.10", pI: "6.00", class: "Aliphatic / Nonpolar / Hydrophobic", pka: "COOH: 2.34, NH3+: 9.69, R-Group: N/A" },
             'R': { name: "Arginine", triple: "Arg", mass: "174.20", pI: "10.76", class: "Positively Charged / Basic / Hydrophilic", pka: "COOH: 2.17, NH3+: 9.04, R-Group (Guanidino): 12.48" },
-            'N': { name: "Asparagine", triple: "Asn", mass: "132.12", pI: "5.41", class: "Uncharged Polar / Hydrophilic", pka: "COOH: 2.02, NH3+: 8.80, R-Group: N/A" },
+            'N': { name: "Asparagine", triple: "Asn", mass: "132.12", pI: "5.41", class: "Uncharged Polar / Hydroxl-Amide", pka: "COOH: 2.02, NH3+: 8.80, R-Group: N/A" },
             'D': { name: "Aspartic Acid", triple: "Asp", mass: "133.10", pI: "2.77", class: "Negatively Charged / Acidic", pka: "COOH: 1.88, NH3+: 9.60, R-Group (Carboxyl): 3.65" },
             'C': { name: "Cysteine", triple: "Cys", mass: "121.16", pI: "5.07", class: "Uncharged Polar / Reactive Thiol", pka: "COOH: 1.96, NH3+: 10.28, R-Group (Sulfhydryl): 8.18" },
             'E': { name: "Glutamic Acid", triple: "Glu", mass: "147.13", pI: "3.22", class: "Negatively Charged / Acidic", pka: "COOH: 2.19, NH3+: 9.67, R-Group (Carboxyl): 4.25" },
@@ -444,12 +444,12 @@
             var item = aaDatabase[selectedAA];
             displayBox.style.display = "block";
             
-            var html = "<div style='background: #fffdf5; border-left: 4px solid #b8860b; padding: 15px; border-radius: 4px;'>";
+            var html = "<div style='background: #fffdf5; border-left: 4px solid #b8860b; padding: 15px; border-radius: 4px; color: #4a3e3d;'>";
             html += "<h4 style='color: #8b6508; margin-bottom: 5px;'>" + item.name + " (" + item.triple + " / " + selectedAA + ")</h4>";
             html += "<p><strong>Side-Chain Classification:</strong> " + item.class + "</p>";
             html += "<p><strong>Molecular Weight:</strong> " + item.mass + " g/mol</p>";
-            html += "<p style='font-size: 15px; color: #4b0082;'><strong>Isoelectric Point (pI Value): " + item.pI + "</strong></p>";
-            html += "<p style='font-size: 12px; color: #555; margin-top: 5px;'><strong>Dissociation Profile constants (pKa):</strong> <br>" + item.pka + "</p>";
+            html += "<p style='font-size: 15px; color: #8c4a32; font-weight: bold;'><strong>Isoelectric Point (pI Value): " + item.pI + "</strong></p>";
+            html += "<p style='font-size: 12px; color: #6e5d5a; margin-top: 5px;'><strong>Dissociation Profile constants (pKa):</strong> <br>" + item.pka + "</p>";
             html += "</div>";
             
             displayBox.innerHTML = html;
@@ -465,7 +465,7 @@
 
             if (!content) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Report observations body text cannot be empty.</p>";
+                displayBox.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Error: Report observations body text cannot be empty.</p>";
                 return;
             }
 
@@ -508,7 +508,7 @@
 
             if (!selectedKey) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<span style='color: #ff4d4d; font-weight: bold;'>❌ Error: Please select a protocol option from the list first.</span>";
+                displayBox.innerHTML = "<span style='color: #d9534f; font-weight: bold;'>❌ Error: Please select a protocol option from the list first.</span>";
                 return;
             }
 
@@ -525,12 +525,12 @@
             var sequence = inputField.value.trim();
             if (!sequence) {
                 resultDiv.style.display = "block";
-                resultDiv.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Please type a sequence string first.</p>";
+                resultDiv.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Please type a sequence string first.</p>";
                 return;
             }
 
             resultDiv.style.display = "block";
-            resultDiv.innerHTML = "<p style='color: #4b0082; font-weight: bold;'>⏳ Running molecular sequence maps... Please wait.</p>";
+            resultDiv.innerHTML = "<p style='color: #8c4a32; font-weight: bold;'>⏳ Running molecular sequence maps... Please wait.</p>";
 
             try {
                 var response = await fetch(API_URL + "/api/analyze-sequence", {
@@ -541,7 +541,7 @@
                 var data = await response.json();
 
                 if (data.success) {
-                    var htmlContent = "<div style='background: #fbfbfe; border-left: 4px solid #4b0082; padding: 15px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);'>";
+                    var htmlContent = "<div style='background: #fffdf9; border-left: 4px solid #8c4a32; padding: 15px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);'>";
                     htmlContent += "<h4>Analysis Complete! ✅</h4>";
                     htmlContent += "<p><strong>Type:</strong> " + data.analysis.sequence_type + "</p>";
                     htmlContent += "<p><strong>Length:</strong> " + data.analysis.length + " residues</p>";
@@ -549,10 +549,10 @@
                     htmlContent += "</div>";
                     resultDiv.innerHTML = htmlContent;
                 } else {
-                    resultDiv.innerHTML = "<p style='color: #ff4d4d;'>Error: " + data.error + "</p>";
+                    resultDiv.innerHTML = "<p style='color: #d9534f;'>Error: " + data.error + "</p>";
                 }
             } catch (error) {
-                resultDiv.innerHTML = "<p style='color: #b27b00; font-weight: bold;'>⏳ Backend server is sleeping. Please wait 20 seconds and click again!</p>";
+                resultDiv.innerHTML = "<p style='color: #b38f80; font-weight: bold;'>⏳ Backend server is sleeping. Please wait 20 seconds and click again!</p>";
             }
         }
 
@@ -561,17 +561,17 @@
             if (!healthResult) return;
 
             healthResult.style.display = "block";
-            healthResult.innerHTML = "<p style='color: #4b0082; font-weight: bold;'>Pinging server node gateway...</p>";
+            healthResult.innerHTML = "<p style='color: #8c4a32; font-weight: bold;'>Pinging server node gateway...</p>";
 
             try {
                 var response = await fetch(API_URL + "/");
                 if (response.ok) {
                     healthResult.innerHTML = "<div style='background: #f0fff4; border-left: 4px solid #2e7d32; color: #2e7d32; padding: 12px; font-weight: bold; border-radius: 4px;'>✅ System Status: Online & Securely Connected!</div>";
                 } else {
-                    healthResult.innerHTML = "<p style='color: #ff4d4d;'>⚠️ Server returned internal tracking flags.</p>";
+                    healthResult.innerHTML = "<p style='color: #d9534f;'>⚠️ Server returned internal tracking flags.</p>";
                 }
             } catch (error) {
-                healthResult.innerHTML = "<p style='color: #b27b00; font-weight: bold;'>⏳ Waking up the cloud cluster... Please try clicking again in 10 seconds.</p>";
+                healthResult.innerHTML = "<p style='color: #b38f80; font-weight: bold;'>⏳ Waking up the cloud cluster... Please try clicking again in 10 seconds.</p>";
             }
         }
 
@@ -583,12 +583,12 @@
             var rawData = inputField.value.trim();
             if (!rawData) {
                 dataResult.style.display = "block";
-                dataResult.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Please enter valid comma-separated values first.</p>";
+                dataResult.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Please enter valid comma-separated values first.</p>";
                 return;
             }
 
             dataResult.style.display = "block";
-            dataResult.innerHTML = "<p style='color: #4b0082; font-weight: bold;'>⏳ Connecting to metrics processor core...</p>";
+            dataResult.innerHTML = "<p style='color: #8c4a32; font-weight: bold;'>⏳ Connecting to metrics processor core...</p>";
 
             try {
                 var response = await fetch(API_URL + "/api/analyze-data", {
@@ -599,7 +599,7 @@
                 var data = await response.json();
 
                 if (data.success) {
-                    var htmlContent = "<div style='background: #fbfbfe; border-left: 4px solid #4b0082; padding: 15px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);'>";
+                    var htmlContent = "<div style='background: #fffdf9; border-left: 4px solid #8c4a32; padding: 15px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);'>";
                     htmlContent += "<h4>Biostatistics Matrix Complete! 📊</h4>";
                     htmlContent += "<p style='margin: 4px 0;'><strong>Samples (N):</strong> " + data.results.count + "</p>";
                     htmlContent += "<p style='margin: 4px 0;'><strong>Mean Average (μ):</strong> " + data.results.mean + "</p>";
@@ -607,17 +607,17 @@
                     htmlContent += "<p style='margin: 4px 0;'><strong>Variance (σ²):</strong> " + data.results.variance + "</p>";
                     
                     if (data.results.anomalies && data.results.anomalies.length > 0) {
-                        htmlContent += "<div style='margin-top: 12px; padding: 10px; background: #fff5f5; border-left: 4px solid #ff4d4d; color: #c62828; border-radius: 4px; font-size: 13px;'><strong>⚠️ Outliers Flagged:</strong> [" + data.results.anomalies.join(', ') + "]</div>";
+                        htmlContent += "<div style='margin-top: 12px; padding: 10px; background: #fff5f5; border-left: 4px solid #d9534f; color: #b71c1c; border-radius: 4px; font-size: 13px;'><strong>⚠️ Outliers Flagged:</strong> [" + data.results.anomalies.join(', ') + "]</div>";
                     } else {
                         htmlContent += "<p style='color: #2e7d32; font-size: 13px; margin-top:10px; font-weight: bold;'>✅ No systematic matrix anomalies detected.</p>";
                     }
                     htmlContent += "</div>";
                     dataResult.innerHTML = htmlContent;
                 } else {
-                    dataResult.innerHTML = "<p style='color: #ff4d4d;'>Error: " + data.error + "</p>";
+                    dataResult.innerHTML = "<p style='color: #d9534f;'>Error: " + data.error + "</p>";
                 }
             } catch (error) {
-                dataResult.innerHTML = "<p style='color: #b27b00; font-weight: bold;'>⏳ The server is spinning up from sleep mode. Please wait 15 seconds and click 'Process Data' again!</p>";
+                dataResult.innerHTML = "<p style='color: #b38f80; font-weight: bold;'>⏳ The server is spinning up from sleep mode. Please wait 15 seconds and click 'Process Data' again!</p>";
             }
         }
 
@@ -630,7 +630,7 @@
             var seq = inputField.value.toUpperCase().trim().replace(/[^ACDEFGHIKLMNPQRSTVWY]/g, '');
             if (!seq) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Please enter a valid protein sequence.</p>";
+                displayBox.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Error: Please enter a valid protein sequence.</p>";
                 return;
             }
 
@@ -662,14 +662,14 @@
             }
 
             displayBox.style.display = "block";
-            var outputHtml = "<div style='background: #f4f0ff; border-left: 4px solid #6f42c1; padding: 15px; border-radius: 4px;'>";
+            var outputHtml = "<div style='background: #f7f4ff; border-left: 4px solid #6f42c1; padding: 15px; border-radius: 4px;'>";
             outputHtml += "<h4 style='color: #6f42c1; margin-bottom: 8px;'>AI Predictive Analysis Complete! 🤖</h4>";
             outputHtml += "<p><strong>Calculated Peptide Mass:</strong> " + totalMW.toFixed(2) + " g/mol</p>";
             outputHtml += "<p><strong>Estimated Net Charge (pH 7.0):</strong> " + (charge > 0 ? "+" : "") + charge + "</p>";
             outputHtml += "<p><strong>Hydrophobic Residue Ratio:</strong> " + hydroRatio.toFixed(1) + "%</p>";
-            outputHtml += "<hr style='margin: 10px 0; border: 0; border-top: 1px solid #e2d9f3;'>";
-            outputHtml += "<p style='color: #4b0082; margin: 4px 0;'><strong>🧠 AI Solubility Forecast:</strong> " + solubility + "</p>";
-            outputHtml += "<p style='color: #4b0082; margin: 4px 0;'><strong>🎯 Recommended Separation Protocol:</strong> " + strategy + "</p>";
+            outputHtml += "<hr style='margin: 10px 0; border: 0; border-top: 1px solid #decbba;'>";
+            outputHtml += "<p style='color: #5d4037; margin: 4px 0;'><strong>🧠 AI Solubility Forecast:</strong> " + solubility + "</p>";
+            outputHtml += "<p style='color: #5d4037; margin: 4px 0;'><strong>🎯 Recommended Separation Protocol:</strong> " + strategy + "</p>";
             outputHtml += "</div>";
             displayBox.innerHTML = outputHtml;
         }
@@ -684,7 +684,7 @@
 
             if (isNaN(mw) || isNaN(molarity) || isNaN(volumeInMl) || mw <= 0 || molarity <= 0 || volumeInMl <= 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Please enter valid positive numbers.</p>";
+                displayBox.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Error: Please enter valid positive numbers.</p>";
                 return;
             }
 
@@ -695,7 +695,7 @@
             displayBox.innerHTML = "<div style='background: #f0fff4; border-left: 4px solid #2e7d32; padding: 15px; border-radius: 4px;'>" +
                                    "<h4 style='color: #2e7d32; margin-bottom: 5px;'>Recipe Generated! 🧪</h4>" +
                                    "<p>To prepare <strong>" + volumeInMl + " mL</strong> of a <strong>" + molarity + " M</strong> solution, weigh out:</p>" +
-                                   "<p style='font-size: 18px; color: #4b0082; margin: 10px 0;'><strong>⚖️ Mass Needed: " + massNeeded.toFixed(4) + " grams</strong></p></div>";
+                                   "<p style='font-size: 18px; color: #8c4a32; margin: 10px 0;'><strong>⚖️ Mass Needed: " + massNeeded.toFixed(4) + " grams</strong></p></div>";
         }
 
         function calculateBeerLambert() {
@@ -707,7 +707,7 @@
 
             if (isNaN(A) || isNaN(epsilon) || isNaN(l) || A < 0 || epsilon <= 0 || l <= 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check absorbance parameters.</p>";
+                displayBox.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Error: Check optical parameters scale factors.</p>";
                 return;
             }
 
@@ -729,7 +729,7 @@
 
             if (isNaN(targetPH) || isNaN(pKa) || isNaN(totalConc) || totalConc <= 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Missing numeric targets.</p>";
+                displayBox.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Error: Missing dissociation numeric entries.</p>";
                 return;
             }
 
@@ -740,8 +740,8 @@
             displayBox.style.display = "block";
             displayBox.innerHTML = "<div style='background: #fffbf0; border-left: 4px solid #d4af37; padding: 15px; border-radius: 4px;'>" +
                                    "<h4>Buffer Matrix Calculated! ⚗️</h4>" +
-                                   "<p><strong>Weak Acid [HA]:</strong> " + acidConc.toFixed(4) + " M</p>" +
-                                   "<p><strong>Conjugate Base [A⁻]:</strong> " + baseConc.toFixed(4) + " M</p></div>";
+                                   "<p><strong>Weak Acid Concentration [HA]:</strong> " + acidConc.toFixed(4) + " M</p>" +
+                                   "<p><strong>Conjugate Base Concentration [A⁻]:</strong> " + baseConc.toFixed(4) + " M</p></div>";
         }
 
         function calculateEnzymeKinetics() {
@@ -753,7 +753,7 @@
 
             if (isNaN(vmax) || isNaN(km) || isNaN(substrate) || vmax <= 0 || km <= 0 || substrate < 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check kinetic baseline factors.</p>";
+                displayBox.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Error: Check kinetic saturation boundaries constant.</p>";
                 return;
             }
 
@@ -761,7 +761,7 @@
             displayBox.style.display = "block";
             displayBox.innerHTML = "<div style='background: #fdf2ff; border-left: 4px solid #8e44ad; padding: 15px; border-radius: 4px;'>"+
                                    "<h4>Kinetics Computed! 📊</h4>" +
-                                   "<p style='font-size: 18px; color: #4b0082; margin-top:5px;'><strong>🚀 Initial Velocity (v₀): " + v0.toFixed(4) + " μmol/min</strong></p></div>";
+                                   "<p style='font-size: 18px; color: #5d4037; margin-top:5px;'><strong>🚀 Initial Velocity (v₀): " + v0.toFixed(4) + " μmol/min</strong></p></div>";
         }
 
         function calculateRCF() {
@@ -772,7 +772,7 @@
 
             if (isNaN(radius) || isNaN(rpm) || radius <= 0 || rpm <= 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check geometry metrics.</p>";
+                displayBox.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Error: Check centrifuge operational limits geometry.</p>";
                 return;
             }
 
@@ -792,7 +792,7 @@
 
             if (isNaN(c1) || isNaN(c2) || isNaN(v2) || c1 <= 0 || c2 <= 0 || v2 <= 0 || c2 >= c1) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check ratio metrics alignment.</p>";
+                displayBox.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Error: Check standard dilution ratio equations parameters grid.</p>";
                 return;
             }
 
@@ -806,7 +806,7 @@
                                    "<p><strong>Solvent Volume:</strong> " + diluentNeeded.toFixed(2) + " mL</p></div>";
         }
 
-        // --- COMMAND RESET FIELDS UTILITIES ---
+        // --- COMMAND RESET FIELD UTILITIES ---
         function clearBox() { document.getElementById('sequenceInput').value = ''; document.getElementById('sequenceResult').style.display='none'; }
         function clearDataBox() { document.getElementById('dataInput').value = ''; document.getElementById('dataResult').style.display='none'; }
         function clearAIBox() { document.getElementById('aiPeptideInput').value = ''; document.getElementById('aiResultContainer').style.display='none'; }
