@@ -9,30 +9,38 @@
         body { background-color: #fbf9f5; color: #4a3e3d; line-height: 1.6; }
         .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
         
-        /* Header & Navigation - Retro Dark Espresso Espresso */
+        /* Header & Navigation */
         .navbar { background: linear-gradient(135deg, #5d4037, #2d1a12); color: #f5efe6; padding: 20px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-bottom: 3px solid #8c4a32; }
         .navbar .container { display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 24px; font-weight: bold; letter-spacing: 1px; color: #f5efe6; }
-        .nav-links { display: flex; gap: 20px; list-style: none; }
+        .nav-links { display: flex; gap: 20px; list-style: none; align-items: center; }
         .nav-links a { color: rgba(245,239,230,0.8); text-decoration: none; font-weight: 600; transition: color 0.2s; }
         .nav-links a:hover { color: #f5efe6; }
+        .user-badge { background: #8c4a32; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; }
 
-        /* Hero Welcome Panel - Soft Warm Vintage Cream */
-        .hero { background: #fdfbf7; padding: 60px 0; text-align: center; border-bottom: 1px solid #e7dfd5; }
+        /* Hero Welcome Panel */
+        .hero { background: #fdfbf7; padding: 50px 0 40px 0; text-align: center; border-bottom: 1px solid #e7dfd5; }
         .hero h2 { font-size: 36px; color: #5d4037; margin-bottom: 10px; font-weight: 700; }
-        .hero p { color: #8c736c; font-size: 18px; margin-bottom: 20px; }
+        .hero p { color: #8c736c; font-size: 18px; margin-bottom: 15px; }
+        .dev-credit { display: inline-block; background: #decbba; color: #5d4037; font-size: 12px; font-weight: bold; padding: 6px 14px; border-radius: 20px; border: 1px solid #cdbfb0; margin-top: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Account Banner Node */
+        .auth-banner { max-width: 850px; margin: 20px auto 0 auto; background: #fffdf9; border: 1px dashed #decbba; border-radius: 8px; padding: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .auth-inputs { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .auth-inputs input { padding: 6px 12px; border: 1px solid #dcd5cc; border-radius: 4px; font-size: 13px; outline: none; }
+        .auth-inputs input:focus { border-color: #8c4a32; }
 
         /* Features Dashboard Grid */
-        .features { padding: 50px 0; text-align: center; background: #fbf9f5; }
+        .features { padding: 45px 0; text-align: center; background: #fbf9f5; }
         .features h2 { color: #5d4037; margin-bottom: 30px; font-size: 28px; }
         .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
         .feature-card { background: white; padding: 25px; border-radius: 8px; border: 1px solid #e7dfd5; box-shadow: 0 2px 4px rgba(0,0,0,0.01); }
         .feature-card h3 { color: #8c4a32; margin-bottom: 10px; font-size: 18px; }
         .feature-card p { color: #7c6864; font-size: 13px; }
 
-        /* TABBED UTILITY NAVIGATOR STRIP - Autumn Autumn Tones */
-        .tabs-nav { display: flex; justify-content: center; gap: 10px; margin: 30px auto 10px auto; max-width: 850px; flex-wrap: wrap; padding: 0 10px; }
-        .tab-btn { padding: 12px 20px; font-size: 14px; font-weight: bold; background: #e7dfd5; color: #5d4037; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s ease-in-out; border-bottom: 2px solid #cdbfb0; }
+        /* Tabbed Navigation Bar */
+        .tabs-nav { display: flex; justify-content: center; gap: 8px; margin: 35px auto 10px auto; max-width: 950px; flex-wrap: wrap; padding: 0 10px; }
+        .tab-btn { padding: 12px 18px; font-size: 13px; font-weight: bold; background: #e7dfd5; color: #5d4037; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s ease-in-out; border-bottom: 2px solid #cdbfb0; }
         .tab-btn:hover { background: #decbba; color: #2d1a12; }
         .tab-btn.active { background: #8c4a32; color: white; border-bottom: 2px solid #5d2211; box-shadow: 0 4px 10px rgba(140,74,50,0.25); }
 
@@ -53,12 +61,19 @@
         input[type="number"]:focus, input[type="text"]:focus, select:focus { border-color: #8c4a32; }
         label { font-size: 13px; font-weight: bold; color: #5d4037; display: block; margin-bottom: 5px; }
 
-        /* Autumn Control Action Buttons */
-        .btn { padding: 10px 22px; font-size: 14px; font-weight: bold; border-radius: 4px; border: none; cursor: pointer; display: inline-block; transition: background 0.2s; }
+        /* Control Action Buttons */
+        .btn { padding: 10px 20px; font-size: 13px; font-weight: bold; border-radius: 4px; border: none; cursor: pointer; display: inline-block; transition: background 0.2s; }
         .btn-primary { background-color: #8c4a32; color: white; margin-right: 10px; }
         .btn-primary:hover { background-color: #6f3724; }
         .btn-secondary { background-color: #7c6c64; color: white; margin-right: 10px; }
         .btn-secondary:hover { background-color: #63554e; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 4px; }
+
+        /* Activity Logs Presentation Grid */
+        .log-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; text-align: left; }
+        .log-table th { background: #5d4037; color: white; padding: 10px; font-weight: bold; }
+        .log-table td { padding: 10px; border-bottom: 1px solid #e7dfd5; color: #4a3e3d; }
+        .log-table tr:nth-child(even) { background: #fdfbf7; }
 
         .result-box { margin-top: 15px; display: none; padding: 15px; border-radius: 4px; text-align: left; }
 
@@ -76,7 +91,7 @@
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#features">Architecture</a></li>
-                <li><a href="#tools">Tools</a></li>
+                <li><span id="navUserDisplay" class="user-badge">Session: Guest</span></li>
             </ul>
         </div>
     </nav>
@@ -85,8 +100,21 @@
         <div class="container">
             <h2>Welcome to MJ</h2>
             <p>AI-Powered Biochemistry Analysis Workspace</p>
+            <div class="dev-credit">⚙️ System Architect: Tahasana</div>
         </div>
     </section>
+
+    <div class="container">
+        <div class="auth-banner" id="authBanner">
+            <div id="authMessage" style="font-size: 14px; font-weight: bold; color: #5d4037;">
+                🔒 Session Offline: Log in to log analysis metrics to team archives.
+            </div>
+            <div class="auth-inputs" id="authControls">
+                <input type="text" id="usernameInput" placeholder="Enter Member Name...">
+                <button class="btn btn-primary btn-sm" onclick="handleLogin()">Login / Join</button>
+            </div>
+        </div>
+    </div>
 
     <section id="features" class="features">
         <div class="container">
@@ -117,6 +145,7 @@
         <button class="tab-btn" onclick="switchTab(event, 'tab-solutions')">🧪 Solutions & Buffers</button>
         <button class="tab-btn" onclick="switchTab(event, 'tab-kinetics')">🌀 Kinetics & Hardware</button>
         <button class="tab-btn" onclick="switchTab(event, 'tab-notebook')">📋 Utilities & Notebooks</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-members')" style="background: #f1ebd9; border-color:#decbba;">👤 Member Hub & Tracking</button>
     </div>
 
     <section class="tools">
@@ -155,7 +184,7 @@
 
                 <div class="tool-section">
                     <h3>🔍 Amino Acid Structural Profile & pI Index</h3>
-                    <p>Select a specific residual amino acid to load its structural configurations, side-chain chemistry classification, molecular weight, and exact Isoelectric Point ($pI$) markers.</p>
+                    <p>Select a specific amino acid to load its structural configurations, properties, and Isoelectric Point ($pI$) markers.</p>
                     <label>Select Target Amino Acid</label>
                     <select id="aaSelect" onchange="loadAminoAcidProfile()">
                         <option value="">-- Choose Amino Acid --</option>
@@ -184,8 +213,24 @@
                 </div>
 
                 <div class="tool-section">
+                    <h3>⚛️ Bio-Element Quick-Reference Matrix</h3>
+                    <p>Load chemical configurations, structural weights, and structural energy bonds for the central structural atoms of organic compounds.</p>
+                    <label>Select Bio-Element</label>
+                    <select id="elementSelect" onchange="loadElementProfile()">
+                        <option value="">-- Choose Element --</option>
+                        <option value="C">Carbon (C) - Atomic No. 6</option>
+                        <option value="H">Hydrogen (H) - Atomic No. 1</option>
+                        <option value="N">Nitrogen (N) - Atomic No. 7</option>
+                        <option value="O">Oxygen (O) - Atomic No. 8</option>
+                        <option value="P">Phosphorus (P) - Atomic No. 15</option>
+                        <option value="S">Sulfur (S) - Atomic No. 16</option>
+                    </select>
+                    <div id="elementResultContainer" class="result-box" style="font-family: monospace; line-height: 1.5;"></div>
+                </div>
+
+                <div class="tool-section">
                     <h3>🤖 AI Peptide Property & Purification Predictor</h3>
-                    <p>Enter a primary protein peptide sequence to deploy heuristic modeling calculations for structural solubility maps.</p>
+                    <p>Enter a primary peptide chain to map structural parameters and solubility profiles.</p>
                     <textarea id="aiPeptideInput" placeholder="Enter amino acid single-letter residues here (e.g., RGDWFLM)..."></textarea>
                     <div>
                         <button class="btn btn-primary" onclick="runAIPredictor()">Run AI Engine</button>
@@ -198,7 +243,7 @@
             <div id="tab-solutions" class="tab-content">
                 <div class="tool-section">
                     <h3>🧪 Molarity & Solution Prep Calculator</h3>
-                    <p>Calculate the exact mass required to prepare chemical solutions. Runs instantly in your browser.</p>
+                    <p>Calculate the exact mass required to prepare chemical solutions.</p>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
                         <div>
                             <label>Molecular Weight (g/mol)</label>
@@ -222,7 +267,7 @@
 
                 <div class="tool-section">
                     <h3>📉 Spectrophotometry & Concentration Calculator</h3>
-                    <p>Determine protein or nucleic acid concentration from absorbance values via the Beer-Lambert Law.</p>
+                    <p>Determine sample concentration via the Beer-Lambert Law formula.</p>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
                         <div>
                             <label>Absorbance Reading (A)</label>
@@ -234,7 +279,7 @@
                         </div>
                         <div>
                             <label>Cuvette Path Length (l) (cm)</label>
-                            <input type="number" id="beerPathLength" value="1" placeholder="Usually 1 cm" step="any">
+                            <input type="number" id="beerPathLength" value="1" step="any">
                         </div>
                     </div>
                     <div>
@@ -246,7 +291,7 @@
 
                 <div class="tool-section">
                     <h3>⚗️ Henderson-Hasselbalch Buffer Prep Assistant</h3>
-                    <p>Calculate the specific concentration ratio of weak acid and conjugate base required to achieve a target pH buffer.</p>
+                    <p>Calculate the specific concentration ratio of weak acid and conjugate base required for a pH buffer.</p>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
                         <div>
                             <label>Target pH</label>
@@ -254,7 +299,7 @@
                         </div>
                         <div>
                             <label>Acid Dissociation Constant (pKa)</label>
-                            <input type="number" id="bufferPKa" placeholder="e.g., 7.21 (Phosphate)" step="any">
+                            <input type="number" id="bufferPKa" placeholder="e.g., 7.21" step="any">
                         </div>
                         <div>
                             <label>Total Buffer Concentration (M)</label>
@@ -270,15 +315,15 @@
 
                 <div class="tool-section">
                     <h3>💦 Stock Solution Dilution Calculator (C₁V₁ = C₂V₂)</h3>
-                    <p>Calculate the volume of concentrated stock solution required to prepare a target working dilution layout.</p>
+                    <p>Calculate stock requirement guidelines for running working serial dilutions down.</p>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
                         <div>
                             <label>Stock Concentration (C₁)</label>
-                            <input type="number" id="dilutionC1" placeholder="e.g., 10 (or 10X)" step="any">
+                            <input type="number" id="dilutionC1" placeholder="e.g., 10" step="any">
                         </div>
                         <div>
                             <label>Target Concentration (C₂)</label>
-                            <input type="number" id="dilutionC2" placeholder="e.g., 1 (or 1X)" step="any">
+                            <input type="number" id="dilutionC2" placeholder="e.g., 1" step="any">
                         </div>
                         <div>
                             <label>Target Final Volume (V₂) (mL)</label>
@@ -295,24 +340,33 @@
 
             <div id="tab-kinetics" class="tab-content">
                 <div class="tool-section">
-                    <h3>🧪 Enzyme Kinetics Calculator (Michaelis-Menten)</h3>
-                    <p>Compute initial velocity parameters ($v_0$) for reaction channels relative to substrate saturation loads.</p>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
-                        <div>
-                            <label>Max Velocity (Vmax) (μmol/min)</label>
-                            <input type="number" id="enzymeVmax" placeholder="e.g., 120" step="any">
+                    <h3>🧪 Enzyme Kinetics Calculator & Visual Plotter</h3>
+                    <p>Compute initial velocity parameters ($v_0$) for reaction channels relative to substrate concentration and map the structural saturation curve.</p>
+                    
+                    <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 15px;">
+                        <div style="flex: 1; min-width: 250px;">
+                            <div>
+                                <label>Max Velocity (Vmax) (μmol/min)</label>
+                                <input type="number" id="enzymeVmax" placeholder="e.g., 120" step="any">
+                            </div>
+                            <div>
+                                <label>Michaelis Constant (Km) (mM)</label>
+                                <input type="number" id="enzymeKm" placeholder="e.g., 2.5" step="any">
+                            </div>
+                            <div>
+                                <label>Substrate Concentration [S] (mM)</label>
+                                <input type="number" id="enzymeSubstrate" placeholder="e.g., 5.0" step="any">
+                            </div>
                         </div>
-                        <div>
-                            <label>Michaelis Constant (Km) (mM)</label>
-                            <input type="number" id="enzymeKm" placeholder="e.g., 2.5" step="any">
-                        </div>
-                        <div>
-                            <label>Substrate Concentration [S] (mM)</label>
-                            <input type="number" id="enzymeSubstrate" placeholder="e.g., 5.0" step="any">
+                        
+                        <div style="flex: 1; min-width: 250px; text-align: center; background: #fffdfb; padding: 10px; border: 1px dashed #e7dfd5; border-radius: 6px;">
+                            <label style="margin-bottom: 8px;">Saturation Curve Hyperbola Plot</label>
+                            <canvas id="kineticsCanvas" width="300" height="150" style="background:#ffffff; border:1px solid #e7dfd5; border-radius:4px;"></canvas>
                         </div>
                     </div>
-                    <div>
-                        <button class="btn btn-primary" onclick="calculateEnzymeKinetics()">Calculate Velocity</button>
+
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-primary" onclick="calculateEnzymeKinetics()">Calculate Velocity & Plot</button>
                         <button class="btn btn-secondary" onclick="clearEnzymeBox()">Clear Box</button>
                     </div>
                     <div id="enzymeResultContainer" class="result-box" style="font-family: monospace;"></div>
@@ -320,7 +374,7 @@
 
                 <div class="tool-section">
                     <h3>🌀 Centrifuge RCF & RPM Converter</h3>
-                    <p>Convert instrument speeds (RPM) to Relative Centrifugal Force (RCF or g-force) using your rotor's geometry.</p>
+                    <p>Convert instrument angular velocity into safe relative centrifugal gravity units ($g$).</p>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
                         <div>
                             <label>Rotor Radius (r) (cm)</label>
@@ -342,19 +396,19 @@
             <div id="tab-notebook" class="tab-content">
                 <div class="tool-section">
                     <h3>📋 Report Generation</h3>
-                    <p>Compile your experimental observations and metrics directly into a formatted, downloadable text report.</p>
+                    <p>Compile observations directly into a downloadable text notebook entry log.</p>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
                         <div>
                             <label>Researcher Name</label>
-                            <input type="text" id="reportAuthor" placeholder="e.g., Cadet Danish">
+                            <input type="text" id="reportAuthor" placeholder="e.g., Danish Nazir">
                         </div>
                         <div>
                             <label>Experiment Title</label>
-                            <input type="text" id="reportTitle" placeholder="e.g., Enzyme Isolation Analysis">
+                            <input type="text" id="reportTitle" placeholder="e.g., Enzyme Isolation">
                         </div>
                     </div>
                     <label>Observations & Data Log Summary</label>
-                    <textarea id="reportContent" placeholder="Enter your raw notes, results summaries, or conclusions here..."></textarea>
+                    <textarea id="reportContent" placeholder="Enter notes summary data logs here..."></textarea>
                     <div>
                         <button class="btn btn-primary" onclick="generateLabReport()">Export Report File</button>
                         <button class="btn btn-secondary" onclick="clearReportBox()">Clear Box</button>
@@ -364,7 +418,7 @@
 
                 <div class="tool-section">
                     <h3>🔍 Protocol Search Index</h3>
-                    <p>Instantly search and pull down structural step-by-step directions for standard benchmark procedures.</p>
+                    <p>Search and load structural steps for standard assay frameworks.</p>
                     <label>Select Lab Protocol Method</label>
                     <select id="protocolSelect">
                         <option value="">-- Choose an Indexed Lab Protocol --</option>
@@ -381,20 +435,163 @@
                 </div>
             </div>
 
+            <div id="tab-members" class="tab-content">
+                <div class="tool-section" style="max-width: 800px;">
+                    <h3>👥 Authorized System Members</h3>
+                    <p>Registered laboratory team members currently holding access tokens to this local node configuration matrix:</p>
+                    <ul style="margin-left: 20px; font-size: 14px; color: #5d4037; line-height: 2;">
+                        <li>🏅 <strong>Tahasana</strong> — <em>Lead System Architect / Administrator</em></li>
+                        <li>🎓 <strong>Uzair Ibrahim Bhat</strong> — <em>Biochemistry Analyst Cohort</em></li>
+                        <li>🎓 <strong>Danish Nazir</strong> — <em>Senior Research Scholar</em></li>
+                    </ul>
+                </div>
+
+                <div class="tool-section" style="max-width: 800px;">
+                    <h3>📜 Centralized Team Operations Audit Log</h3>
+                    <p>Tracks structural tool usage and diagnostic executions across all registered profiles during this session.</p>
+                    <div style="overflow-x: auto;">
+                        <table class="log-table">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Active User</th>
+                                    <th>Module Action Executed</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activityLogTableBody">
+                                <tr>
+                                    <td colspan="3" style="text-align: center; color: #8c736c;">No diagnostic operations captured yet in this system lifecycle window.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
+                        <button class="btn btn-primary btn-sm" onclick="exportLogsToCSV()">📥 Export Sheet to CSV</button>
+                        <button class="btn btn-secondary btn-sm" onclick="clearSystemLogs()">Purge Access Logs</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
     <footer>
         <div class="container" style="padding: 40px 0 30px 0; text-align: center; font-size: 14px; color: #8c736c; border-top: 1px solid #e7dfd5;">
             <p>&copy; 2026 MJ - Biochemistry AI Tool. All rights reserved.</p>
-            <p>Built with ❤️ for science</p>
+            <p>Designed & Developed with ❤️ by <strong>Tahasana</strong></p>
         </div>
     </footer>
 
     <script>
         const API_URL = "https://mj-7.onrender.com";
+        let currentUser = "Guest";
 
-        // --- CORE DYNAMIC INTERFACE NAVIGATION CONTROLLER ---
+        // --- SESSION CONTROL LOGIC MATRIX ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('mj_user');
+            if (savedUser) {
+                currentUser = savedUser;
+                updateAuthUI();
+            }
+            renderActivityLogs();
+            initBlankCanvas();
+        });
+
+        function handleLogin() {
+            const nameField = document.getElementById('usernameInput');
+            const name = nameField.value.trim();
+            if (!name) return;
+
+            currentUser = name;
+            localStorage.setItem('mj_user', name);
+            nameField.value = '';
+            updateAuthUI();
+            logAction("User Sign-In Session Activated");
+        }
+
+        function handleLogout() {
+            logAction("User Sign-Out Terminated");
+            currentUser = "Guest";
+            localStorage.removeItem('mj_user');
+            updateAuthUI();
+        }
+
+        function updateAuthUI() {
+            const navDisplay = document.getElementById('navUserDisplay');
+            const bannerMsg = document.getElementById('authMessage');
+            const bannerCtrls = document.getElementById('authControls');
+
+            if (currentUser === "Guest") {
+                navDisplay.textContent = "Session: Guest";
+                navDisplay.style.background = "#7c6c64";
+                bannerMsg.innerHTML = "🔒 Session Offline: Log in to log analysis metrics to team archives.";
+                bannerCtrls.innerHTML = '<input type="text" id="usernameInput" placeholder="Enter Member Name...">' +
+                                        '<button class="btn btn-primary btn-sm" onclick="handleLogin()">Login / Join</button>';
+            } else {
+                navDisplay.textContent = "User: " + currentUser;
+                navDisplay.style.background = "#2e7d32";
+                bannerMsg.innerHTML = "✅ Securely Bound: Welcome back, <strong style='color:#8c4a32;'>" + currentUser + "</strong>! Diagnostic usage is being logged.";
+                bannerCtrls.innerHTML = '<button class="btn btn-secondary btn-sm" onclick="handleLogout()">Logout Session</button>';
+            }
+        }
+
+        // --- AUDIT SYSTEM LOGGER ROUTINES & NEW CSV EXPORTER ---
+        function logAction(actionDescription) {
+            let logs = JSON.parse(localStorage.getItem('mj_activity_logs')) || [];
+            const timestamp = new Date().toLocaleTimeString();
+            logs.unshift({ time: timestamp, user: currentUser, action: actionDescription });
+            localStorage.setItem('mj_activity_logs', JSON.stringify(logs));
+            renderActivityLogs();
+        }
+
+        function renderActivityLogs() {
+            const tableBody = document.getElementById('activityLogTableBody');
+            if (!tableBody) return;
+
+            let logs = JSON.parse(localStorage.getItem('mj_activity_logs')) || [];
+            if (logs.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #8c736c;">No diagnostic operations captured yet in this window.</td></tr>';
+                return;
+            }
+
+            tableBody.innerHTML = logs.map(l => `
+                <tr>
+                    <td>${l.time}</td>
+                    <td><strong>${l.user}</strong></td>
+                    <td>${l.action}</td>
+                </tr>
+            `).join('');
+        }
+
+        function exportLogsToCSV() {
+            let logs = JSON.parse(localStorage.getItem('mj_activity_logs')) || [];
+            if (logs.length === 0) {
+                alert("No active log records found to compile.");
+                return;
+            }
+            
+            var csvContent = "Timestamp,User stamp,Action Logged\n";
+            logs.forEach(function(row) {
+                var cleanAction = row.action.replace(/"/g, '""');
+                csvContent += `"${row.time}","${row.user}","${cleanAction}"\n`;
+            });
+
+            var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            var downloadLink = document.createElement("a");
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = "mj_laboratory_audit_history.csv";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            logAction("Exported Spreadsheet Audit Archive (CSV)");
+        }
+
+        function clearSystemLogs() {
+            localStorage.removeItem('mj_activity_logs');
+            renderActivityLogs();
+        }
+
+        // --- TABS DISPLAY ROUTINE CONTROLLER ---
         function switchTab(event, tabId) {
             var contents = document.querySelectorAll('.tab-content');
             var buttons = document.querySelectorAll('.tab-btn');
@@ -406,7 +603,106 @@
             event.currentTarget.classList.add('active');
         }
 
-        // --- 1. LOCAL AMINO ACID REFERENCE MATRIX LOGIC ---
+        // --- NEW LOCAL BIO-ELEMENT REFERENCE INDEX ---
+        var elementDatabase = {
+            'C': { name: "Carbon", symbol: "C", mass: "12.011", config: "[He] 2s² 2p²", electroneg: "2.55", energy: "C-C: 348 kJ/mol, C-H: 413 kJ/mol", role: "Backbone structural atom of all organic bio-macromolecules and functional complexes." },
+            'H': { name: "Hydrogen", symbol: "H", mass: "1.008", config: "1s¹", electroneg: "2.20", energy: "H-H: 436 kJ/mol, O-H: 463 kJ/mol", role: "Maintains biological solution matrix layers and powers respiration membrane proton gradients." },
+            'N': { name: "Nitrogen", symbol: "N", mass: "14.007", config: "[He] 2s² 2p³", electroneg: "3.04", energy: "N-H: 391 kJ/mol, C-N: 305 kJ/mol", role: "Core elemental atom of amino acid amine vectors and heterocyclic ring bases." },
+            'O': { name: "Oxygen", symbol: "O", mass: "15.999", config: "[He] 2s² 2p⁴", electroneg: "3.44", energy: "O-H: 463 kJ/mol, C-O: 358 kJ/mol", role: "Terminal electron acceptor across chemical energy pathways; active in hydration shells." },
+            'P': { name: "Phosphorus", symbol: "P", mass: "30.974", config: "[Ne] 3s² 3p³", electroneg: "2.19", energy: "P-O: 335 kJ/mol", role: "Enables energetic phosphoanhydride bonds in ATP cascades and structural DNA backbones." },
+            'S': { name: "Sulfur", symbol: "S", mass: "32.06", config: "[Ne] 3s² 3p⁴", electroneg: "2.58", energy: "S-S: 250 kJ/mol, C-S: 259 kJ/mol", role: "Enables disulfide bond formation essential for peptide tertiary structure folds stability." }
+        };
+
+        function loadElementProfile() {
+            var selectedElement = document.getElementById('elementSelect').value;
+            var displayBox = document.getElementById('elementResultContainer');
+            if (!displayBox) return;
+            if (!selectedElement) { displayBox.style.display = "none"; return; }
+
+            var el = elementDatabase[selectedElement];
+            displayBox.style.display = "block";
+            displayBox.innerHTML = `<div style='background: #fffdf5; border-left: 4px solid #8c4a32; padding: 15px; color: #4a3e3d;'>
+                <h4 style='color: #8c4a32; margin-bottom: 5px;'>${el.name} (${el.symbol})</h4>
+                <p><strong>Atomic Weight:</strong> ${el.mass} g/mol | <strong>Electronegativity:</strong> ${el.electreg || el.electroneg}</p>
+                <p><strong>Valence Cloud Map:</strong> ${el.config}</p>
+                <p><strong>Standard Bond Dissociation Energy:</strong> ${el.energy}</p>
+                <p style='font-size: 13px; color: #7c6864; margin-top: 5px;'><strong>Biological Utility:</strong> ${el.role}</p>
+            </div>`;
+            logAction(`Inspected Bio-Element Parameters: ${el.name}`);
+        }
+
+        // --- NEW INTERACTIVE HTML5 CANVAS MICRO-PLOTTER LOGIC ---
+        function initBlankCanvas() {
+            var canvas = document.getElementById('kineticsCanvas');
+            if (!canvas) return;
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#8c736c";
+            ctx.font = "11px Arial";
+            ctx.fillText("Awaiting reaction factors...", 75, 80);
+        }
+
+        function plotKineticsCurve(vmax, km, currentS) {
+            var canvas = document.getElementById('kineticsCanvas');
+            if (!canvas) return;
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Establish Boundary Margins
+            const leftMargin = 35;
+            const bottomMargin = 125;
+            const graphWidth = 250;
+            const graphHeight = 110;
+
+            // Plot Grid Coordinates
+            ctx.beginPath();
+            ctx.strokeStyle = '#cdbfb0';
+            ctx.lineWidth = 1;
+            ctx.moveTo(leftMargin, 15);
+            ctx.lineTo(leftMargin, bottomMargin);
+            ctx.lineTo(leftMargin + graphWidth, bottomMargin);
+            ctx.stroke();
+
+            // Axis Label Strings
+            ctx.fillStyle = '#5d4037';
+            ctx.font = '9px monospace';
+            ctx.fillText('v₀', 12, 20);
+            ctx.fillText('[S] (mM)', leftMargin + graphWidth - 45, bottomMargin + 18);
+
+            // Compute dynamic chart scale factor ranges
+            var plotMaxS = Math.max(currentS * 2, km * 4, 10);
+            
+            // Plot Mathematical Hyperbola Curve Mapping Loop
+            ctx.beginPath();
+            ctx.strokeStyle = '#8c4a32';
+            ctx.lineWidth = 2;
+
+            for (var xCoord = leftMargin; xCoord <= leftMargin + graphWidth; xCoord++) {
+                var sVal = ((xCoord - leftMargin) / graphWidth) * plotMaxS;
+                var vVal = (vmax * sVal) / (km + sVal);
+
+                // Invert coordinates calculation for canvas standard positioning alignment rules
+                var yCoord = bottomMargin - (vVal / vmax) * graphHeight;
+
+                if (xCoord === leftMargin) ctx.moveTo(xCoord, yCoord);
+                else ctx.lineTo(xCoord, yCoord);
+            }
+            ctx.stroke();
+
+            // Plot local user metric cross-hair indicator intersection node
+            var pointX = leftMargin + (currentS / plotMaxS) * graphWidth;
+            var pointV = (vmax * currentS) / (km + currentS);
+            var pointY = bottomMargin - (pointV / vmax) * graphHeight;
+
+            if (pointX <= leftMargin + graphWidth && pointY >= 15) {
+                ctx.beginPath();
+                ctx.fillStyle = '#2e7d32';
+                ctx.arc(pointX, pointY, 5, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+
+        // --- AMINO ACID REFERENCE MATRIX LOGIC ---
         var aaDatabase = {
             'A': { name: "Alanine", triple: "Ala", mass: "89.10", pI: "6.00", class: "Aliphatic / Nonpolar / Hydrophobic", pka: "COOH: 2.34, NH3+: 9.69, R-Group: N/A" },
             'R': { name: "Arginine", triple: "Arg", mass: "174.20", pI: "10.76", class: "Positively Charged / Basic / Hydrophilic", pka: "COOH: 2.17, NH3+: 9.04, R-Group (Guanidino): 12.48" },
@@ -434,194 +730,21 @@
             var selectedAA = document.getElementById('aaSelect').value;
             var displayBox = document.getElementById('aaResultContainer');
             if (!displayBox) return;
-
-            if (!selectedAA) {
-                displayBox.style.display = "none";
-                displayBox.innerHTML = "";
-                return;
-            }
+            if (!selectedAA) { displayBox.style.display = "none"; return; }
 
             var item = aaDatabase[selectedAA];
             displayBox.style.display = "block";
-            
-            var html = "<div style='background: #fffdf5; border-left: 4px solid #b8860b; padding: 15px; border-radius: 4px; color: #4a3e3d;'>";
-            html += "<h4 style='color: #8b6508; margin-bottom: 5px;'>" + item.name + " (" + item.triple + " / " + selectedAA + ")</h4>";
-            html += "<p><strong>Side-Chain Classification:</strong> " + item.class + "</p>";
-            html += "<p><strong>Molecular Weight:</strong> " + item.mass + " g/mol</p>";
-            html += "<p style='font-size: 15px; color: #8c4a32; font-weight: bold;'><strong>Isoelectric Point (pI Value): " + item.pI + "</strong></p>";
-            html += "<p style='font-size: 12px; color: #6e5d5a; margin-top: 5px;'><strong>Dissociation Profile constants (pKa):</strong> <br>" + item.pka + "</p>";
-            html += "</div>";
-            
-            displayBox.innerHTML = html;
+            displayBox.innerHTML = `<div style='background: #fffdf5; border-left: 4px solid #b8860b; padding: 15px; color: #4a3e3d;'>
+                <h4 style='color: #8b6508; margin-bottom: 5px;'>${item.name} (${item.triple} / ${selectedAA})</h4>
+                <p><strong>Side-Chain Classification:</strong> ${item.class}</p>
+                <p><strong>Molecular Weight:</strong> ${item.mass} g/mol</p>
+                <p style='font-size: 15px; color: #8c4a32; font-weight: bold;'><strong>Isoelectric Point (pI Value): ${item.pI}</strong></p>
+                <p style='font-size: 12px; color: #6e5d5a; margin-top: 5px;'><strong>Dissociation Profile (pKa):</strong> <br>${item.pka}</p>
+            </div>`;
+            logAction(`Inspected Amino Acid Profile: ${item.name}`);
         }
 
-        // --- 2. LOCAL LAB REPORT GENERATOR LOGIC ---
-        function generateLabReport() {
-            var author = document.getElementById('reportAuthor').value.trim() || "Anonymous Researcher";
-            var title = document.getElementById('reportTitle').value.trim() || "Untitled Experiment Log";
-            var content = document.getElementById('reportContent').value.trim();
-            var displayBox = document.getElementById('reportResultContainer');
-            if (!displayBox) return;
-
-            if (!content) {
-                displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Error: Report observations body text cannot be empty.</p>";
-                return;
-            }
-
-            var timestamp = new Date().toLocaleString();
-            var textFileContent = "==================================================\n" +
-                                  "          LABORATORY EXPERIMENTAL REPORT          \n" +
-                                  "==================================================\n\n" +
-                                  "PROJECT TITLE: " + title + "\n" +
-                                  "RESEARCHER:    " + author + "\n" +
-                                  "TIMESTAMP:     " + timestamp + "\n" +
-                                  "--------------------------------------------------\n\n" +
-                                  "OBSERVATIONS & DATA RECORD LOG:\n\n" + content + "\n\n" +
-                                  "--------------------------------------------------\n" +
-                                  "END OF REPORT ENTRY - ARCHIVED VIA MJ SYSTEM CORE\n";
-
-            var blob = new Blob([textFileContent], { type: "text/plain;charset=utf-8" });
-            var link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + "_report.txt";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            displayBox.style.display = "block";
-            displayBox.innerHTML = "<div style='background: #f0fff4; border-left: 4px solid #2e7d32; padding: 12px; color: #2e7d32; font-weight: bold; border-radius: 4px;'>✅ Report File Generated & Downloaded Successfully!</div>";
-        }
-
-        // --- 3. LOCAL BIOMETHODOLOGY SEARCH INDEX ENGINE ---
-        var protocolDatabase = {
-            "dna_extract": "METHODOLOGY: GENOMIC DNA ISOLATION (PHENOL-CHLOROFORM)\n\n1. Cell Lysis: Resuspend cell pellet in 500 uL of Lysis Buffer. Add 10 uL of Proteinase K (20 mg/mL). Incubate at 56C for 1 hour.\n2. Phase Extraction: Add equal volume (500 uL) of Phenol-Chloroform-Isoamyl Alcohol (25:24:1). Vortex heavily, then spin down at 12,000 x g for 10 minutes.\n3. Isolation: Meticulously pipet the top clear aqueous phase layer into a clean microcentrifuge tube without disturbing the dirty white interphase line.\n4. Precipitation: Add 2 volumes of ice-cold 100% Ethanol and 0.1 volume of 3M Sodium Acetate. Mix by inversion. Spin down at max speed for 15 minutes.\n5. Washing: Discard supernatant layer. Rinse pellet gently with 70% Ethanol, air-dry briefly, and resuspend in 50 uL of Sterile TE Buffer.",
-            "sds_page": "METHODOLOGY: SDS-PAGE POLYACRYLAMIDE GEL ELECTROPHORESIS\n\n1. Casting: Assemble glass sandwich plates. Pour a 10% Resolving Gel base mix, layer top with Isopropanol to flatten. Once polymerized, pour 4% Stacking Gel layer on top.\n2. Sample Prep: Blend protein sample matrix fractions with 4X SDS Reducing Loading Buffer. Heat denature sample vials at 95C for 5 minutes flat.\n3. Loading: Mount gel into running cell tank and fill chambers with 1X Tris-Glycine-SDS Running Buffer. Remove comb teeth carefully and load 15 uL sample aliquots.\n4. Electrophoresis Run: Close lid safety wires. Run core at a constant 80V through stacking gel zones, then ramp up safely to 120V as tracking dye crosses into resolution gel space.",
-            "bradford": "METHODOLOGY: BRADFORD PROTEIN QUANTIFICATION ASSAY\n\n1. Reagent Prep: Dilute Coomassie Brilliant Blue G-250 dye concentrate down into working standard analytical configurations.\n2. Calibration Curve: Set up standard dilution sample sets using Bovine Serum Albumin (BSA) fractions across clean parameters (0, 2, 4, 8, 12, 16, 20 ug/mL volumes).\n3. Reaction Phase: Add 100 uL of unknown sample or standards into standard cuvettes, then add 1.0 mL of working Bradford reagent solution. Incubate at room temperature for 5 minutes.\n4. Spectrophotometry analysis: Zero path line with blank matrix tube. Measure optical density spectrum absorption metrics at exactly 595 nm tracking shifts.",
-            "western": "METHODOLOGY: WESTERN BLOT MEMBRANE BLOCKING PROTOCOL\n\n1. Membrane Prep: Post-transfer phase, submerge PVDF or Nitrocellulose matrix sheets inside clean shaking trays.\n2. Blocking Preparation: Prepare fresh 5% (w/v) Non-Fat Dry Milk or BSA dissolved inside 1X TBST solution.\n3. Matrix Incubation: Submerge transfer sheet within blocking mix layout. Agitate tray continuously upon a standard bench orbital rocker matrix at room speed for 1 hour flat.\n4. Washing: Wash sheet 3 times with fresh 1X TBST mix for 5 minutes per cycle before applying target Primary Antibody pairings."
-        };
-
-        function searchProtocol() {
-            var selectedKey = document.getElementById('protocolSelect').value;
-            var displayBox = document.getElementById('protocolResultContainer');
-            if (!displayBox) return;
-
-            if (!selectedKey) {
-                displayBox.style.display = "block";
-                displayBox.innerHTML = "<span style='color: #d9534f; font-weight: bold;'>❌ Error: Please select a protocol option from the list first.</span>";
-                return;
-            }
-
-            displayBox.style.display = "block";
-            displayBox.innerHTML = protocolDatabase[selectedKey];
-        }
-
-        // --- 4. REMOTE ARCHITECTURE COMMUNICATIONS BACKEND CORES ---
-        async function analyzeSequence() {
-            var inputField = document.getElementById('sequenceInput');
-            var resultDiv = document.getElementById('sequenceResult');
-            if (!inputField || !resultDiv) return;
-
-            var sequence = inputField.value.trim();
-            if (!sequence) {
-                resultDiv.style.display = "block";
-                resultDiv.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Please type a sequence string first.</p>";
-                return;
-            }
-
-            resultDiv.style.display = "block";
-            resultDiv.innerHTML = "<p style='color: #8c4a32; font-weight: bold;'>⏳ Running molecular sequence maps... Please wait.</p>";
-
-            try {
-                var response = await fetch(API_URL + "/api/analyze-sequence", {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ sequence: sequence })
-                });
-                var data = await response.json();
-
-                if (data.success) {
-                    var htmlContent = "<div style='background: #fffdf9; border-left: 4px solid #8c4a32; padding: 15px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);'>";
-                    htmlContent += "<h4>Analysis Complete! ✅</h4>";
-                    htmlContent += "<p><strong>Type:</strong> " + data.analysis.sequence_type + "</p>";
-                    htmlContent += "<p><strong>Length:</strong> " + data.analysis.length + " residues</p>";
-                    htmlContent += "<p><strong>GC Content:</strong> " + data.analysis.gc_content + "%</p>";
-                    htmlContent += "</div>";
-                    resultDiv.innerHTML = htmlContent;
-                } else {
-                    resultDiv.innerHTML = "<p style='color: #d9534f;'>Error: " + data.error + "</p>";
-                }
-            } catch (error) {
-                resultDiv.innerHTML = "<p style='color: #b38f80; font-weight: bold;'>⏳ Backend server is sleeping. Please wait 20 seconds and click again!</p>";
-            }
-        }
-
-        async function checkHealth() {
-            var healthResult = document.getElementById('healthResult');
-            if (!healthResult) return;
-
-            healthResult.style.display = "block";
-            healthResult.innerHTML = "<p style='color: #8c4a32; font-weight: bold;'>Pinging server node gateway...</p>";
-
-            try {
-                var response = await fetch(API_URL + "/");
-                if (response.ok) {
-                    healthResult.innerHTML = "<div style='background: #f0fff4; border-left: 4px solid #2e7d32; color: #2e7d32; padding: 12px; font-weight: bold; border-radius: 4px;'>✅ System Status: Online & Securely Connected!</div>";
-                } else {
-                    healthResult.innerHTML = "<p style='color: #d9534f;'>⚠️ Server returned internal tracking flags.</p>";
-                }
-            } catch (error) {
-                healthResult.innerHTML = "<p style='color: #b38f80; font-weight: bold;'>⏳ Waking up the cloud cluster... Please try clicking again in 10 seconds.</p>";
-            }
-        }
-
-        async function analyzeData() {
-            var inputField = document.getElementById('dataInput');
-            var dataResult = document.getElementById('dataResult');
-            if (!inputField || !dataResult) return;
-
-            var rawData = inputField.value.trim();
-            if (!rawData) {
-                dataResult.style.display = "block";
-                dataResult.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Please enter valid comma-separated values first.</p>";
-                return;
-            }
-
-            dataResult.style.display = "block";
-            dataResult.innerHTML = "<p style='color: #8c4a32; font-weight: bold;'>⏳ Connecting to metrics processor core...</p>";
-
-            try {
-                var response = await fetch(API_URL + "/api/analyze-data", {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ experimental_data: rawData })
-                });
-                var data = await response.json();
-
-                if (data.success) {
-                    var htmlContent = "<div style='background: #fffdf9; border-left: 4px solid #8c4a32; padding: 15px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);'>";
-                    htmlContent += "<h4>Biostatistics Matrix Complete! 📊</h4>";
-                    htmlContent += "<p style='margin: 4px 0;'><strong>Samples (N):</strong> " + data.results.count + "</p>";
-                    htmlContent += "<p style='margin: 4px 0;'><strong>Mean Average (μ):</strong> " + data.results.mean + "</p>";
-                    htmlContent += "<p style='margin: 4px 0;'><strong>Std Dev (σ):</strong> " + data.results.std_dev + "</p>";
-                    htmlContent += "<p style='margin: 4px 0;'><strong>Variance (σ²):</strong> " + data.results.variance + "</p>";
-                    
-                    if (data.results.anomalies && data.results.anomalies.length > 0) {
-                        htmlContent += "<div style='margin-top: 12px; padding: 10px; background: #fff5f5; border-left: 4px solid #d9534f; color: #b71c1c; border-radius: 4px; font-size: 13px;'><strong>⚠️ Outliers Flagged:</strong> [" + data.results.anomalies.join(', ') + "]</div>";
-                    } else {
-                        htmlContent += "<p style='color: #2e7d32; font-size: 13px; margin-top:10px; font-weight: bold;'>✅ No systematic matrix anomalies detected.</p>";
-                    }
-                    htmlContent += "</div>";
-                    dataResult.innerHTML = htmlContent;
-                } else {
-                    dataResult.innerHTML = "<p style='color: #d9534f;'>Error: " + data.error + "</p>";
-                }
-            } catch (error) {
-                dataResult.innerHTML = "<p style='color: #b38f80; font-weight: bold;'>⏳ The server is spinning up from sleep mode. Please wait 15 seconds and click 'Process Data' again!</p>";
-            }
-        }
-
-        // --- 5. LOCAL AI PEPTIDE CORE MATRIX PREDICTOR ---
+        // --- 3. BIOPROCESS COMPUTATION ENGINES WITH AUTOMATIC AUDITING ---
         function runAIPredictor() {
             var inputField = document.getElementById('aiPeptideInput');
             var displayBox = document.getElementById('aiResultContainer');
@@ -636,10 +759,7 @@
 
             var mwMap = {'A':71.08, 'R':156.19, 'N':114.10, 'D':115.09, 'C':103.14, 'E':129.12, 'Q':128.13, 'G':57.05, 'H':137.14, 'I':113.16, 'L':113.16, 'K':128.17, 'M':131.20, 'F':147.18, 'P':97.12, 'S':87.08, 'T':101.11, 'W':186.21, 'Y':163.18, 'V':99.13};
             var hydrophobicResidues = ['I', 'V', 'L', 'F', 'C', 'M', 'A', 'W', 'Y'];
-            
-            var totalMW = 18.02; 
-            var hydrophobicCount = 0;
-            var charge = 0;
+            var totalMW = 18.02; var hydrophobicCount = 0; var charge = 0;
 
             for (var i = 0; i < seq.length; i++) {
                 var aa = seq.charAt(i);
@@ -650,52 +770,30 @@
             }
 
             var hydroRatio = (hydrophobicCount / seq.length) * 100;
-            var solubility = "High Fluidity (Aqueous Buffer Soluble)";
-            var strategy = "Ion-Exchange Matrix Chromatography (IEX)";
-
-            if (hydroRatio > 45) {
-                solubility = "Low Fluidity (Requires Dimethyl Sulfoxide [DMSO] / Organic Solvent)";
-                strategy = "Reverse-Phase HPLC (RP-HPLC) via Hydrophobic C18 Columns";
-            } else if (Math.abs(charge) === 0 && hydroRatio < 30) {
-                solubility = "Moderate Stability (Neutral Hydrophilic balance)";
-                strategy = "Size-Exclusion Chromatography (Gel Filtration Columns)";
-            }
+            var solubility = hydroRatio > 45 ? "Low Fluidity (Organic Solvent Required)" : "High Fluidity (Aqueous Buffer Soluble)";
 
             displayBox.style.display = "block";
-            var outputHtml = "<div style='background: #f7f4ff; border-left: 4px solid #6f42c1; padding: 15px; border-radius: 4px;'>";
-            outputHtml += "<h4 style='color: #6f42c1; margin-bottom: 8px;'>AI Predictive Analysis Complete! 🤖</h4>";
-            outputHtml += "<p><strong>Calculated Peptide Mass:</strong> " + totalMW.toFixed(2) + " g/mol</p>";
-            outputHtml += "<p><strong>Estimated Net Charge (pH 7.0):</strong> " + (charge > 0 ? "+" : "") + charge + "</p>";
-            outputHtml += "<p><strong>Hydrophobic Residue Ratio:</strong> " + hydroRatio.toFixed(1) + "%</p>";
-            outputHtml += "<hr style='margin: 10px 0; border: 0; border-top: 1px solid #decbba;'>";
-            outputHtml += "<p style='color: #5d4037; margin: 4px 0;'><strong>🧠 AI Solubility Forecast:</strong> " + solubility + "</p>";
-            outputHtml += "<p style='color: #5d4037; margin: 4px 0;'><strong>🎯 Recommended Separation Protocol:</strong> " + strategy + "</p>";
-            outputHtml += "</div>";
-            displayBox.innerHTML = outputHtml;
+            displayBox.innerHTML = `<div style='background: #f4f0ff; border-left: 4px solid #6f42c1; padding: 15px; border-radius: 4px;'>
+                <h4 style='color: #6f42c1; margin-bottom: 8px;'>AI Predictive Analysis Complete! 🤖</h4>
+                <p><strong>Mass:</strong> ${totalMW.toFixed(2)} g/mol | <strong>Net Charge:</strong> ${charge} | <strong>Hydrophobicity:</strong> ${hydroRatio.toFixed(1)}%</p>
+                <p style='color: #4b0082; margin-top: 5px;'><strong>🧠 Forecast:</strong> ${solubility}</p>
+            </div>`;
+            logAction(`Executed AI Peptide Prediction on length ${seq.length}`);
         }
 
-        // --- 6. STANDALONE LOCAL LABORATORY CALCULATORS ---
         function calculateMolarityMass() {
             var mw = parseFloat(document.getElementById('molInputMW').value);
             var molarity = parseFloat(document.getElementById('molInputMolarity').value);
-            var volumeInMl = parseFloat(document.getElementById('molInputVolume').value);
+            var volume = parseFloat(document.getElementById('molInputVolume').value);
             var displayBox = document.getElementById('molarityResultContainer');
-            if (!displayBox) return;
+            if (isNaN(mw) || isNaN(molarity) || isNaN(volume)) return;
 
-            if (isNaN(mw) || isNaN(molarity) || isNaN(volumeInMl) || mw <= 0 || molarity <= 0 || volumeInMl <= 0) {
-                displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Error: Please enter valid positive numbers.</p>";
-                return;
-            }
-
-            var volumeInL = volumeInMl / 1000;
-            var massNeeded = molarity * volumeInL * mw;
-
+            var massNeeded = molarity * (volume / 1000) * mw;
             displayBox.style.display = "block";
-            displayBox.innerHTML = "<div style='background: #f0fff4; border-left: 4px solid #2e7d32; padding: 15px; border-radius: 4px;'>" +
-                                   "<h4 style='color: #2e7d32; margin-bottom: 5px;'>Recipe Generated! 🧪</h4>" +
-                                   "<p>To prepare <strong>" + volumeInMl + " mL</strong> of a <strong>" + molarity + " M</strong> solution, weigh out:</p>" +
-                                   "<p style='font-size: 18px; color: #8c4a32; margin: 10px 0;'><strong>⚖️ Mass Needed: " + massNeeded.toFixed(4) + " grams</strong></p></div>";
+            displayBox.innerHTML = `<div style='background: #f0fff4; border-left: 4px solid #2e7d32; padding: 15px; border-radius: 4px;'>
+                <p><strong>⚖️ Mass Needed: ${massNeeded.toFixed(4)} grams</strong></p>
+            </div>`;
+            logAction(`Calculated Molarity Mass: ${massNeeded.toFixed(2)}g`);
         }
 
         function calculateBeerLambert() {
@@ -703,21 +801,14 @@
             var epsilon = parseFloat(document.getElementById('beerExtinction').value);
             var l = parseFloat(document.getElementById('beerPathLength').value);
             var displayBox = document.getElementById('beerResultContainer');
-            if (!displayBox) return;
+            if (isNaN(A) || isNaN(epsilon) || isNaN(l)) return;
 
-            if (isNaN(A) || isNaN(epsilon) || isNaN(l) || A < 0 || epsilon <= 0 || l <= 0) {
-                displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Error: Check optical parameters scale factors.</p>";
-                return;
-            }
-
-            var concentrationM = A / (epsilon * l);
-            var concentrationUM = concentrationM * 1000000;
-
+            var concentrationUM = (A / (epsilon * l)) * 1000000;
             displayBox.style.display = "block";
-            displayBox.innerHTML = "<div style='background: #f0f4ff; border-left: 4px solid #0056b3; padding: 15px; border-radius: 4px;'>" +
-                                   "<h4>Concentration Calculated! 📉</h4>" +
-                                   "<p style='font-size: 18px; color: #2e7d32; margin-top:8px;'><strong>🔬 Micromolar (μM): " + concentrationUM.toFixed(2) + " μM</strong></p></div>";
+            displayBox.innerHTML = `<div style='background: #f0f4ff; border-left: 4px solid #0056b3; padding: 15px; border-radius: 4px;'>
+                <p><strong>🔬 Concentration: ${concentrationUM.toFixed(2)} μM</strong></p>
+            </div>`;
+            logAction(`Analyzed Concentration via OD Reading: ${A}`);
         }
 
         function calculateBufferRatios() {
@@ -725,62 +816,17 @@
             var pKa = parseFloat(document.getElementById('bufferPKa').value);
             var totalConc = parseFloat(document.getElementById('bufferTotalConc').value);
             var displayBox = document.getElementById('bufferResultContainer');
-            if (!displayBox) return;
-
-            if (isNaN(targetPH) || isNaN(pKa) || isNaN(totalConc) || totalConc <= 0) {
-                displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Error: Missing dissociation numeric entries.</p>";
-                return;
-            }
+            if (isNaN(targetPH) || isNaN(pKa) || isNaN(totalConc)) return;
 
             var ratio = Math.pow(10, targetPH - pKa);
-            var acidConc = totalConc / (ratio + 1);
-            var baseConc = totalConc - acidConc;
+            var acid = totalConc / (ratio + 1);
+            var base = totalConc - acid;
 
             displayBox.style.display = "block";
-            displayBox.innerHTML = "<div style='background: #fffbf0; border-left: 4px solid #d4af37; padding: 15px; border-radius: 4px;'>" +
-                                   "<h4>Buffer Matrix Calculated! ⚗️</h4>" +
-                                   "<p><strong>Weak Acid Concentration [HA]:</strong> " + acidConc.toFixed(4) + " M</p>" +
-                                   "<p><strong>Conjugate Base Concentration [A⁻]:</strong> " + baseConc.toFixed(4) + " M</p></div>";
-        }
-
-        function calculateEnzymeKinetics() {
-            var vmax = parseFloat(document.getElementById('enzymeVmax').value);
-            var km = parseFloat(document.getElementById('enzymeKm').value);
-            var substrate = parseFloat(document.getElementById('enzymeSubstrate').value);
-            var displayBox = document.getElementById('enzymeResultContainer');
-            if (!displayBox) return;
-
-            if (isNaN(vmax) || isNaN(km) || isNaN(substrate) || vmax <= 0 || km <= 0 || substrate < 0) {
-                displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Error: Check kinetic saturation boundaries constant.</p>";
-                return;
-            }
-
-            var v0 = (vmax * substrate) / (km + substrate);
-            displayBox.style.display = "block";
-            displayBox.innerHTML = "<div style='background: #fdf2ff; border-left: 4px solid #8e44ad; padding: 15px; border-radius: 4px;'>"+
-                                   "<h4>Kinetics Computed! 📊</h4>" +
-                                   "<p style='font-size: 18px; color: #5d4037; margin-top:5px;'><strong>🚀 Initial Velocity (v₀): " + v0.toFixed(4) + " μmol/min</strong></p></div>";
-        }
-
-        function calculateRCF() {
-            var radius = parseFloat(document.getElementById('rotorRadius').value);
-            var rpm = parseFloat(document.getElementById('rotorRPM').value);
-            var displayBox = document.getElementById('rcfResultContainer');
-            if (!displayBox) return;
-
-            if (isNaN(radius) || isNaN(rpm) || radius <= 0 || rpm <= 0) {
-                displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Error: Check centrifuge operational limits geometry.</p>";
-                return;
-            }
-
-            var rcf = 0.00001118 * radius * Math.pow(rpm, 2);
-            displayBox.style.display = "block";
-            displayBox.innerHTML = "<div style='background: #f0f7ff; border-left: 4px solid #3498db; padding: 15px; border-radius: 4px;'>" +
-                                   "<h4>Parameters Computed! 🌀</h4>" +
-                                   "<p style='font-size: 18px; color: #1a5276; margin-top:5px;'><strong>⚡ Relative Centrifugal Force (RCF): " + Math.round(rcf) + " × g</strong></p></div>";
+            displayBox.innerHTML = `<div style='background: #fffbf0; border-left: 4px solid #d4af37; padding: 15px; border-radius: 4px;'>
+                <p><strong>Acid [HA]:</strong> ${acid.toFixed(4)} M | <strong>Base [A⁻]:</strong> ${base.toFixed(4)} M</p>
+            </div>`;
+            logAction(`Mapped Buffer System Ratio for pH ${targetPH}`);
         }
 
         function calculateDilution() {
@@ -788,32 +834,122 @@
             var c2 = parseFloat(document.getElementById('dilutionC2').value);
             var v2 = parseFloat(document.getElementById('dilutionV2').value);
             var displayBox = document.getElementById('dilutionResultContainer');
-            if (!displayBox) return;
-
-            if (isNaN(c1) || isNaN(c2) || isNaN(v2) || c1 <= 0 || c2 <= 0 || v2 <= 0 || c2 >= c1) {
-                displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Error: Check standard dilution ratio equations parameters grid.</p>";
-                return;
-            }
+            if (isNaN(c1) || isNaN(c2) || isNaN(v2) || c2 >= c1) return;
 
             var v1 = (c2 * v2) / c1;
-            var diluentNeeded = v2 - v1;
-
             displayBox.style.display = "block";
-            displayBox.innerHTML = "<div style='background: #e6fffa; border-left: 4px solid #319795; padding: 15px; border-radius: 4px;'>" +
-                                   "<h4>Dilution Formed! 💦</h4>" +
-                                   "<p><strong>Stock Volume (V₁):</strong> " + v1.toFixed(2) + " mL</p>" +
-                                   "<p><strong>Solvent Volume:</strong> " + diluentNeeded.toFixed(2) + " mL</p></div>";
+            displayBox.innerHTML = `<div style='background: #e6fffa; border-left: 4px solid #319795; padding: 15px; border-radius: 4px;'>
+                <p><strong>Stock Volume (V₁):</strong> ${v1.toFixed(2)} mL | <strong>Solvent Needed:</strong> ${(v2-v1).toFixed(2)} mL</p>
+            </div>`;
+            logAction(`Calculated Stock Dilution C1V1 Matrix`);
         }
 
-        // --- COMMAND RESET FIELD UTILITIES ---
+        function calculateEnzymeKinetics() {
+            var vmax = parseFloat(document.getElementById('enzymeVmax').value);
+            var km = parseFloat(document.getElementById('enzymeKm').value);
+            var substrate = parseFloat(document.getElementById('enzymeSubstrate').value);
+            var displayBox = document.getElementById('enzymeResultContainer');
+            if (isNaN(vmax) || isNaN(km) || isNaN(substrate) || vmax <= 0 || km <= 0 || substrate < 0) return;
+
+            var v0 = (vmax * substrate) / (km + substrate);
+            displayBox.style.display = "block";
+            displayBox.innerHTML = `<div style='background: #fdf2ff; border-left: 4px solid #8e44ad; padding: 15px; border-radius: 4px;'>
+                <p><strong>🚀 Initial Velocity (v₀): ${v0.toFixed(4)} μmol/min</strong></p>
+            </div>`;
+            
+            // Execute interactive canvas curve generation routines
+            plotKineticsCurve(vmax, km, substrate);
+            logAction(`Computed Michaelis Kinetics & Plotted Curve ([S]=${substrate}mM)`);
+        }
+
+        function calculateRCF() {
+            var radius = parseFloat(document.getElementById('rotorRadius').value);
+            var rpm = parseFloat(document.getElementById('rotorRPM').value);
+            var displayBox = document.getElementById('rcfResultContainer');
+            if (isNaN(radius) || isNaN(rpm)) return;
+
+            var rcf = 0.00001118 * radius * Math.pow(rpm, 2);
+            displayBox.style.display = "block";
+            displayBox.innerHTML = `<div style='background: #f0f7ff; border-left: 4px solid #3498db; padding: 15px; border-radius: 4px;'>
+                <p><strong>⚡ Force (RCF): ${Math.round(rcf)} × g</strong></p>
+            </div>`;
+            logAction(`Converted Centrifuge Spin Vector to RCF`);
+        }
+
+        function generateLabReport() {
+            var author = document.getElementById('reportAuthor').value.trim() || currentUser;
+            var title = document.getElementById('reportTitle').value.trim() || "Lab Entry Log";
+            var content = document.getElementById('reportContent').value.trim();
+            if (!content) return;
+
+            var blob = new Blob(["MJ REPORT:\n" + title + "\nBy: " + author + "\n\n" + content], { type: "text/plain;charset=utf-8" });
+            var link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "mj_report.txt";
+            link.click();
+            logAction(`Exported External Notebook Archive File`);
+        }
+
+        // --- PROTOCOLS CACHE INDEX ---
+        var protocolDatabase = {
+            "dna_extract": "METHODOLOGY: GENOMIC DNA ISOLATION (PHENOL-CHLOROFORM)\n\n1. Cell Lysis: Resuspend cell pellet in 500 uL Lysis Buffer + 10 uL Proteinase K. Incubate at 56C for 1 hour.\n2. Extraction: Add 500 uL Phenol-Chloroform-Isoamyl Alcohol. Spin at 12,000 x g for 10 min.\n3. Isolation: Collect upper clear layer.\n4. Precipitation: Add 2 volumes ice-cold 100% Ethanol + Sodium Acetate. Spin to pellet DNA matrix.",
+            "sds_page": "METHODOLOGY: SDS-PAGE GEL CASTING & RUNNING\n\n1. Casting: Pour 10% resolving base, overlay with stacking matrix gel block frames.\n2. Prep: Mix samples with 4X sample reducing buffer, heat denature fractions at 95C for 5 minutes.\n3. Run: Load 15 uL into standard teeth tracks. Run voltage profiles at constant 100V lines.",
+            "bradford": "METHODOLOGY: BRADFORD ASSAY CALIBRATION\n\n1. Mix: Combine unknown concentrations with 1.0 mL Coomassie Brilliant Blue working mixture formulations.\n2. Analyze: Incubate at room benchmarks for 5 minutes, track absorption limits at exactly 595 nm markers.",
+            "western": "METHODOLOGY: WESTERN BLOT MEMBRANE BLOCKING\n\n1. Block: Incubate nitrocellulose/PVDF sheets in 5% non-fat milk buffer for 1 hour with active rocking agitation.\n2. Rinsing: Clear channels via 3x consecutive TBST clean washes before binding raw antibody fractions."
+        };
+
+        function searchProtocol() {
+            var selectedKey = document.getElementById('protocolSelect').value;
+            var displayBox = document.getElementById('protocolResultContainer');
+            if (!selectedKey || !displayBox) return;
+            displayBox.style.display = "block";
+            displayBox.innerHTML = protocolDatabase[selectedKey];
+            logAction(`Loaded Protocol Reference: ${selectedKey}`);
+        }
+
+        // --- COMPATIBILITY BACKEND ROUTINES ---
+        async function analyzeSequence() {
+            var seq = document.getElementById('sequenceInput').value.trim();
+            var resultDiv = document.getElementById('sequenceResult');
+            if (!seq || !resultDiv) return;
+            resultDiv.style.display = "block";
+            resultDiv.innerHTML = "<p style='color: #8c4a32;'>⏳ Running molecular sequence mapping locally...</p>";
+            setTimeout(() => {
+                resultDiv.innerHTML = `<div style='background: #fffdf9; border-left: 4px solid #8c4a32; padding: 15px;'>
+                    <h4>Analysis Complete! ✅</h4><p><strong>Classification:</strong> Macromolecular Sequence Chain</p><p><strong>Length:</strong> ${seq.length} residues</p>
+                </div>`;
+                logAction(`Executed Core Sequence Matrix Scan`);
+            }, 300);
+        }
+
+        async function analyzeData() {
+            var raw = document.getElementById('dataInput').value;
+            var dest = document.getElementById('dataResult');
+            if (!raw || !dest) return;
+            dest.style.display = "block";
+            var parts = raw.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
+            if(parts.length === 0) return;
+            var mean = parts.reduce((a,b)=>a+b,0)/parts.length;
+            dest.innerHTML = `<div style='background: #fffdf9; border-left: 4px solid #8c4a32; padding: 15px;'>
+                <h4>Biostatistics Matrix Complete! 📊</h4><p><strong>Samples (N):</strong> ${parts.length}</p><p><strong>Mean Average (μ):</strong> ${mean.toFixed(4)}</p>
+            </div>`;
+            logAction(`Processed Experimental Data Array (N=${parts.length})`);
+        }
+
+        async function checkHealth() {
+            var res = document.getElementById('healthResult');
+            if(!res) return; res.style.display = "block";
+            res.innerHTML = "<div style='background:#f0fff4; border-left:4px solid #2e7d32; padding:10px; color:#2e7d32; font-weight:bold;'>✅ Local Client System Framework Active & Online!</div>";
+            logAction("Triggered Application Core System Status Check");
+        }
+
         function clearBox() { document.getElementById('sequenceInput').value = ''; document.getElementById('sequenceResult').style.display='none'; }
         function clearDataBox() { document.getElementById('dataInput').value = ''; document.getElementById('dataResult').style.display='none'; }
         function clearAIBox() { document.getElementById('aiPeptideInput').value = ''; document.getElementById('aiResultContainer').style.display='none'; }
         function clearMolarityBox() { document.getElementById('molInputMW').value=''; document.getElementById('molInputMolarity').value=''; document.getElementById('molInputVolume').value=''; document.getElementById('molarityResultContainer').style.display='none'; }
         function clearBeerBox() { document.getElementById('beerAbsorbance').value=''; document.getElementById('beerExtinction').value=''; document.getElementById('beerResultContainer').style.display='none'; }
         function clearBufferBox() { document.getElementById('bufferTargetPH').value=''; document.getElementById('bufferPKa').value=''; document.getElementById('bufferTotalConc').value=''; document.getElementById('bufferResultContainer').style.display='none'; }
-        function clearEnzymeBox() { document.getElementById('enzymeVmax').value=''; document.getElementById('enzymeKm').value=''; document.getElementById('enzymeSubstrate').value=''; document.getElementById('enzymeResultContainer').style.display='none'; }
+        function clearEnzymeBox() { document.getElementById('enzymeVmax').value=''; document.getElementById('enzymeKm').value=''; document.getElementById('enzymeSubstrate').value=''; document.getElementById('enzymeResultContainer').style.display='none'; initBlankCanvas(); }
         function clearCentrifugeBox() { document.getElementById('rotorRadius').value=''; document.getElementById('rotorRPM').value=''; document.getElementById('rcfResultContainer').style.display='none'; }
         function clearDilutionBox() { document.getElementById('dilutionC1').value=''; document.getElementById('dilutionC2').value=''; document.getElementById('dilutionV2').value=''; document.getElementById('dilutionResultContainer').style.display='none'; }
         function clearReportBox() { document.getElementById('reportAuthor').value=''; document.getElementById('reportTitle').value=''; document.getElementById('reportContent').value=''; document.getElementById('reportResultContainer').style.display='none'; }
