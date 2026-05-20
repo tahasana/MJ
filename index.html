@@ -150,6 +150,32 @@
                 <div id="molarityResultContainer" class="result-box"></div>
             </div>
 
+            <div class="tool-section">
+                <h3>📉 Spectrophotometry & Concentration Calculator</h3>
+                <p>Determine protein or nucleic acid concentration from absorbance values via the Beer-Lambert Law.</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                    <div>
+                        <label>Absorbance Reading (A)</label>
+                        <input type="number" id="beerAbsorbance" placeholder="e.g., 0.45" step="any">
+                    </div>
+                    <div>
+                        <label>Extinction Coefficient (ε) (M⁻¹cm⁻¹)</label>
+                        <input type="number" id="beerExtinction" placeholder="e.g., 6220" step="any">
+                    </div>
+                    <div>
+                        <label>Cuvette Path Length (l) (cm)</label>
+                        <input type="number" id="beerPathLength" value="1" placeholder="Usually 1 cm" step="any">
+                    </div>
+                </div>
+
+                <div>
+                    <button class="btn btn-primary" onclick="calculateBeerLambert()">Calculate Concentration</button>
+                    <button class="btn btn-secondary" onclick="clearBeerBox()">Clear Box</button>
+                </div>
+                <div id="beerResultContainer" class="result-box"></div>
+            </div>
+
         </div>
     </section>
 
@@ -284,7 +310,6 @@
                 return;
             }
 
-            // Formula: Mass (g) = Molarity (mol/L) * Volume (L) * Molecular Weight (g/mol)
             var volumeInL = volumeInMl / 1000;
             var massNeeded = molarity * volumeInL * mw;
 
@@ -299,7 +324,40 @@
             displayBox.innerHTML = outputHtml;
         }
 
-        // --- 5. DISPLAY RESET FIELDS ---
+        // --- 5. LOCAL BEER-LAMBERT CALCULATOR LOGIC (100% LOCAL) ---
+        function calculateBeerLambert() {
+            var A = parseFloat(document.getElementById('beerAbsorbance').value);
+            var epsilon = parseFloat(document.getElementById('beerExtinction').value);
+            var l = parseFloat(document.getElementById('beerPathLength').value);
+            var displayBox = document.getElementById('beerResultContainer');
+            if (!displayBox) return;
+
+            if (isNaN(A) || isNaN(epsilon) || isNaN(l) || A < 0 || epsilon <= 0 || l <= 0) {
+                displayBox.style.display = "block";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Please enter valid numbers (Absorbance must be ≥ 0, Extinction and Path must be > 0).</p>";
+                return;
+            }
+
+            // c = A / (epsilon * l) -> Output in Molar (M)
+            var concentrationM = A / (epsilon * l);
+            
+            // Generate clean metric scales for laboratory analysis conversion (mM and uM)
+            var concentrationMM = concentrationM * 1000;
+            var concentrationUM = concentrationM * 1000000;
+
+            displayBox.style.display = "block";
+            var outputHtml = "<div style='background: #f0f4ff; border-left: 4px solid #0056b3; padding: 15px; border-radius: 4px;'>";
+            outputHtml += "<h4 style='color: #0056b3; margin-bottom: 5px;'>Concentration Calculated! 📉</h4>";
+            outputHtml += "<p style='color: #333;'>For an optical density reading of <strong>" + A + "</strong>:</p>";
+            outputHtml += "<p style='font-size: 16px; margin: 8px 0; color: #333;'><strong>Molar Concentration (M):</strong> " + concentrationM.toExponential(4) + " M</p>";
+            outputHtml += "<p style='font-size: 16px; margin: 8px 0; color: #4b0082;'><strong>Millimolar (mM):</strong> " + concentrationMM.toFixed(4) + " mM</p>";
+            outputHtml += "<p style='font-size: 18px; margin: 8px 0; color: #2e7d32;'><strong>🔬 Micromolar (μM): " + concentrationUM.toFixed(2) + " μM</strong></p>";
+            outputHtml += "</div>";
+            
+            displayBox.innerHTML = outputHtml;
+        }
+
+        // --- 6. DISPLAY RESET FIELDS ---
         function clearBox() {
             var inputField = document.getElementById('sequenceInput');
             var resultDiv = document.getElementById('sequenceResult');
@@ -319,6 +377,14 @@
             document.getElementById('molInputMolarity').value = '';
             document.getElementById('molInputVolume').value = '';
             var displayBox = document.getElementById('molarityResultContainer');
+            if (displayBox) { displayBox.innerHTML = ''; displayBox.style.display = 'none'; }
+        }
+
+        function clearBeerBox() {
+            document.getElementById('beerAbsorbance').value = '';
+            document.getElementById('beerExtinction').value = '';
+            document.getElementById('beerPathLength').value = '1';
+            var displayBox = document.getElementById('beerResultContainer');
             if (displayBox) { displayBox.innerHTML = ''; displayBox.style.display = 'none'; }
         }
     </script>
