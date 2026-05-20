@@ -40,8 +40,8 @@
         textarea { width: 100%; height: 120px; padding: 15px; border: 2px solid #dcdcdc; border-radius: 6px; font-family: monospace; font-size: 14px; margin-bottom: 15px; resize: vertical; outline: none; }
         textarea:focus { border-color: #4b0082; }
         
-        input[type="number"] { width: 100%; padding: 10px; border: 2px solid #dcdcdc; border-radius: 6px; font-size: 14px; margin-bottom: 15px; outline: none; }
-        input[type="number"]:focus { border-color: #4b0082; }
+        input[type="number"], input[type="text"], select { width: 100%; padding: 10px; border: 2px solid #dcdcdc; border-radius: 6px; font-size: 14px; margin-bottom: 15px; outline: none; }
+        input[type="number"]:focus, input[type="text"]:focus, select:focus { border-color: #4b0082; }
         label { font-size: 13px; font-weight: bold; color: #4b0082; display: block; margin-bottom: 5px; }
 
         /* Control Buttons */
@@ -86,6 +86,14 @@
                     <h3>📊 Data Analysis</h3>
                     <p>Process experimental values and spot lab errors.</p>
                 </div>
+                <div class="feature-card">
+                    <h3>📋 Report Generation</h3>
+                    <p>Create professional formatted reports down into standard exports.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🔍 Protocol Search</h3>
+                    <p>Find standard benchmark laboratory protocols and procedures instantly.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -122,6 +130,46 @@
                     <button class="btn btn-secondary" onclick="clearDataBox()">Clear Box</button>
                 </div>
                 <div id="dataResult" class="result-box" style="font-family: monospace;"></div>
+            </div>
+
+            <div class="tool-section">
+                <h3>📋 Report Generation</h3>
+                <p>Compile your experimental observations and metrics directly into a formatted, downloadable text report.</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div>
+                        <label>Researcher Name</label>
+                        <input type="text" id="reportAuthor" placeholder="e.g., Cadet Danish">
+                    </div>
+                    <div>
+                        <label>Experiment Title</label>
+                        <input type="text" id="reportTitle" placeholder="e.g., Enzyme Isolation Analysis">
+                    </div>
+                </div>
+                <label>Observations & Data Log Summary</label>
+                <textarea id="reportContent" placeholder="Enter your raw notes, results summaries, or conclusions here..."></textarea>
+                <div>
+                    <button class="btn btn-primary" onclick="generateLabReport()">Export Report File</button>
+                    <button class="btn btn-secondary" onclick="clearReportBox()">Clear Box</button>
+                </div>
+                <div id="reportResultContainer" class="result-box"></div>
+            </div>
+
+            <div class="tool-section">
+                <h3>🔍 Protocol Search Index</h3>
+                <p>Instantly search and pull down structural step-by-step directions for standard benchmark procedures.</p>
+                <label>Select Lab Protocol Method</label>
+                <select id="protocolSelect">
+                    <option value="">-- Choose an Indexed Lab Protocol --</option>
+                    <option value="dna_extract">1. Genomic DNA Isolation (Phenol-Chloroform Method)</option>
+                    <option value="sds_page">2. SDS-PAGE Gel Casting & Electrophoresis</option>
+                    <option value="bradford">3. Bradford Protein Concentration Assay Mix</option>
+                    <option value="western">4. Western Blot Membrane Blocking Protocol</option>
+                </select>
+                <div>
+                    <button class="btn btn-primary" onclick="searchProtocol()">Load Guide Sheet</button>
+                    <button class="btn btn-secondary" onclick="clearProtocolBox()">Clear View</button>
+                </div>
+                <div id="protocolResultContainer" class="result-box" style="white-space: pre-wrap; font-family: monospace; max-height: 350px; overflow-y: auto; line-height: 1.5; background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 4px;"></div>
             </div>
 
             <div class="tool-section">
@@ -300,7 +348,89 @@
     <script>
         const API_URL = "https://mj-7.onrender.com";
 
-        // --- 1. REMOTE MACROMOLECULAR CHAIN ANALYZER ---
+        // --- 1. LOCAL LAB REPORT GENERATOR LOGIC ---
+        function generateLabReport() {
+            var author = document.getElementById('reportAuthor').value.trim() || "Anonymous Researcher";
+            var title = document.getElementById('reportTitle').value.trim() || "Untitled Experiment Log";
+            var content = document.getElementById('reportContent').value.trim();
+            var displayBox = document.getElementById('reportResultContainer');
+            if (!displayBox) return;
+
+            if (!content) {
+                displayBox.style.display = "block";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Report observations body text cannot be empty.</p>";
+                return;
+            }
+
+            var timestamp = new Date().toLocaleString();
+            var textFileContent = "==================================================\n" +
+                                  "          LABORATORY EXPERIMENTAL REPORT          \n" +
+                                  "==================================================\n\n" +
+                                  "PROJECT TITLE: " + title + "\n" +
+                                  "RESEARCHER:    " + author + "\n" +
+                                  "TIMESTAMP:     " + timestamp + "\n" +
+                                  "--------------------------------------------------\n\n" +
+                                  "OBSERVATIONS & DATA RECORD LOG:\n\n" + content + "\n\n" +
+                                  "--------------------------------------------------\n" +
+                                  "END OF REPORT ENTRY - ARCHIVED VIA MJ SYSTEM CORE\n";
+
+            // Local Blob Pipeline Trigger for file download
+            var blob = new Blob([textFileContent], { type: "text/plain;charset=utf-8" });
+            var link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + "_report.txt";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            displayBox.style.display = "block";
+            displayBox.innerHTML = "<div style='background: #f0fff4; border-left: 4px solid #2e7d32; padding: 12px; color: #2e7d32; font-weight: bold; border-radius: 4px;'>✅ Report File Generated & Downloaded Successfully!</div>";
+        }
+
+        // --- 2. LOCAL BIOMETHODOLOGY SEARCH INDEX ENGINE ---
+        var protocolDatabase = {
+            "dna_extract": "METHODOLOGY: GENOMIC DNA ISOLATION (PHENOL-CHLOROFORM)\n\n" +
+                           "1. Cell Lysis: Resuspend cell pellet in 500 uL of Lysis Buffer. Add 10 uL of Proteinase K (20 mg/mL). Incubate at 56C for 1 hour to digest cellular structural proteins.\n" +
+                           "2. Phase Extraction: Add equal volume (500 uL) of Phenol-Chloroform-Isoamyl Alcohol (25:24:1). Vortex heavily, then spin down at 12,000 x g for 10 minutes at 4C.\n" +
+                           "3. Isolation: Meticulously pipet the top clear aqueous phase layer into a clean microcentrifuge tube without disturbing the dirty white interphase line.\n" +
+                           "4. Precipitation: Add 2 volumes of ice-cold 100% Ethanol and 0.1 volume of 3M Sodium Acetate. Mix by inversion. Spin down at max speed for 15 minutes to pellet the raw DNA matrix strands.\n" +
+                           "5. Washing: Discard supernatant supernatant layer. Rinse pellet gently with 70% Ethanol, air-dry briefly, and resuspend in 50 uL of Sterile TE Buffer.",
+            
+            "sds_page": "METHODOLOGY: SDS-PAGE POLYACRYLAMIDE GEL ELECTROPHORESIS\n\n" +
+                        "1. Casting: Assemble glass sandwich plates. Pour a 10% Resolving Gel base mix, layer top with Isopropanol to flatten. Once polymerized, pour 4% Stacking Gel layer on top and insert matrix well combs.\n" +
+                        "2. Sample Prep: Blend protein sample matrix fractions with 4X SDS Reducing Loading Buffer. Heat denature sample vials at 95C for 5 minutes flat.\n" +
+                        "3. Loading: Mount gel into running cell tank and fill chambers with 1X Tris-Glycine-SDS Running Buffer. Remove comb teeth carefully and load 15 uL sample aliquots.\n" +
+                        "4. Electrophoresis Run: Close lid safety wires. Run core at a constant 80V through stacking gel zones, then ramp up safely to 120V as tracking dye crosses into resolution gel space.",
+            
+            "bradford": "METHODOLOGY: BRADFORD PROTEIN QUANTIFICATION ASSAY\n\n" +
+                        "1. Reagent Prep: Dilute Coomassie Brilliant Blue G-250 dye concentrate down into working standard analytical configurations.\n" +
+                        "2. Calibration Curve: Set up standard dilution sample sets using Bovine Serum Albumin (BSA) fractions across clean parameters (0, 2, 4, 8, 12, 16, 20 ug/mL volumes).\n" +
+                        "3. Reaction Phase: Add 100 uL of unknown sample or standards into standard cuvettes, then add 1.0 mL of working Bradford reagent solution. Incubate at room temperature for 5 minutes.\n" +
+                        "4. Spectrophotometry analysis: Zero path line with blank matrix tube. Measure optical density spectrum absorption metrics at exactly 595 nm tracking shifts.",
+            
+            "western": "METHODOLOGY: WESTERN BLOT MEMBRANE BLOCKING PROTOCOL\n\n" +
+                        "1. Membrane Prep: Post-transfer phase, submerge PVDF or Nitrocellulose matrix sheets inside clean shaking trays.\n" +
+                        "2. Blocking Preparation: Prepare fresh 5% (w/v) Non-Fat Dry Milk or BSA dissolved inside 1X TBST solution.\n" +
+                        "3. Matrix Incubation: Submerge transfer sheet within blocking mix layout. Agitate tray continuously upon a standard bench orbital rocker matrix at room speed for 1 hour flat.\n" +
+                        "4. Washing: Wash sheet 3 times with fresh 1X TBST mix for 5 minutes per cycle before applying target Primary Antibody pairings."
+        };
+
+        function searchProtocol() {
+            var selectedKey = document.getElementById('protocolSelect').value;
+            var displayBox = document.getElementById('protocolResultContainer');
+            if (!displayBox) return;
+
+            if (!selectedKey) {
+                displayBox.style.display = "block";
+                displayBox.innerHTML = "<span style='color: #ff4d4d; font-weight: bold;'>❌ Error: Please select a protocol option from the list first.</span>";
+                return;
+            }
+
+            displayBox.style.display = "block";
+            displayBox.innerHTML = protocolDatabase[selectedKey];
+        }
+
+        // --- REMOTE FILE CORES FALLBACK TRACKERS ---
         async function analyzeSequence() {
             var inputField = document.getElementById('sequenceInput');
             var resultDiv = document.getElementById('sequenceResult');
@@ -340,7 +470,6 @@
             }
         }
 
-        // --- 2. HOST NODE HEALTH COMMANDER ---
         async function checkHealth() {
             var healthResult = document.getElementById('healthResult');
             if (!healthResult) return;
@@ -360,7 +489,6 @@
             }
         }
 
-        // --- 3. REMOTE REAGENT LAB MATRIX COMPUTER ---
         async function analyzeData() {
             var inputField = document.getElementById('dataInput');
             var dataResult = document.getElementById('dataResult');
@@ -407,7 +535,7 @@
             }
         }
 
-        // --- 4. LOCAL AI PEPTIDE CORE MATRIX PREDICTOR (100% LOCAL) ---
+        // --- 3. LOCAL AI PEPTIDE CORE MATRIX PREDICTOR ---
         function runAIPredictor() {
             var inputField = document.getElementById('aiPeptideInput');
             var displayBox = document.getElementById('aiResultContainer');
@@ -453,19 +581,17 @@
             displayBox.style.display = "block";
             var outputHtml = "<div style='background: #f4f0ff; border-left: 4px solid #6f42c1; padding: 15px; border-radius: 4px;'>";
             outputHtml += "<h4 style='color: #6f42c1; margin-bottom: 8px;'>AI Predictive Analysis Complete! 🤖</h4>";
-            outputHtml += "<p style='margin: 3px 0;'><strong>Calculated Peptide Mass:</strong> " + totalMW.toFixed(2) + " g/mol</p>";
-            outputHtml += "<p style='margin: 3px 0;'><strong>Estimated Net Charge (pH 7.0):</strong> " + (charge > 0 ? "+" : "") + charge + "</p>";
-            outputHtml += "<p style='margin: 3px 0;'><strong>Hydrophobic Residue Ratio:</strong> " + hydroRatio.toFixed(1) + "%</p>";
+            outputHtml += "<p><strong>Calculated Peptide Mass:</strong> " + totalMW.toFixed(2) + " g/mol</p>";
+            outputHtml += "<p><strong>Estimated Net Charge (pH 7.0):</strong> " + (charge > 0 ? "+" : "") + charge + "</p>";
+            outputHtml += "<p><strong>Hydrophobic Residue Ratio:</strong> " + hydroRatio.toFixed(1) + "%</p>";
             outputHtml += "<hr style='margin: 10px 0; border: 0; border-top: 1px solid #e2d9f3;'>";
             outputHtml += "<p style='color: #4b0082; margin: 4px 0;'><strong>🧠 AI Solubility Forecast:</strong> " + solubility + "</p>";
             outputHtml += "<p style='color: #4b0082; margin: 4px 0;'><strong>🎯 Recommended Separation Protocol:</strong> " + strategy + "</p>";
-            outputHtml += "<p style='font-size: 11px; color: #777; margin-top: 8px;'>➔ Neural confidence index vector: " + confidence + "% | Powered by local heuristic predictive parsing networks.</p>";
             outputHtml += "</div>";
-
             displayBox.innerHTML = outputHtml;
         }
 
-        // --- 5. LOCAL MOLARITY PREP LOGIC (100% LOCAL) ---
+        // --- 4. LOCAL SOLUTION PREP CALCULATORS ---
         function calculateMolarityMass() {
             var mw = parseFloat(document.getElementById('molInputMW').value);
             var molarity = parseFloat(document.getElementById('molInputMolarity').value);
@@ -475,7 +601,7 @@
 
             if (isNaN(mw) || isNaN(molarity) || isNaN(volumeInMl) || mw <= 0 || molarity <= 0 || volumeInMl <= 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Please enter valid positive numbers in all fields.</p>";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Please enter valid positive numbers.</p>";
                 return;
             }
 
@@ -483,17 +609,12 @@
             var massNeeded = molarity * volumeInL * mw;
 
             displayBox.style.display = "block";
-            var outputHtml = "<div style='background: #f0fff4; border-left: 4px solid #2e7d32; padding: 15px; border-radius: 4px;'>";
-            outputHtml += "<h4 style='color: #2e7d32; margin-bottom: 5px;'>Recipe Generated! 🧪</h4>";
-            outputHtml += "<p style='color: #333;'>To prepare <strong>" + volumeInMl + " mL</strong> of a <strong>" + molarity + " M</strong> solution, weigh out:</p>";
-            outputHtml += "<p style='font-size: 18px; color: #4b0082; margin: 10px 0;'><strong>⚖️ Mass Needed: " + massNeeded.toFixed(4) + " grams</strong></p>";
-            outputHtml += "<span style='font-size: 12px; color: #666;'>➔ Protocol Instruction: Dissolve the mass in a volume slightly less than " + volumeInMl + " mL, adjust pH if required, then bring the total volume up to exactly " + volumeInMl + " mL.</span>";
-            outputHtml += "</div>";
-            
-            displayBox.innerHTML = outputHtml;
+            displayBox.innerHTML = "<div style='background: #f0fff4; border-left: 4px solid #2e7d32; padding: 15px; border-radius: 4px;'>" +
+                                   "<h4 style='color: #2e7d32; margin-bottom: 5px;'>Recipe Generated! 🧪</h4>" +
+                                   "<p>To prepare <strong>" + volumeInMl + " mL</strong> of a <strong>" + molarity + " M</strong> solution, weigh out:</p>" +
+                                   "<p style='font-size: 18px; color: #4b0082; margin: 10px 0;'><strong>⚖️ Mass Needed: " + massNeeded.toFixed(4) + " grams</strong></p></div>";
         }
 
-        // --- 6. LOCAL BEER-LAMBERT CALCULATOR LOGIC (100% LOCAL) ---
         function calculateBeerLambert() {
             var A = parseFloat(document.getElementById('beerAbsorbance').value);
             var epsilon = parseFloat(document.getElementById('beerExtinction').value);
@@ -503,27 +624,19 @@
 
             if (isNaN(A) || isNaN(epsilon) || isNaN(l) || A < 0 || epsilon <= 0 || l <= 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Please enter valid numbers (Absorbance must be ≥ 0, Extinction and Path must be > 0).</p>";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check calculation fields parameters.</p>";
                 return;
             }
 
             var concentrationM = A / (epsilon * l);
-            var concentrationMM = concentrationM * 1000;
             var concentrationUM = concentrationM * 1000000;
 
             displayBox.style.display = "block";
-            var outputHtml = "<div style='background: #f0f4ff; border-left: 4px solid #0056b3; padding: 15px; border-radius: 4px;'>";
-            outputHtml += "<h4 style='color: #0056b3; margin-bottom: 5px;'>Concentration Calculated! 📉</h4>";
-            outputHtml += "<p style='color: #333;'>For an optical density reading of <strong>" + A + "</strong>:</p>";
-            outputHtml += "<p style='font-size: 16px; margin: 8px 0; color: #333;'><strong>Molar Concentration (M):</strong> " + concentrationM.toExponential(4) + " M</p>";
-            outputHtml += "<p style='font-size: 16px; margin: 8px 0; color: #4b0082;'><strong>Millimolar (mM):</strong> " + concentrationMM.toFixed(4) + " mM</p>";
-            outputHtml += "<p style='font-size: 18px; margin: 8px 0; color: #2e7d32;'><strong>🔬 Micromolar (μM): " + concentrationUM.toFixed(2) + " μM</strong></p>";
-            outputHtml += "</div>";
-            
-            displayBox.innerHTML = outputHtml;
+            displayBox.innerHTML = "<div style='background: #f0f4ff; border-left: 4px solid #0056b3; padding: 15px; border-radius: 4px;'>" +
+                                   "<h4>Concentration Calculated! 📉</h4>" +
+                                   "<p style='font-size: 18px; color: #2e7d32; margin-top:8px;'><strong>🔬 Micromolar (μM): " + concentrationUM.toFixed(2) + " μM</strong></p></div>";
         }
 
-        // --- 7. LOCAL HENDERSON-HASSELBALCH LOGIC (100% LOCAL) ---
         function calculateBufferRatios() {
             var targetPH = parseFloat(document.getElementById('bufferTargetPH').value);
             var pKa = parseFloat(document.getElementById('bufferPKa').value);
@@ -533,7 +646,7 @@
 
             if (isNaN(targetPH) || isNaN(pKa) || isNaN(totalConc) || totalConc <= 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Please enter valid numeric values. Total concentration must be positive.</p>";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Missing parameters.</p>";
                 return;
             }
 
@@ -542,18 +655,12 @@
             var baseConc = totalConc - acidConc;
 
             displayBox.style.display = "block";
-            var outputHtml = "<div style='background: #fffbf0; border-left: 4px solid #d4af37; padding: 15px; border-radius: 4px;'>";
-            outputHtml += "<h4 style='color: #b8860b; margin-bottom: 5px;'>Buffer Matrix Calculated! ⚗️</h4>";
-            outputHtml += "<p style='color: #333;'>To achieve a total concentration of <strong>" + totalConc + " M</strong> at <strong>pH " + targetPH + "</strong>:</p>";
-            outputHtml += "<p style='font-size: 16px; margin: 8px 0; color: #c62828;'><strong>Weak Acid Concentration [HA]:</strong> " + acidConc.toFixed(4) + " M</p>";
-            outputHtml += "<p style='font-size: 16px; margin: 8px 0; color: #2e7d32;'><strong>Conjugate Base Concentration [A⁻]:</strong> " + baseConc.toFixed(4) + " M</p>";
-            outputHtml += "<p style='font-size: 15px; margin-top: 8px; color: #333;'><strong>Molar Base / Acid Ratio:</strong> " + ratio.toFixed(4) + "</p>";
-            outputHtml += "</div>";
-
-            displayBox.innerHTML = outputHtml;
+            displayBox.innerHTML = "<div style='background: #fffbf0; border-left: 4px solid #d4af37; padding: 15px; border-radius: 4px;'>" +
+                                   "<h4>Buffer Matrix Calculated! ⚗️</h4>" +
+                                   "<p><strong>Weak Acid [HA]:</strong> " + acidConc.toFixed(4) + " M</p>" +
+                                   "<p><strong>Conjugate Base [A⁻]:</strong> " + baseConc.toFixed(4) + " M</p></div>";
         }
 
-        // --- 8. LOCAL MICHAELIS-MENTEN KINETICS LOGIC (100% LOCAL) ---
         function calculateEnzymeKinetics() {
             var vmax = parseFloat(document.getElementById('enzymeVmax').value);
             var km = parseFloat(document.getElementById('enzymeKm').value);
@@ -563,25 +670,17 @@
 
             if (isNaN(vmax) || isNaN(km) || isNaN(substrate) || vmax <= 0 || km <= 0 || substrate < 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Please enter valid positive parameters for Vmax, Km, and Substrate fields.</p>";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Invalid constants.</p>";
                 return;
             }
 
             var v0 = (vmax * substrate) / (km + substrate);
-            var percentSaturation = (substrate / (km + substrate)) * 100;
-
             displayBox.style.display = "block";
-            var outputHtml = "<div style='background: #fdf2ff; border-left: 4px solid #8e44ad; padding: 15px; border-radius: 4px;'>";
-            outputHtml += "<h4 style='color: #8e44ad; margin-bottom: 5px;'>Kinetics Computed! 📊</h4>";
-            outputHtml += "<p style='color: #333;'>For the specified enzymatic reaction profile:</p>";
-            outputHtml += "<p style='font-size: 18px; color: #4b0082; margin: 10px 0;'><strong>🚀 Initial Velocity (v₀): " + v0.toFixed(4) + " μmol/min</strong></p>";
-            outputHtml += "<span style='font-size: 12px; color: #666;'>➔ Diagnostic Metric: Active site loading is sitting at <strong>" + percentSaturation.toFixed(1) + "%</strong> of max saturation performance limits.</span>";
-            outputHtml += "</div>";
-
-            displayBox.innerHTML = outputHtml;
+            displayBox.innerHTML = "<div style='background: #fdf2ff; border-left: 4px solid #8e44ad; padding: 15px; border-radius: 4px;'>"+
+                                   "<h4>Kinetics Computed! 📊</h4>" +
+                                   "<p style='font-size: 18px; color: #4b0082; margin-top:5px;'><strong>🚀 Initial Velocity (v₀): " + v0.toFixed(4) + " μmol/min</strong></p></div>";
         }
 
-        // --- 9. LOCAL CENTRIFUGATION RCF LOGIC (100% LOCAL) ---
         function calculateRCF() {
             var radius = parseFloat(document.getElementById('rotorRadius').value);
             var rpm = parseFloat(document.getElementById('rotorRPM').value);
@@ -590,24 +689,17 @@
 
             if (isNaN(radius) || isNaN(rpm) || radius <= 0 || rpm <= 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Please enter positive numeric values for radius and RPM.</p>";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check radius and rotational vectors.</p>";
                 return;
             }
 
             var rcf = 0.00001118 * radius * Math.pow(rpm, 2);
-
             displayBox.style.display = "block";
-            var outputHtml = "<div style='background: #f0f7ff; border-left: 4px solid #3498db; padding: 15px; border-radius: 4px;'>";
-            outputHtml += "<h4 style='color: #2980b9; margin-bottom: 5px;'>Parameters Computed! 🌀</h4>";
-            outputHtml += "<p style='color: #333;'>At a spin rate of <strong>" + rpm + " RPM</strong> with a <strong>" + radius + " cm</strong> rotor assembly:</p>";
-            outputHtml += "<p style='font-size: 18px; color: #1a5276; margin: 10px 0;'><strong>⚡ Relative Centrifugal Force (RCF): " + Math.round(rcf) + " × g</strong></p>";
-            outputHtml += "<span style='font-size: 12px; color: #666;'>➔ Protocol Guideline: Always balance your tube pairs symmetrically across the center spindle before securing the centrifuge casing cover shut.</span>";
-            outputHtml += "</div>";
-
-            displayBox.innerHTML = outputHtml;
+            displayBox.innerHTML = "<div style='background: #f0f7ff; border-left: 4px solid #3498db; padding: 15px; border-radius: 4px;'>" +
+                                   "<h4>Parameters Computed! 🌀</h4>" +
+                                   "<p style='font-size: 18px; color: #1a5276; margin-top:5px;'><strong>⚡ Relative Centrifugal Force (RCF): " + Math.round(rcf) + " × g</strong></p></div>";
         }
 
-        // --- 10. LOCAL STOCK SOLUTION DILUTION LOGIC (100% LOCAL) ---
         function calculateDilution() {
             var c1 = parseFloat(document.getElementById('dilutionC1').value);
             var c2 = parseFloat(document.getElementById('dilutionC2').value);
@@ -615,101 +707,34 @@
             var displayBox = document.getElementById('dilutionResultContainer');
             if (!displayBox) return;
 
-            if (isNaN(c1) || isNaN(c2) || isNaN(v2) || c1 <= 0 || c2 <= 0 || v2 <= 0) {
+            if (isNaN(c1) || isNaN(c2) || isNaN(v2) || c1 <= 0 || c2 <= 0 || v2 <= 0 || c2 >= c1) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Please enter valid positive parameters for all dilution fields.</p>";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check dilution parameters grid.</p>";
                 return;
             }
 
-            if (c2 >= c1) {
-                displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Target concentration (C₂) cannot be equal to or greater than Stock strength (C₁).</p>";
-                return;
-            }
-
-            // V1 = (C2 * V2) / C1
             var v1 = (c2 * v2) / c1;
             var diluentNeeded = v2 - v1;
 
             displayBox.style.display = "block";
-            var outputHtml = "<div style='background: #e6fffa; border-left: 4px solid #319795; padding: 15px; border-radius: 4px;'>";
-            outputHtml += "<h4 style='color: #234e52; margin-bottom: 5px;'>Dilution Formula Formed! 💦</h4>";
-            outputHtml += "<p style='color: #333;'>To prepare <strong>" + v2 + " mL</strong> of your target working solution:</p>";
-            outputHtml += "<p style='font-size: 16px; margin: 5px 0; color: #2d3748;'><strong>1. Stock Volume Needed (V₁):</strong> " + v1.toFixed(2) + " mL</p>";
-            outputHtml += "<p style='font-size: 16px; margin: 5px 0; color: #2d3748;'><strong>2. Diluent Volume (Water/Buffer):</strong> " + diluentNeeded.toFixed(2) + " mL</p>";
-            outputHtml += "<span style='font-size: 12px; color: #4a5568; display: block; margin-top: 8px;'>➔ Protocol Instruction: Aliquot " + diluentNeeded.toFixed(2) + " mL of solvent into a flask, add " + v1.toFixed(2) + " mL of your stock solution, and stir completely to reach a " + c2 + " strength mixture.</span>";
-            outputHtml += "</div>";
-
-            displayBox.innerHTML = outputHtml;
+            displayBox.innerHTML = "<div style='background: #e6fffa; border-left: 4px solid #319795; padding: 15px; border-radius: 4px;'>" +
+                                   "<h4>Dilution Formed! 💦</h4>" +
+                                   "<p><strong>Stock Volume (V₁):</strong> " + v1.toFixed(2) + " mL</p>" +
+                                   "<p><strong>Buffer Solvent Volume:</strong> " + diluentNeeded.toFixed(2) + " mL</p></div>";
         }
 
-        // --- 11. DISPLAY RESET UI FIELDS ---
-        function clearBox() {
-            var inputField = document.getElementById('sequenceInput');
-            var resultDiv = document.getElementById('sequenceResult');
-            if (inputField) inputField.value = '';
-            if (resultDiv) { resultDiv.innerHTML = ''; resultDiv.style.display = 'none'; }
-        }
-
-        function clearDataBox() {
-            var inputField = document.getElementById('dataInput');
-            var dataResult = document.getElementById('dataResult');
-            if (inputField) inputField.value = '';
-            if (dataResult) { dataResult.innerHTML = ''; dataResult.style.display = 'none'; }
-        }
-
-        function clearAIBox() {
-            document.getElementById('aiPeptideInput').value = '';
-            var displayBox = document.getElementById('aiResultContainer');
-            if (displayBox) { displayBox.innerHTML = ''; displayBox.style.display = 'none'; }
-        }
-
-        function clearMolarityBox() {
-            document.getElementById('molInputMW').value = '';
-            document.getElementById('molInputMolarity').value = '';
-            document.getElementById('molInputVolume').value = '';
-            var displayBox = document.getElementById('molarityResultContainer');
-            if (displayBox) { displayBox.innerHTML = ''; displayBox.style.display = 'none'; }
-        }
-
-        function clearBeerBox() {
-            document.getElementById('beerAbsorbance').value = '';
-            document.getElementById('beerExtinction').value = '';
-            document.getElementById('beerPathLength').value = '1';
-            var displayBox = document.getElementById('beerResultContainer');
-            if (displayBox) { displayBox.innerHTML = ''; displayBox.style.display = 'none'; }
-        }
-
-        function clearBufferBox() {
-            document.getElementById('bufferTargetPH').value = '';
-            document.getElementById('bufferPKa').value = '';
-            document.getElementById('bufferTotalConc').value = '';
-            var displayBox = document.getElementById('bufferResultContainer');
-            if (displayBox) { displayBox.innerHTML = ''; displayBox.style.display = 'none'; }
-        }
-
-        function clearEnzymeBox() {
-            document.getElementById('enzymeVmax').value = '';
-            document.getElementById('enzymeKm').value = '';
-            document.getElementById('enzymeSubstrate').value = '';
-            var displayBox = document.getElementById('enzymeResultContainer');
-            if (displayBox) { displayBox.innerHTML = ''; displayBox.style.display = 'none'; }
-        }
-
-        function clearCentrifugeBox() {
-            document.getElementById('rotorRadius').value = '';
-            document.getElementById('rotorRPM').value = '';
-            var displayBox = document.getElementById('rcfResultContainer');
-            if (displayBox) { displayBox.innerHTML = ''; displayBox.style.display = 'none'; }
-        }
-
-        function clearDilutionBox() {
-            document.getElementById('dilutionC1').value = '';
-            document.getElementById('dilutionC2').value = '';
-            document.getElementById('dilutionV2').value = '';
-            var displayBox = document.getElementById('dilutionResultContainer');
-            if (displayBox) { displayBox.innerHTML = ''; displayBox.style.display = 'none'; }
-        }
+        // --- DISPLAY CLEAR COMMAND UTILITIES ---
+        function clearBox() { document.getElementById('sequenceInput').value = ''; document.getElementById('sequenceResult').style.display='none'; }
+        function clearDataBox() { document.getElementById('dataInput').value = ''; document.getElementById('dataResult').style.display='none'; }
+        function clearAIBox() { document.getElementById('aiPeptideInput').value = ''; document.getElementById('aiResultContainer').style.display='none'; }
+        function clearMolarityBox() { document.getElementById('molInputMW').value=''; document.getElementById('molInputMolarity').value=''; document.getElementById('molInputVolume').value=''; document.getElementById('molarityResultContainer').style.display='none'; }
+        function clearBeerBox() { document.getElementById('beerAbsorbance').value=''; document.getElementById('beerExtinction').value=''; document.getElementById('beerResultContainer').style.display='none'; }
+        function clearBufferBox() { document.getElementById('bufferTargetPH').value=''; document.getElementById('bufferPKa').value=''; document.getElementById('bufferTotalConc').value=''; document.getElementById('bufferResultContainer').style.display='none'; }
+        function clearEnzymeBox() { document.getElementById('enzymeVmax').value=''; document.getElementById('enzymeKm').value=''; document.getElementById('enzymeSubstrate').value=''; document.getElementById('enzymeResultContainer').style.display='none'; }
+        function clearCentrifugeBox() { document.getElementById('rotorRadius').value=''; document.getElementById('rotorRPM').value=''; document.getElementById('rcfResultContainer').style.display='none'; }
+        function clearDilutionBox() { document.getElementById('dilutionC1').value=''; document.getElementById('dilutionC2').value=''; document.getElementById('dilutionV2').value=''; document.getElementById('dilutionResultContainer').style.display='none'; }
+        function clearReportBox() { document.getElementById('reportAuthor').value=''; document.getElementById('reportTitle').value=''; document.getElementById('reportContent').value=''; document.getElementById('reportResultContainer').style.display='none'; }
+        function clearProtocolBox() { document.getElementById('protocolSelect').value=''; document.getElementById('protocolResultContainer').style.display='none'; }
     </script>
 </body>
-</html>
+</html>v
