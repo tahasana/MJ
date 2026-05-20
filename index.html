@@ -199,7 +199,7 @@
                     <button class="btn btn-primary" onclick="calculateBufferRatios()">Calculate Buffer Ratio</button>
                     <button class="btn btn-secondary" onclick="clearBufferBox()">Clear Box</button>
                 </div>
-                <div id="bufferResultContainer" class="result-box"></div>
+                <div id="bufferResultContainer" class="result-box" style="font-family: monospace;"></div>
             </div>
 
         </div>
@@ -394,12 +394,8 @@
                 return;
             }
 
-            // Ratio = 10^(pH - pKa) = [Base]/[Acid]
             var ratio = Math.pow(10, targetPH - pKa);
-            
-            // [Acid] = Total / (Ratio + 1)
             var acidConc = totalConc / (ratio + 1);
-            // [Base] = Total - [Acid]
             var baseConc = totalConc - acidConc;
 
             displayBox.style.display = "block";
