@@ -30,10 +30,19 @@
         .feature-card h3 { color: #4b0082; margin-bottom: 10px; font-size: 18px; }
         .feature-card p { color: #666; font-size: 13px; }
 
+        /* TABBED UTILITY NAVIGATOR PANEL */
+        .tabs-nav { display: flex; justify-content: center; gap: 10px; margin: 30px auto 10px auto; max-width: 850px; flex-wrap: wrap; padding: 0 10px; }
+        .tab-btn { padding: 12px 20px; font-size: 14px; font-weight: bold; background: #e2d9f3; color: #4b0082; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s ease-in-out; }
+        .tab-btn:hover { background: #d3c4ec; }
+        .tab-btn.active { background: #4b0082; color: white; box-shadow: 0 4px 10px rgba(75,0,130,0.2); }
+
         /* Computational Interfaces Workspace */
-        .tools { padding: 40px 0; background: white; text-align: center; }
-        .tools h2 { color: #4b0082; margin-bottom: 40px; font-size: 28px; }
-        .tool-section { max-width: 750px; margin: 0 auto 40px auto; padding: 25px; background: #fdfdfd; border: 1px solid #e8e8e8; border-radius: 8px; text-align: left; }
+        .tools { padding: 20px 0 40px 0; background: white; text-align: center; }
+        .tools h2 { color: #4b0082; margin-bottom: 25px; font-size: 28px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+
+        .tool-section { max-width: 750px; margin: 0 auto 30px auto; padding: 25px; background: #fdfdfd; border: 1px solid #e8e8e8; border-radius: 8px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         .tool-section h3 { color: #4b0082; margin-bottom: 15px; font-size: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; }
         .tool-section p { font-size: 14px; color: #555; margin-bottom: 15px; }
         
@@ -52,6 +61,11 @@
         .btn-secondary:hover { background-color: #5a6268; }
 
         .result-box { margin-top: 15px; display: none; padding: 15px; border-radius: 4px; text-align: left; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -70,13 +84,13 @@
     <section id="home" class="hero">
         <div class="container">
             <h2>Welcome to MJ</h2>
-            <p>AI-Powered Biochemistry Analysis Tool</p>
+            <p>AI-Powered Biochemistry Analysis Workspace</p>
         </div>
     </section>
 
     <section id="features" class="features">
         <div class="container">
-            <h2>Features</h2>
+            <h2>System Architecture</h2>
             <div class="feature-grid">
                 <div class="feature-card">
                     <h3>🧬 Sequence Analysis</h3>
@@ -88,251 +102,253 @@
                 </div>
                 <div class="feature-card">
                     <h3>📋 Report Generation</h3>
-                    <p>Create professional formatted reports down into standard exports.</p>
+                    <p>Compile measurements into downloadable local logs.</p>
                 </div>
                 <div class="feature-card">
                     <h3>🔍 Protocol Search</h3>
-                    <p>Find standard benchmark laboratory protocols and procedures instantly.</p>
+                    <p>Find standard lab recipes and step-by-step assays.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="tools" class="tools">
+    <div class="tabs-nav" id="tools">
+        <button class="tab-btn active" onclick="switchTab('tab-analytics')">🧬 Core Analytics & AI</button>
+        <button class="tab-btn" onclick="switchTab('tab-solutions')">🧪 Solutions & Buffers</button>
+        <button class="tab-btn" onclick="switchTab('tab-kinetics')">🌀 Kinetics & Hardware</button>
+        <button class="tab-btn" onclick="switchTab('tab-notebook')">📋 Utilities & Notebooks</button>
+    </div>
+
+    <section class="tools">
         <div class="container">
-            <h2>Tools</h2>
 
-            <div class="tool-section">
-                <h3>Sequence Analyzer</h3>
-                <textarea id="sequenceInput" placeholder="Enter DNA/RNA/Protein residues here (e.g., ATGCGATCG)..."></textarea>
-                <div>
-                    <button class="btn btn-primary" onclick="analyzeSequence()">Analyze Sequence</button>
-                    <button class="btn btn-secondary" onclick="clearBox()">Clear Box</button>
+            <div id="tab-analytics" class="tab-content active">
+                <div class="tool-section">
+                    <h3>Sequence Analyzer</h3>
+                    <textarea id="sequenceInput" placeholder="Enter DNA/RNA/Protein residues here (e.g., ATGCGATCG)..."></textarea>
+                    <div>
+                        <button class="btn btn-primary" onclick="analyzeSequence()">Analyze Sequence</button>
+                        <button class="btn btn-secondary" onclick="clearBox()">Clear Box</button>
+                    </div>
+                    <div id="sequenceResult" class="result-box" style="font-family: monospace;"></div>
                 </div>
-                <div id="sequenceResult" class="result-box" style="font-family: monospace;"></div>
+
+                <div class="tool-section">
+                    <h3>Connection Health Check</h3>
+                    <p>Test if your frontend interface is securely linked with your live cloud engine core.</p>
+                    <div>
+                        <button class="btn btn-primary" onclick="checkHealth()">Check Health</button>
+                    </div>
+                    <div id="healthResult" class="result-box" style="font-family: monospace;"></div>
+                </div>
+
+                <div class="tool-section">
+                    <h3>📊 Data Analysis</h3>
+                    <p>Paste raw numerical laboratory values separated by commas below:</p>
+                    <textarea id="dataInput" placeholder="Enter numbers here (e.g., 0.12, 0.15, 0.14, 0.13, 4.80)..."></textarea>
+                    <div>
+                        <button class="btn btn-primary" onclick="analyzeData()">Process Data</button>
+                        <button class="btn btn-secondary" onclick="clearDataBox()">Clear Box</button>
+                    </div>
+                    <div id="dataResult" class="result-box" style="font-family: monospace;"></div>
+                </div>
+
+                <div class="tool-section">
+                    <h3>🤖 AI Peptide Property & Purification Predictor</h3>
+                    <p>Enter a primary protein peptide sequence to deploy heuristic modeling calculations for structural solubility maps.</p>
+                    <textarea id="aiPeptideInput" placeholder="Enter amino acid single-letter residues here (e.g., RGDWFLM)..."></textarea>
+                    <div>
+                        <button class="btn btn-primary" onclick="runAIPredictor()">Run AI Engine</button>
+                        <button class="btn btn-secondary" onclick="clearAIBox()">Clear Box</button>
+                    </div>
+                    <div id="aiResultContainer" class="result-box" style="font-family: monospace;"></div>
+                </div>
             </div>
 
-            <div class="tool-section">
-                <h3>Connection Health Check</h3>
-                <p>Test if your frontend interface is securely linked with your live cloud engine core.</p>
-                <div>
-                    <button class="btn btn-primary" onclick="checkHealth()">Check Health</button>
+            <div id="tab-solutions" class="tab-content">
+                <div class="tool-section">
+                    <h3>🧪 Molarity & Solution Prep Calculator</h3>
+                    <p>Calculate the exact mass required to prepare chemical solutions. Runs instantly in your browser.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                        <div>
+                            <label>Molecular Weight (g/mol)</label>
+                            <input type="number" id="molInputMW" placeholder="e.g., 180.16 (Glucose)" step="any">
+                        </div>
+                        <div>
+                            <label>Target Molarity (M)</label>
+                            <input type="number" id="molInputMolarity" placeholder="e.g., 0.5" step="any">
+                        </div>
+                        <div>
+                            <label>Target Volume (mL)</label>
+                            <input type="number" id="molInputVolume" placeholder="e.g., 250" step="any">
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="calculateMolarityMass()">Calculate Mass</button>
+                        <button class="btn btn-secondary" onclick="clearMolarityBox()">Clear Box</button>
+                    </div>
+                    <div id="molarityResultContainer" class="result-box"></div>
                 </div>
-                <div id="healthResult" class="result-box" style="font-family: monospace;"></div>
+
+                <div class="tool-section">
+                    <h3>📉 Spectrophotometry & Concentration Calculator</h3>
+                    <p>Determine protein or nucleic acid concentration from absorbance values via the Beer-Lambert Law.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                        <div>
+                            <label>Absorbance Reading (A)</label>
+                            <input type="number" id="beerAbsorbance" placeholder="e.g., 0.45" step="any">
+                        </div>
+                        <div>
+                            <label>Extinction Coefficient (ε) (M⁻¹cm⁻¹)</label>
+                            <input type="number" id="beerExtinction" placeholder="e.g., 6220" step="any">
+                        </div>
+                        <div>
+                            <label>Cuvette Path Length (l) (cm)</label>
+                            <input type="number" id="beerPathLength" value="1" placeholder="Usually 1 cm" step="any">
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="calculateBeerLambert()">Calculate Concentration</button>
+                        <button class="btn btn-secondary" onclick="clearBeerBox()">Clear Box</button>
+                    </div>
+                    <div id="beerResultContainer" class="result-box"></div>
+                </div>
+
+                <div class="tool-section">
+                    <h3>⚗️ Henderson-Hasselbalch Buffer Prep Assistant</h3>
+                    <p>Calculate the specific concentration ratio of weak acid and conjugate base required to achieve a target pH buffer.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                        <div>
+                            <label>Target pH</label>
+                            <input type="number" id="bufferTargetPH" placeholder="e.g., 7.4" step="any">
+                        </div>
+                        <div>
+                            <label>Acid Dissociation Constant (pKa)</label>
+                            <input type="number" id="bufferPKa" placeholder="e.g., 7.21 (Phosphate)" step="any">
+                        </div>
+                        <div>
+                            <label>Total Buffer Concentration (M)</label>
+                            <input type="number" id="bufferTotalConc" placeholder="e.g., 0.1" step="any">
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="calculateBufferRatios()">Calculate Buffer Ratio</button>
+                        <button class="btn btn-secondary" onclick="clearBufferBox()">Clear Box</button>
+                    </div>
+                    <div id="bufferResultContainer" class="result-box" style="font-family: monospace;"></div>
+                </div>
+
+                <div class="tool-section">
+                    <h3>💦 Stock Solution Dilution Calculator (C₁V₁ = C₂V₂)</h3>
+                    <p>Calculate the volume of concentrated stock solution required to prepare a target working dilution layout.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                        <div>
+                            <label>Stock Concentration (C₁)</label>
+                            <input type="number" id="dilutionC1" placeholder="e.g., 10 (or 10X)" step="any">
+                        </div>
+                        <div>
+                            <label>Target Concentration (C₂)</label>
+                            <input type="number" id="dilutionC2" placeholder="e.g., 1 (or 1X)" step="any">
+                        </div>
+                        <div>
+                            <label>Target Final Volume (V₂) (mL)</label>
+                            <input type="number" id="dilutionV2" placeholder="e.g., 500" step="any">
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="calculateDilution()">Calculate Dilution</button>
+                        <button class="btn btn-secondary" onclick="clearDilutionBox()">Clear Box</button>
+                    </div>
+                    <div id="dilutionResultContainer" class="result-box" style="font-family: monospace;"></div>
+                </div>
             </div>
 
-            <div class="tool-section">
-                <h3>📊 Data Analysis</h3>
-                <p>Paste raw numerical laboratory values separated by commas below:</p>
-                <textarea id="dataInput" placeholder="Enter numbers here (e.g., 0.12, 0.15, 0.14, 0.13, 4.80)..."></textarea>
-                <div>
-                    <button class="btn btn-primary" onclick="analyzeData()">Process Data</button>
-                    <button class="btn btn-secondary" onclick="clearDataBox()">Clear Box</button>
+            <div id="tab-kinetics" class="tab-content">
+                <div class="tool-section">
+                    <h3>🧪 Enzyme Kinetics Calculator (Michaelis-Menten)</h3>
+                    <p>Compute initial velocity parameters ($v_0$) for reaction channels relative to substrate saturation loads.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                        <div>
+                            <label>Max Velocity (Vmax) (μmol/min)</label>
+                            <input type="number" id="enzymeVmax" placeholder="e.g., 120" step="any">
+                        </div>
+                        <div>
+                            <label>Michaelis Constant (Km) (mM)</label>
+                            <input type="number" id="enzymeKm" placeholder="e.g., 2.5" step="any">
+                        </div>
+                        <div>
+                            <label>Substrate Concentration [S] (mM)</label>
+                            <input type="number" id="enzymeSubstrate" placeholder="e.g., 5.0" step="any">
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="calculateEnzymeKinetics()">Calculate Velocity</button>
+                        <button class="btn btn-secondary" onclick="clearEnzymeBox()">Clear Box</button>
+                    </div>
+                    <div id="enzymeResultContainer" class="result-box" style="font-family: monospace;"></div>
                 </div>
-                <div id="dataResult" class="result-box" style="font-family: monospace;"></div>
+
+                <div class="tool-section">
+                    <h3>🌀 Centrifuge RCF & RPM Converter</h3>
+                    <p>Convert instrument speeds (RPM) to Relative Centrifugal Force (RCF or g-force) using your rotor's geometry.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                        <div>
+                            <label>Rotor Radius (r) (cm)</label>
+                            <input type="number" id="rotorRadius" placeholder="e.g., 9.5" step="any">
+                        </div>
+                        <div>
+                            <label>Rotation Speed (RPM)</label>
+                            <input type="number" id="rotorRPM" placeholder="e.g., 5000" step="any">
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="calculateRCF()">Calculate G-Force</button>
+                        <button class="btn btn-secondary" onclick="clearCentrifugeBox()">Clear Box</button>
+                    </div>
+                    <div id="rcfResultContainer" class="result-box" style="font-family: monospace;"></div>
+                </div>
             </div>
 
-            <div class="tool-section">
-                <h3>📋 Report Generation</h3>
-                <p>Compile your experimental observations and metrics directly into a formatted, downloadable text report.</p>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                    <div>
-                        <label>Researcher Name</label>
-                        <input type="text" id="reportAuthor" placeholder="e.g., Cadet Danish">
+            <div id="tab-notebook" class="tab-content">
+                <div class="tool-section">
+                    <h3>📋 Report Generation</h3>
+                    <p>Compile your experimental observations and metrics directly into a formatted, downloadable text report.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div>
+                            <label>Researcher Name</label>
+                            <input type="text" id="reportAuthor" placeholder="e.g., Cadet Danish">
+                        </div>
+                        <div>
+                            <label>Experiment Title</label>
+                            <input type="text" id="reportTitle" placeholder="e.g., Enzyme Isolation Analysis">
+                        </div>
                     </div>
+                    <label>Observations & Data Log Summary</label>
+                    <textarea id="reportContent" placeholder="Enter your raw notes, results summaries, or conclusions here..."></textarea>
                     <div>
-                        <label>Experiment Title</label>
-                        <input type="text" id="reportTitle" placeholder="e.g., Enzyme Isolation Analysis">
+                        <button class="btn btn-primary" onclick="generateLabReport()">Export Report File</button>
+                        <button class="btn btn-secondary" onclick="clearReportBox()">Clear Box</button>
                     </div>
-                </div>
-                <label>Observations & Data Log Summary</label>
-                <textarea id="reportContent" placeholder="Enter your raw notes, results summaries, or conclusions here..."></textarea>
-                <div>
-                    <button class="btn btn-primary" onclick="generateLabReport()">Export Report File</button>
-                    <button class="btn btn-secondary" onclick="clearReportBox()">Clear Box</button>
-                </div>
-                <div id="reportResultContainer" class="result-box"></div>
-            </div>
-
-            <div class="tool-section">
-                <h3>🔍 Protocol Search Index</h3>
-                <p>Instantly search and pull down structural step-by-step directions for standard benchmark procedures.</p>
-                <label>Select Lab Protocol Method</label>
-                <select id="protocolSelect">
-                    <option value="">-- Choose an Indexed Lab Protocol --</option>
-                    <option value="dna_extract">1. Genomic DNA Isolation (Phenol-Chloroform Method)</option>
-                    <option value="sds_page">2. SDS-PAGE Gel Casting & Electrophoresis</option>
-                    <option value="bradford">3. Bradford Protein Concentration Assay Mix</option>
-                    <option value="western">4. Western Blot Membrane Blocking Protocol</option>
-                </select>
-                <div>
-                    <button class="btn btn-primary" onclick="searchProtocol()">Load Guide Sheet</button>
-                    <button class="btn btn-secondary" onclick="clearProtocolBox()">Clear View</button>
-                </div>
-                <div id="protocolResultContainer" class="result-box" style="white-space: pre-wrap; font-family: monospace; max-height: 350px; overflow-y: auto; line-height: 1.5; background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 4px;"></div>
-            </div>
-
-            <div class="tool-section">
-                <h3>🤖 AI Peptide Property & Purification Predictor</h3>
-                <p>Enter a primary protein peptide sequence to deploy heuristic modeling calculations for structural solubility maps.</p>
-                <textarea id="aiPeptideInput" placeholder="Enter amino acid single-letter residues here (e.g., RGDWFLM)..."></textarea>
-                <div>
-                    <button class="btn btn-primary" onclick="runAIPredictor()">Run AI Engine</button>
-                    <button class="btn btn-secondary" onclick="clearAIBox()">Clear Box</button>
-                </div>
-                <div id="aiResultContainer" class="result-box" style="font-family: monospace;"></div>
-            </div>
-
-            <div class="tool-section">
-                <h3>🧪 Molarity & Solution Prep Calculator</h3>
-                <p>Calculate the exact mass required to prepare chemical solutions. Runs instantly in your browser.</p>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
-                    <div>
-                        <label>Molecular Weight (g/mol)</label>
-                        <input type="number" id="molInputMW" placeholder="e.g., 180.16 (Glucose)" step="any">
-                    </div>
-                    <div>
-                        <label>Target Molarity (M)</label>
-                        <input type="number" id="molInputMolarity" placeholder="e.g., 0.5" step="any">
-                    </div>
-                    <div>
-                        <label>Target Volume (mL)</label>
-                        <input type="number" id="molInputVolume" placeholder="e.g., 250" step="any">
-                    </div>
+                    <div id="reportResultContainer" class="result-box"></div>
                 </div>
 
-                <div>
-                    <button class="btn btn-primary" onclick="calculateMolarityMass()">Calculate Mass</button>
-                    <button class="btn btn-secondary" onclick="clearMolarityBox()">Clear Box</button>
+                <div class="tool-section">
+                    <h3>🔍 Protocol Search Index</h3>
+                    <p>Instantly search and pull down structural step-by-step directions for standard benchmark procedures.</p>
+                    <label>Select Lab Protocol Method</label>
+                    <select id="protocolSelect">
+                        <option value="">-- Choose an Indexed Lab Protocol --</option>
+                        <option value="dna_extract">1. Genomic DNA Isolation (Phenol-Chloroform Method)</option>
+                        <option value="sds_page">2. SDS-PAGE Gel Casting & Electrophoresis</option>
+                        <option value="bradford">3. Bradford Protein Concentration Assay Mix</option>
+                        <option value="western">4. Western Blot Membrane Blocking Protocol</option>
+                    </select>
+                    <div>
+                        <button class="btn btn-primary" onclick="searchProtocol()">Load Guide Sheet</button>
+                        <button class="btn btn-secondary" onclick="clearProtocolBox()">Clear View</button>
+                    </div>
+                    <div id="protocolResultContainer" class="result-box" style="white-space: pre-wrap; font-family: monospace; max-height: 350px; overflow-y: auto; line-height: 1.5; background: #fafafa; border: 1px solid #ddd; padding: 15px; border-radius: 4px;"></div>
                 </div>
-                <div id="molarityResultContainer" class="result-box"></div>
-            </div>
-
-            <div class="tool-section">
-                <h3>📉 Spectrophotometry & Concentration Calculator</h3>
-                <p>Determine protein or nucleic acid concentration from absorbance values via the Beer-Lambert Law.</p>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
-                    <div>
-                        <label>Absorbance Reading (A)</label>
-                        <input type="number" id="beerAbsorbance" placeholder="e.g., 0.45" step="any">
-                    </div>
-                    <div>
-                        <label>Extinction Coefficient (ε) (M⁻¹cm⁻¹)</label>
-                        <input type="number" id="beerExtinction" placeholder="e.g., 6220" step="any">
-                    </div>
-                    <div>
-                        <label>Cuvette Path Length (l) (cm)</label>
-                        <input type="number" id="beerPathLength" value="1" placeholder="Usually 1 cm" step="any">
-                    </div>
-                </div>
-
-                <div>
-                    <button class="btn btn-primary" onclick="calculateBeerLambert()">Calculate Concentration</button>
-                    <button class="btn btn-secondary" onclick="clearBeerBox()">Clear Box</button>
-                </div>
-                <div id="beerResultContainer" class="result-box"></div>
-            </div>
-
-            <div class="tool-section">
-                <h3>⚗️ Henderson-Hasselbalch Buffer Prep Assistant</h3>
-                <p>Calculate the specific concentration ratio of weak acid and conjugate base required to achieve a target pH buffer.</p>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
-                    <div>
-                        <label>Target pH</label>
-                        <input type="number" id="bufferTargetPH" placeholder="e.g., 7.4" step="any">
-                    </div>
-                    <div>
-                        <label>Acid Dissociation Constant (pKa)</label>
-                        <input type="number" id="bufferPKa" placeholder="e.g., 7.21 (Phosphate)" step="any">
-                    </div>
-                    <div>
-                        <label>Total Buffer Concentration (M)</label>
-                        <input type="number" id="bufferTotalConc" placeholder="e.g., 0.1" step="any">
-                    </div>
-                </div>
-
-                <div>
-                    <button class="btn btn-primary" onclick="calculateBufferRatios()">Calculate Buffer Ratio</button>
-                    <button class="btn btn-secondary" onclick="clearBufferBox()">Clear Box</button>
-                </div>
-                <div id="bufferResultContainer" class="result-box" style="font-family: monospace;"></div>
-            </div>
-
-            <div class="tool-section">
-                <h3>🧪 Enzyme Kinetics Calculator (Michaelis-Menten)</h3>
-                <p>Compute initial velocity parameters ($v_0$) for reaction channels relative to substrate saturation loads.</p>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
-                    <div>
-                        <label>Max Velocity (Vmax) (μmol/min)</label>
-                        <input type="number" id="enzymeVmax" placeholder="e.g., 120" step="any">
-                    </div>
-                    <div>
-                        <label>Michaelis Constant (Km) (mM)</label>
-                        <input type="number" id="enzymeKm" placeholder="e.g., 2.5" step="any">
-                    </div>
-                    <div>
-                        <label>Substrate Concentration [S] (mM)</label>
-                        <input type="number" id="enzymeSubstrate" placeholder="e.g., 5.0" step="any">
-                    </div>
-                </div>
-
-                <div>
-                    <button class="btn btn-primary" onclick="calculateEnzymeKinetics()">Calculate Velocity</button>
-                    <button class="btn btn-secondary" onclick="clearEnzymeBox()">Clear Box</button>
-                </div>
-                <div id="enzymeResultContainer" class="result-box" style="font-family: monospace;"></div>
-            </div>
-
-            <div class="tool-section">
-                <h3>🌀 Centrifuge RCF & RPM Converter</h3>
-                <p>Convert instrument speeds (RPM) to Relative Centrifugal Force (RCF or g-force) using your rotor's geometry.</p>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
-                    <div>
-                        <label>Rotor Radius (r) (cm)</label>
-                        <input type="number" id="rotorRadius" placeholder="e.g., 9.5" step="any">
-                    </div>
-                    <div>
-                        <label>Rotation Speed (RPM)</label>
-                        <input type="number" id="rotorRPM" placeholder="e.g., 5000" step="any">
-                    </div>
-                </div>
-
-                <div>
-                    <button class="btn btn-primary" onclick="calculateRCF()">Calculate G-Force</button>
-                    <button class="btn btn-secondary" onclick="clearCentrifugeBox()">Clear Box</button>
-                </div>
-                <div id="rcfResultContainer" class="result-box" style="font-family: monospace;"></div>
-            </div>
-
-            <div class="tool-section">
-                <h3>💦 Stock Solution Dilution Calculator (C₁V₁ = C₂V₂)</h3>
-                <p>Calculate the volume of concentrated stock solution required to prepare a target working dilution layout.</p>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
-                    <div>
-                        <label>Stock Concentration (C₁)</label>
-                        <input type="number" id="dilutionC1" placeholder="e.g., 10 (or 10X)" step="any">
-                    </div>
-                    <div>
-                        <label>Target Concentration (C₂)</label>
-                        <input type="number" id="dilutionC2" placeholder="e.g., 1 (or 1X)" step="any">
-                    </div>
-                    <div>
-                        <label>Target Final Volume (V₂) (mL)</label>
-                        <input type="number" id="dilutionV2" placeholder="e.g., 500" step="any">
-                    </div>
-                </div>
-
-                <div>
-                    <button class="btn btn-primary" onclick="calculateDilution()">Calculate Dilution</button>
-                    <button class="btn btn-secondary" onclick="clearDilutionBox()">Clear Box</button>
-                </div>
-                <div id="dilutionResultContainer" class="result-box" style="font-family: monospace;"></div>
             </div>
 
         </div>
@@ -347,6 +363,31 @@
 
     <script>
         const API_URL = "https://mj-7.onrender.com";
+
+        // --- CORE INTERFACE NAVIGATION CONTROLLER ---
+        function switchTab(tabId) {
+            // Deactivate all tab layouts and buttons
+            var contents = document.querySelectorAll('.tab-content');
+            var buttons = document.querySelectorAll('.tab-btn');
+            
+            contents.forEach(content => content.classList.remove('active'));
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Activate chosen target section container
+            document.getElementById(tabId).classList.add('active');
+            
+            // Highlight current button node
+            var currentBtn = KakuroFindButton(tabId);
+            if (currentBtn) currentBtn.classList.add('active');
+        }
+
+        function KakuroFindButton(tabId) {
+            if (tabId === 'tab-analytics') return document.querySelector('button[onclick="switchTab(\'tab-analytics\')"]');
+            if (tabId === 'tab-solutions') return document.querySelector('button[onclick="switchTab(\'tab-solutions\')"]');
+            if (tabId === 'tab-kinetics') return document.querySelector('button[onclick="switchTab(\'tab-kinetics\')"]');
+            if (tabId === 'tab-notebook') return document.querySelector('button[onclick="switchTab(\'tab-notebook\')"]');
+            return null;
+        }
 
         // --- 1. LOCAL LAB REPORT GENERATOR LOGIC ---
         function generateLabReport() {
@@ -374,7 +415,6 @@
                                   "--------------------------------------------------\n" +
                                   "END OF REPORT ENTRY - ARCHIVED VIA MJ SYSTEM CORE\n";
 
-            // Local Blob Pipeline Trigger for file download
             var blob = new Blob([textFileContent], { type: "text/plain;charset=utf-8" });
             var link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
@@ -394,7 +434,7 @@
                            "2. Phase Extraction: Add equal volume (500 uL) of Phenol-Chloroform-Isoamyl Alcohol (25:24:1). Vortex heavily, then spin down at 12,000 x g for 10 minutes at 4C.\n" +
                            "3. Isolation: Meticulously pipet the top clear aqueous phase layer into a clean microcentrifuge tube without disturbing the dirty white interphase line.\n" +
                            "4. Precipitation: Add 2 volumes of ice-cold 100% Ethanol and 0.1 volume of 3M Sodium Acetate. Mix by inversion. Spin down at max speed for 15 minutes to pellet the raw DNA matrix strands.\n" +
-                           "5. Washing: Discard supernatant supernatant layer. Rinse pellet gently with 70% Ethanol, air-dry briefly, and resuspend in 50 uL of Sterile TE Buffer.",
+                           "5. Washing: Discard supernatant layer. Rinse pellet gently with 70% Ethanol, air-dry briefly, and resuspend in 50 uL of Sterile TE Buffer.",
             
             "sds_page": "METHODOLOGY: SDS-PAGE POLYACRYLAMIDE GEL ELECTROPHORESIS\n\n" +
                         "1. Casting: Assemble glass sandwich plates. Pour a 10% Resolving Gel base mix, layer top with Isopropanol to flatten. Once polymerized, pour 4% Stacking Gel layer on top and insert matrix well combs.\n" +
@@ -430,7 +470,7 @@
             displayBox.innerHTML = protocolDatabase[selectedKey];
         }
 
-        // --- REMOTE FILE CORES FALLBACK TRACKERS ---
+        // --- 3. REMOTE COMMUNICATIONS BACKEND FALLBACKS ---
         async function analyzeSequence() {
             var inputField = document.getElementById('sequenceInput');
             var resultDiv = document.getElementById('sequenceResult');
@@ -535,7 +575,7 @@
             }
         }
 
-        // --- 3. LOCAL AI PEPTIDE CORE MATRIX PREDICTOR ---
+        // --- 4. LOCAL AI PEPTIDE CORE MATRIX PREDICTOR ---
         function runAIPredictor() {
             var inputField = document.getElementById('aiPeptideInput');
             var displayBox = document.getElementById('aiResultContainer');
@@ -591,7 +631,7 @@
             displayBox.innerHTML = outputHtml;
         }
 
-        // --- 4. LOCAL SOLUTION PREP CALCULATORS ---
+        // --- 5. STANDALONE LOCAL LABORATORY CALCULATORS ---
         function calculateMolarityMass() {
             var mw = parseFloat(document.getElementById('molInputMW').value);
             var molarity = parseFloat(document.getElementById('molInputMolarity').value);
@@ -624,7 +664,7 @@
 
             if (isNaN(A) || isNaN(epsilon) || isNaN(l) || A < 0 || epsilon <= 0 || l <= 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check calculation fields parameters.</p>";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check absorbance scale values.</p>";
                 return;
             }
 
@@ -646,7 +686,7 @@
 
             if (isNaN(targetPH) || isNaN(pKa) || isNaN(totalConc) || totalConc <= 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Missing parameters.</p>";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Missing configuration constants.</p>";
                 return;
             }
 
@@ -657,8 +697,8 @@
             displayBox.style.display = "block";
             displayBox.innerHTML = "<div style='background: #fffbf0; border-left: 4px solid #d4af37; padding: 15px; border-radius: 4px;'>" +
                                    "<h4>Buffer Matrix Calculated! ⚗️</h4>" +
-                                   "<p><strong>Weak Acid [HA]:</strong> " + acidConc.toFixed(4) + " M</p>" +
-                                   "<p><strong>Conjugate Base [A⁻]:</strong> " + baseConc.toFixed(4) + " M</p></div>";
+                                   "<p><strong>Weak Acid Concentration [HA]:</strong> " + acidConc.toFixed(4) + " M</p>" +
+                                   "<p><strong>Conjugate Base Concentration [A⁻]:</strong> " + baseConc.toFixed(4) + " M</p></div>";
         }
 
         function calculateEnzymeKinetics() {
@@ -670,7 +710,7 @@
 
             if (isNaN(vmax) || isNaN(km) || isNaN(substrate) || vmax <= 0 || km <= 0 || substrate < 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Invalid constants.</p>";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Invalid structural kinetics speed metrics.</p>";
                 return;
             }
 
@@ -689,7 +729,7 @@
 
             if (isNaN(radius) || isNaN(rpm) || radius <= 0 || rpm <= 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check radius and rotational vectors.</p>";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check rotor dimensions.</p>";
                 return;
             }
 
@@ -709,7 +749,7 @@
 
             if (isNaN(c1) || isNaN(c2) || isNaN(v2) || c1 <= 0 || c2 <= 0 || v2 <= 0 || c2 >= c1) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check dilution parameters grid.</p>";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check working standard dilution vectors.</p>";
                 return;
             }
 
@@ -719,11 +759,11 @@
             displayBox.style.display = "block";
             displayBox.innerHTML = "<div style='background: #e6fffa; border-left: 4px solid #319795; padding: 15px; border-radius: 4px;'>" +
                                    "<h4>Dilution Formed! 💦</h4>" +
-                                   "<p><strong>Stock Volume (V₁):</strong> " + v1.toFixed(2) + " mL</p>" +
-                                   "<p><strong>Buffer Solvent Volume:</strong> " + diluentNeeded.toFixed(2) + " mL</p></div>";
+                                   "<p><strong>Stock Volume Volume (V₁):</strong> " + v1.toFixed(2) + " mL</p>" +
+                                   "<p><strong>Solvent Buffer Volume:</strong> " + diluentNeeded.toFixed(2) + " mL</p></div>";
         }
 
-        // --- DISPLAY CLEAR COMMAND UTILITIES ---
+        // --- COMMAND RESET DISPLAYS ---
         function clearBox() { document.getElementById('sequenceInput').value = ''; document.getElementById('sequenceResult').style.display='none'; }
         function clearDataBox() { document.getElementById('dataInput').value = ''; document.getElementById('dataResult').style.display='none'; }
         function clearAIBox() { document.getElementById('aiPeptideInput').value = ''; document.getElementById('aiResultContainer').style.display='none'; }
@@ -737,4 +777,4 @@
         function clearProtocolBox() { document.getElementById('protocolSelect').value=''; document.getElementById('protocolResultContainer').style.display='none'; }
     </script>
 </body>
-</html>v
+</html>
