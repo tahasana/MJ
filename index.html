@@ -4,12 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MJ - Biochemistry AI Tool</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f8f9fa; color: #333; line-height: 1.6; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Navbar Header Styling */
+        .navbar { background: linear-gradient(135deg, #4b0082, #300056); color: white; padding: 20px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .navbar .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        .nav-links { display: flex; gap: 20px; list-style: none; }
+        .nav-links a { color: rgba(255,255,255,0.8); text-decoration: none; font-weight: 600; transition: color 0.2s; }
+        .nav-links a:hover { color: white; }
+
+        /* Hero Layout */
+        .hero { background: white; padding: 60px 0; text-align: center; border-bottom: 1px solid #eaeaea; }
+        .hero h2 { font-size: 36px; color: #4b0082; margin-bottom: 10px; }
+        .hero p { color: #666; font-size: 18px; margin-bottom: 20px; }
+        .subtitle { font-size: 15px; color: #888; }
+
+        /* Features Dashboard Grid */
+        .features { padding: 50px 0; text-align: center; }
+        .features h2 { color: #4b0082; margin-bottom: 30px; font-size: 28px; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .feature-card { background: white; padding: 25px; border-radius: 8px; border: 1px solid #e0e0e0; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .feature-card h3 { color: #4b0082; margin-bottom: 10px; font-size: 18px; }
+        .feature-card p { color: #666; font-size: 13px; }
+
+        /* Working Tools Framework Panels */
+        .tools { padding: 40px 0; background: white; text-align: center; }
+        .tools h2 { color: #4b0082; margin-bottom: 40px; font-size: 28px; }
+        .tool-section { max-width: 750px; margin: 0 auto 40px auto; padding: 25px; background: #fdfdfd; border: 1px solid #e8e8e8; border-radius: 8px; text-align: left; }
+        .tool-section h3 { color: #4b0082; margin-bottom: 15px; font-size: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; }
+        .tool-section p { font-size: 14px; color: #555; margin-bottom: 15px; }
+        
+        textarea { width: 100%; height: 150px; padding: 15px; border: 2px solid #dcdcdc; border-radius: 6px; font-family: monospace; font-size: 14px; margin-bottom: 15px; resize: vertical; outline: none; }
+        textarea:focus { border-color: #4b0082; }
+
+        /* Control UI Interactive Actions */
+        .btn { padding: 10px 22px; font-size: 14px; font-weight: bold; border-radius: 4px; border: none; cursor: pointer; transition: background 0.2s; }
+        .btn-primary { background-color: #4b0082; color: white; margin-right: 10px; }
+        .btn-primary:hover { background-color: #360062; }
+        .btn-secondary { background-color: #6c757d; color: white; }
+        .btn-secondary:hover { background-color: #5a6268; }
+
+        .result-box { margin-top: 15px; display: none; }
+
+        /* Production Footer Elements */
+        footer { background-color: white; border-top: 1px solid #eaeaea; padding: 30px 0; text-align: center; font-size: 14px; color: #777; margin-top: 5px; }
+        footer p { margin: 5px 0; }
+    </style>
 </head>
 <body>
+
     <nav class="navbar">
         <div class="container">
-            <h1 class="logo">🧬 MJ</h1>
+            <div class="logo">🧬 MJ</div>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#features">Features</a></li>
@@ -24,7 +74,7 @@
             <h2>Welcome to MJ</h2>
             <p>AI-Powered Biochemistry Analysis Tool</p>
             <p class="subtitle">Analyze sequences, data, and more with cutting-edge AI</p>
-            <a href="#tools" class="btn btn-primary">Get Started</a>
+            <a href="#tools" class="btn btn-primary" style="margin-top: 10px; display: inline-block; text-decoration: none;">Get Started</a>
         </div>
     </section>
 
@@ -41,7 +91,7 @@
                     <p>Process experimental data and generate statistical insights</p>
                 </div>
                 <div class="feature-card">
-                    <h3>📄 Report Generation</h3>
+                    <h3>📝 Report Generation</h3>
                     <p>Create professional reports in multiple formats</p>
                 </div>
                 <div class="feature-card">
@@ -55,35 +105,40 @@
     <section id="tools" class="tools">
         <div class="container">
             <h2>Tools</h2>
-            
+
             <div class="tool-section">
                 <h3>Sequence Analyzer</h3>
-                <textarea id="sequenceInput" placeholder="Enter DNA/RNA/Protein sequence..." rows="5"></textarea>
-                <button class="btn btn-primary" onclick="analyzeSequence()">Analyze Sequence</button>
-<button class="btn btn-secondary" onclick="clearBox()" style="margin-left: 10px; background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Clear Box</button>
+                <textarea id="sequenceInput" placeholder="Enter DNA/RNA/Protein residues here (e.g., ATGCGATCG)..."></textarea>
+                <div>
+                    <button class="btn btn-primary" onclick="analyzeSequence()">Analyze Sequence</button>
+                    <button class="btn btn-secondary" onclick="clearBox()">Clear Box</button>
+                </div>
                 <div id="sequenceResult" class="result-box"></div>
             </div>
 
             <div class="tool-section">
                 <h3>Health Check</h3>
-                <button class="btn btn-primary" onclick="checkHealth()">Check API Status</button>
+                <p>Verify connection parameters linking your frontend layout directly to the remote Render processing cores.</p>
+                <div>
+                    <button class="btn btn-primary" onclick="checkHealth()">Check Health</button>
+                </div>
                 <div id="healthResult" class="result-box"></div>
             </div>
-        </div>
-    </section>
-<section id="dataAnalysisSection" style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
-        <div class="container">
-            <h3 style="color: #4b0082;">📊 Data Analysis</h3>
-            <p>Paste your raw experimental data (e.g., Absorbance readings, concentration arrays) below:</p>
-            
-            <textarea id="dataInput" style="width: 100%; height: 150px; padding: 15px; border: 2px solid #ccc; border-radius: 8px; font-family: monospace; font-size: 14px;" placeholder="e.g., 0.12, 0.24, 0.35, 0.48..."></textarea>
-            
-            <div style="margin-top: 15px;">
-                <button class="btn btn-primary" onclick="analyzeData()" style="background: #4b0082; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">Process Data</button>
-                <button class="btn btn-secondary" onclick="clearDataBox()" style="margin-left: 10px; background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Clear Box</button>
+
+            <div id="dataAnalysisSection" class="tool-section">
+                <h3>📊 Data Analysis</h3>
+                <p>Paste your raw experimental data (e.g., Absorbance readings, concentration arrays) separated by commas below:</p>
+                <textarea id="dataInput" placeholder="Enter numbers here (e.g., 0.12, 0.15, 0.14, 0.13, 4.80)..."></textarea>
+                <div>
+                    <button class="btn btn-primary" onclick="analyzeData()">Process Data</button>
+                    <button class="btn btn-secondary" onclick="clearDataBox()">Clear Box</button>
+                </div>
+                <div id="dataResult" class="result-box"></div>
             </div>
+
         </div>
     </section>
+
     <footer>
         <div class="container">
             <p>&copy; 2026 MJ - Biochemistry AI Tool. All rights reserved.</p>
@@ -91,161 +146,139 @@
         </div>
     </footer>
 
-<script>
-const API_URL = "https://mj-7.onrender.com";
+    <script>
+        const API_URL = "https://mj-7.onrender.com";
 
-// --- 1. SEQUENCE ANALYSIS ENGINE (OUTPUTS TO #sequenceResult) ---
-async function analyzeSequence() {
-    var inputField = document.getElementById('sequenceInput');
-    var resultDiv = document.getElementById('sequenceResult');
-    
-    if (!inputField || !resultDiv) return;
-    var sequence = inputField.value.trim();
-    
-    if (!sequence) {
-        resultDiv.style.display = "block";
-        resultDiv.innerHTML = "<p style='color: #ff4d4d; font-weight: bold; margin-top: 10px;'>❌ Please enter a valid sequence chain first.</p>";
-        return;
-    }
+        // --- 1. SEQUENCE ENGINE ROUTER ---
+        async function analyzeSequence() {
+            var inputField = document.getElementById('sequenceInput');
+            var resultDiv = document.getElementById('sequenceResult');
+            if (!inputField || !resultDiv) return;
 
-    resultDiv.style.display = "block";
-    resultDiv.innerHTML = "<p style='color: #4b0082; margin-top: 10px; font-weight: bold;'>⏳ Processing sequence layout on Render server... Please wait.</p>";
-
-    try {
-        var response = await fetch(API_URL + "/api/analyze-sequence", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ sequence: sequence })
-        });
-
-        var data = await response.json();
-
-        if (data.success) {
-            var htmlContent = "<div style='margin-top: 15px; padding: 15px; background: #fbfbfe; border-left: 4px solid #4b0082; border-radius: 4px; text-align: left; line-height: 1.6;'>";
-            htmlContent += "<h4 style='color: #4b0082; margin-bottom: 8px; font-size: 16px;'>Analysis Complete! ✅</h4>";
-            htmlContent += "<p style='margin: 4px 0;'><strong>Classification:</strong> " + data.analysis.sequence_type + "</p>";
-            htmlContent += "<p style='margin: 4px 0;'><strong>Length:</strong> " + data.analysis.length + " residues</p>";
-            htmlContent += "<p style='margin: 4px 0;'><strong>GC Content Ratio:</strong> " + data.analysis.gc_content + "%</p>";
-            htmlContent += "<p style='margin: 4px 0;'><strong>Molecular Weight:</strong> " + data.analysis.molecular_weight + " g/mol</p>";
-            
-            if (data.analysis.protein_translation) {
-                htmlContent += "<div style='margin-top: 12px; padding: 10px; background: #f1f0f5; border-radius: 4px; font-family: monospace; font-size: 13px; word-break: break-all;'>";
-                htmlContent += "<strong>🧬 Local Translated Chain:</strong><br>" + data.analysis.protein_translation;
-                htmlContent += "</div>";
+            var sequence = inputField.value.trim();
+            if (!sequence) {
+                resultDiv.style.display = "block";
+                resultDiv.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Please enter a valid sequence chain first.</p>";
+                return;
             }
-            
-            htmlContent += "</div>";
-            resultDiv.innerHTML = htmlContent;
-        } else {
-            resultDiv.innerHTML = "<p style='color: #ff4d4d; margin-top: 10px;'><strong>Engine Error:</strong> " + data.error + "</p>";
-        }
-    } catch (error) {
-        resultDiv.innerHTML = "<p style='color: #b27b00; margin-top: 10px; font-weight: bold;'>⏳ Server Initialization: Waking up background services. Please wait a brief moment and click again!</p>";
-    }
-}
 
-// --- 2. LIVE HEALTH CHECK SYSTEM (OUTPUTS TO #healthResult) ---
-async function checkHealth() {
-    var healthResult = document.getElementById('healthResult');
-    if (!healthResult) return;
-    
-    healthResult.style.display = "block";
-    healthResult.innerHTML = "<p style='color: #4b0082; margin-top: 10px; font-weight: bold;'>Ping sent to server core...</p>";
+            resultDiv.style.display = "block";
+            resultDiv.innerHTML = "<p style='color: #4b0082; font-weight: bold;'>⏳ Processing sequence setup on Render server... Please wait.</p>";
 
-    try {
-        var response = await fetch(API_URL + "/");
-        if (response.ok) {
-            healthResult.innerHTML = "<div style='margin-top: 15px; padding: 12px; background: #f0fff4; border-left: 4px solid #2e7d32; color: #2e7d32; border-radius: 4px; font-weight: bold; text-align: left;'>✅ System Node Status: Online & Connected to Render Core API</div>";
-        } else {
-            healthResult.innerHTML = "<p style='color: #ff4d4d; margin-top: 10px;'>⚠️ Server returned an error response.</p>";
-        }
-    } catch (error) {
-        healthResult.innerHTML = "<p style='color: #b27b00; margin-top: 10px; font-weight: bold;'>⏳ Waking up server core cluster... Click again in 15 seconds.</p>";
-    }
-}
+            try {
+                var response = await fetch(API_URL + "/api/analyze-sequence", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sequence: sequence })
+                });
+                var data = await response.json();
 
-// --- 3. EXPERIMENTAL DATA ANALYSIS ENGINE ---
-async function analyzeData() {
-    var inputField = document.getElementById('dataInput');
-    if (!inputField) return;
-    
-    var rawData = inputField.value.trim();
-    var dataResult = document.getElementById('dataResult');
-    
-    if (!dataResult) {
-        var parent = inputField.parentElement;
-        dataResult = document.createElement('div');
-        dataResult.id = 'dataResult';
-        dataResult.className = 'result-box';
-        dataResult.style.marginTop = '15px';
-        parent.appendChild(dataResult);
-    }
-
-    if (!rawData) {
-        dataResult.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Please enter numerical values (e.g., 0.12, 0.45, 0.23) first.</p>";
-        return;
-    }
-
-    dataResult.innerHTML = "<p style='color: #4b0082; font-weight: bold;'>Running multivariate outlier identification checks...</p>";
-
-    try {
-        var response = await fetch(API_URL + "/api/analyze-data", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ experimental_data: rawData })
-        });
-
-        var data = await response.json();
-
-        if (data.success) {
-            var htmlContent = "<div style='padding: 15px; background: #fbfbfe; border-left: 4px solid #4b0082; border-radius: 4px; text-align: left; line-height: 1.6;'>";
-            htmlContent += "<h4 style='color: #4b0082; margin-bottom: 8px; font-size: 16px;'>Biostatistics Matrix Complete! 📊</h4>";
-            htmlContent += "<p style='margin: 4px 0;'><strong>Total Samples Processed (N):</strong> " + data.results.count + "</p>";
-            htmlContent += "<p style='margin: 4px 0;'><strong>Mean Average (μ):</strong> " + data.results.mean + "</p>";
-            htmlContent += "<p style='margin: 4px 0;'><strong>Standard Deviation (σ):</strong> " + data.results.std_dev + "</p>";
-            htmlContent += "<p style='margin: 4px 0;'><strong>Calculated Variance (σ²):</strong> " + data.results.variance + "</p>";
-            
-            if (data.results.anomalies && data.results.anomalies.length > 0) {
-                htmlContent += "<div style='margin-top: 12px; padding: 10px; background: #fff5f5; border-left: 4px solid #ff4d4d; color: #c62828; border-radius: 4px; font-size: 13px;'>";
-                htmlContent += "<strong>⚠️ SYSTEM ANOMALIES DETECTED!</strong><br>";
-                htmlContent += "Outlier Values: [ " + data.results.anomalies.join(', ') + " ]<br>";
-                htmlContent += "<span style='font-size:12px; color:#555;'>➔ Deviates past the standard 3-Sigma threshold. This indicates pipetting bubbles or localized sample contamination.</span>";
-                htmlContent += "</div>";
-            } else {
-                htmlContent += "<div style='margin-top: 12px; padding: 10px; background: #f0fff4; border-left: 4px solid #2e7d32; color: #2e7d32; border-radius: 4px; font-size: 13px;'>";
-                htmlContent += "<strong>✅ Quality Control Passed:</strong> No statistical deviations or processing outliers flagged in this sample.";
-                htmlContent += "</div>";
+                if (data.success) {
+                    var htmlContent = "<div style='margin-top: 15px; padding: 15px; background: #fbfbfe; border-left: 4px solid #4b0082; border-radius: 4px;'>";
+                    htmlContent += "<h4 style='color: #4b0082; margin-bottom: 8px;'>Analysis Complete! ✅</h4>";
+                    htmlContent += "<p><strong>Classification:</strong> " + data.analysis.sequence_type + "</p>";
+                    htmlContent += "<p><strong>Length:</strong> " + data.analysis.length + " residues</p>";
+                    htmlContent += "<p><strong>GC Content Ratio:</strong> " + data.analysis.gc_content + "%</p>";
+                    htmlContent += "<p><strong>Molecular Weight:</strong> " + data.analysis.molecular_weight + " g/mol</p>";
+                    if (data.analysis.protein_translation) {
+                        htmlContent += "<div style='margin-top: 10px; padding: 8px; background: #f1f0f5; border-radius: 4px; font-family: monospace; word-break: break-all;'><strong>🧬 Translated Chain:</strong><br>" + data.analysis.protein_translation + "</div>";
+                    }
+                    htmlContent += "</div>";
+                    resultDiv.innerHTML = htmlContent;
+                } else {
+                    resultDiv.innerHTML = "<p style='color: #ff4d4d;'><strong>Engine Error:</strong> " + data.error + "</p>";
+                }
+            } catch (error) {
+                resultDiv.innerHTML = "<p style='color: #b27b00; font-weight: bold;'>⏳ Server Wake-Up: Free server instances spin down during periods of inactivity. Please allow 15 seconds and click again!</p>";
             }
-            
-            htmlContent += "</div>";
-            dataResult.innerHTML = htmlContent;
-        } else {
-            dataResult.innerHTML = "<p style='color: #ff4d4d;'><strong>Engine Error:</strong> " + data.error + "</p>";
         }
-    } catch (error) {
-        dataResult.innerHTML = "<p style='color: #b27b00; font-weight: bold;'>⏳ API Wake-Up: Free hosting tier spinning up background dynos. Please click the button again in a brief moment.</p>";
-    }
-}
 
-// --- 4. CLEAR SECTIONS ---
-function clearBox() {
-    var inputField = document.getElementById('sequenceInput');
-    var resultDiv = document.getElementById('sequenceResult');
-    if (inputField) inputField.value = '';
-    if (resultDiv) {
-        resultDiv.innerHTML = '';
-        resultDiv.style.display = 'none';
-    }
-}
+        // --- 2. BACKEND API MONITOR ---
+        async function checkHealth() {
+            var healthResult = document.getElementById('healthResult');
+            if (!healthResult) return;
 
-function clearDataBox() {
-    var inputField = document.getElementById('dataInput');
-    var dataResult = document.getElementById('dataResult');
-    if (inputField) inputField.value = '';
-    if (dataResult) {
-        dataResult.innerHTML = '';
-    }
-}
-</script>
+            healthResult.style.display = "block";
+            healthResult.innerHTML = "<p style='color: #4b0082; font-weight: bold;'>Sending echo trace command to server...</p>";
+
+            try {
+                var response = await fetch(API_URL + "/");
+                if (response.ok) {
+                    healthResult.innerHTML = "<div style='margin-top: 15px; padding: 12px; background: #f0fff4; border-left: 4px solid #2e7d32; color: #2e7d32; border-radius: 4px; font-weight: bold;'>✅ System Status: Online & Connected to Render API Gateway</div>";
+                } else {
+                    healthResult.innerHTML = "<p style='color: #ff4d4d;'>⚠️ Server returned operational handling errors.</p>";
+                }
+            } catch (error) {
+                healthResult.innerHTML = "<p style='color: #b27b00; font-weight: bold;'>⏳ Sending cluster wake signals... Re-try tracking in 10 seconds.</p>";
+            }
+        }
+
+        // --- 3. QUANTITATIVE EXPERIMENTAL MATH ENGINE ---
+        async function analyzeData() {
+            var inputField = document.getElementById('dataInput');
+            var dataResult = document.getElementById('dataResult');
+            if (!inputField || !dataResult) return;
+
+            var rawData = inputField.value.trim();
+            if (!rawData) {
+                dataResult.style.display = "block";
+                dataResult.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Please enter numerical parameters (e.g., 0.12, 0.45) first.</p>";
+                return;
+            }
+
+            dataResult.style.display = "block";
+            dataResult.innerHTML = "<p style='color: #4b0082; font-weight: bold;'>Calculating data points and 3-Sigma limits...</p>";
+
+            try {
+                var response = await fetch(API_URL + "/api/analyze-data", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ experimental_data: rawData })
+                });
+                var data = await response.json();
+
+                if (data.success) {
+                    var htmlContent = "<div style='padding: 15px; background: #fbfbfe; border-left: 4px solid #4b0082; border-radius: 4px; margin-top:15px;'>";
+                    htmlContent += "<h4 style='color: #4b0082; margin-bottom: 8px;'>Biostatistics Matrix Complete! 📊</h4>";
+                    htmlContent += "<p><strong>Samples Processed (N):</strong> " + data.results.count + "</p>";
+                    htmlContent += "<p><strong>Mean Average (μ):</strong> " + data.results.mean + "</p>";
+                    htmlContent += "<p><strong>Standard Deviation (σ):</strong> " + data.results.std_dev + "</p>";
+                    htmlContent += "<p><strong>Calculated Variance (σ²):</strong> " + data.results.variance + "</p>";
+                    
+                    if (data.results.anomalies && data.results.anomalies.length > 0) {
+                        htmlContent += "<div style='margin-top: 12px; padding: 10px; background: #fff5f5; border-left: 4px solid #ff4d4d; color: #c62828; border-radius: 4px; font-size: 13px;'>";
+                        htmlContent += "<strong>⚠️ ANOMALIES DETECTED (Outliers):</strong> [ " + data.results.anomalies.join(', ') + " ]<br>";
+                        htmlContent += "<span>➔ Sits past quality checkpoints. Highly indicative of pipetting faults or contaminated matrix lines.</span>";
+                        htmlContent += "</div>";
+                    } else {
+                        htmlContent += "<div style='margin-top: 12px; padding: 10px; background: #f0fff4; border-left: 4px solid #2e7d32; color: #2e7d32; border-radius: 4px; font-size: 13px;'>";
+                        htmlContent += "<strong>✅ Quality Control Passed:</strong> No statistical tracking deviances isolated in this set.";
+                        htmlContent += "</div>";
+                    }
+                    htmlContent += "</div>";
+                    dataResult.innerHTML = htmlContent;
+                } else {
+                    dataResult.innerHTML = "<p style='color: #ff4d4d;'><strong>Engine Error:</strong> " + data.error + "</p>";
+                }
+            } catch (error) {
+                dataResult.innerHTML = "<p style='color: #b27b00; font-weight: bold;'>⏳ Core Initialization: Checking channel connection arrays. Click again in a brief moment.</p>";
+            }
+        }
+
+        // --- 4. DATA FIELDS WIPE RE-TRICK CONTROLLERS ---
+        function clearBox() {
+            var inputField = document.getElementById('sequenceInput');
+            var resultDiv = document.getElementById('sequenceResult');
+            if (inputField) inputField.value = '';
+            if (resultDiv) { resultDiv.innerHTML = ''; resultDiv.style.display = 'none'; }
+        }
+
+        function clearDataBox() {
+            var inputField = document.getElementById('dataInput');
+            var dataResult = document.getElementById('dataResult');
+            if (inputField) inputField.value = '';
+            if (dataResult) { dataResult.innerHTML = ''; dataResult.style.display = 'none'; }
+        }
+    </script>
 </body>
 </html>
