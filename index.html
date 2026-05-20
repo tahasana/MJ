@@ -78,23 +78,23 @@
         </div>
     </footer>
 
-<script>
+ <script>
 const API_URL = "https://mj-7.onrender.com";
 
 async function analyzeSequence() {
-    const sequence = document.getElementById('sequenceInput').value;
-    const resultBox = document.getElementById('sequenceResult');
+    // We grab the text box itself
+    const inputField = document.getElementById('sequenceInput');
+    const sequence = inputField.value;
     
-    // 1. Check if the box is empty
-    if (!sequence) {
-        resultBox.innerHTML = '<div style="background: #ffe6e6; color: red; padding: 15px; border: 2px solid red;">Please enter a sequence!</div>';
+    // Check if empty
+    if (!sequence || sequence.includes("Analysis Complete")) {
+        alert("Please clear the box and enter a valid sequence!");
         return;
     }
 
-    // 2. Show a loading message so you know the button clicked
-    resultBox.innerHTML = '<div style="background: #e6f3ff; color: blue; padding: 15px; border: 2px solid blue;">Sending data to server... Please wait.</div>';
+    // Change the text box to show it's loading
+    inputField.value = "Sending data to server... Please wait.";
 
-    // 3. Send to Render
     try {
         const response = await fetch(`${API_URL}/api/analyze-sequence`, {
             method: 'POST',
@@ -104,25 +104,23 @@ async function analyzeSequence() {
 
         const data = await response.json();
 
-        // 4. Print the successful results
+        // Print the successful results directly into the text box
         if (data.success) {
-            resultBox.innerHTML = `
-                <div style="background-color: #d4edda; color: #155724; padding: 20px; border: 2px solid #28a745; border-radius: 5px; margin-top: 15px;">
-                    <h3 style="margin-top: 0;">✅ Analysis Complete</h3>
-                    <p><strong>Classification:</strong> ${data.analysis.sequence_type}</p>
-                    <p><strong>Length:</strong> ${data.analysis.length} residues</p>
-                    <p><strong>GC Content:</strong> ${data.analysis.gc_content}%</p>
-                    <hr style="border-top: 1px solid #c3e6cb;">
-                    <p>${data.analysis.summary.replace(/\n/g, '<br>')}</p>
-                </div>
-            `;
+            inputField.value = `Analysis Complete! ✅
+            
+Classification: ${data.analysis.sequence_type}
+Length: ${data.analysis.length} residues
+GC Content: ${data.analysis.gc_content}%
+
+Summary:
+${data.analysis.summary}`;
         } else {
-            resultBox.innerHTML = `<div style="background: #ffe6e6; color: red; padding: 15px; border: 2px solid red;">Error: ${data.error}</div>`;
+            inputField.value = "Error: " + data.error;
         }
     } catch (error) {
-        resultBox.innerHTML = `<div style="background: #fff3cd; color: #856404; padding: 15px; border: 2px solid #ffeeba;">Server is waking up. Please wait 30 seconds and try again!</div>`;
+        inputField.value = "Server is waking up. Please wait 30 seconds and try again!";
     }
 }
-</script>    
+</script> 
 </body>
 </html>
