@@ -113,10 +113,10 @@
     </section>
 
     <div class="tabs-nav" id="tools">
-        <button class="tab-btn active" onclick="switchTab('tab-analytics')">🧬 Core Analytics & AI</button>
-        <button class="tab-btn" onclick="switchTab('tab-solutions')">🧪 Solutions & Buffers</button>
-        <button class="tab-btn" onclick="switchTab('tab-kinetics')">🌀 Kinetics & Hardware</button>
-        <button class="tab-btn" onclick="switchTab('tab-notebook')">📋 Utilities & Notebooks</button>
+        <button class="tab-btn active" onclick="switchTab(event, 'tab-analytics')">🧬 Core Analytics & AI</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-solutions')">🧪 Solutions & Buffers</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-kinetics')">🌀 Kinetics & Hardware</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-notebook')">📋 Utilities & Notebooks</button>
     </div>
 
     <section class="tools">
@@ -151,6 +151,36 @@
                         <button class="btn btn-secondary" onclick="clearDataBox()">Clear Box</button>
                     </div>
                     <div id="dataResult" class="result-box" style="font-family: monospace;"></div>
+                </div>
+
+                <div class="tool-section">
+                    <h3>🔍 Amino Acid Structural Profile & pI Index</h3>
+                    <p>Select a specific residual amino acid to load its structural configurations, side-chain chemistry classification, molecular weight, and exact Isoelectric Point ($pI$) markers.</p>
+                    <label>Select Target Amino Acid</label>
+                    <select id="aaSelect" onchange="loadAminoAcidProfile()">
+                        <option value="">-- Choose Amino Acid --</option>
+                        <option value="A">Alanine (Ala / A) - Nonpolar</option>
+                        <option value="R">Arginine (Arg / R) - Basic</option>
+                        <option value="N">Asparagine (Asn / N) - Polar</option>
+                        <option value="D">Aspartic Acid (Asp / D) - Acidic</option>
+                        <option value="C">Cysteine (Cys / C) - Polar / Thiol</option>
+                        <option value="E">Glutamic Acid (Glu / E) - Acidic</option>
+                        <option value="Q">Glutamine (Gln / Q) - Polar</option>
+                        <option value="G">Glycine (Gly / G) - Nonpolar</option>
+                        <option value="H">Histidine (His / H) - Basic / Imidazole</option>
+                        <option value="I">Isoleucine (Ile / I) - Aliphatic</option>
+                        <option value="L">Leucine (Leu / L) - Aliphatic</option>
+                        <option value="K">Lysine (Lys / K) - Basic</option>
+                        <option value="M">Methionine (Met / M) - Thioether</option>
+                        <option value="F">Phenylalanine (Phe / F) - Aromatic</option>
+                        <option value="P">Proline (Pro / P) - Cyclic Imino Acid</option>
+                        <option value="S">Serine (Ser / S) - Hydroxyl</option>
+                        <option value="T">Threonine (Thr / T) - Hydroxyl</option>
+                        <option value="W">Tryptophan (Trp / W) - Aromatic Indole</option>
+                        <option value="Y">Tyrosine (Tyr / Y) - Phenolic</option>
+                        <option value="V">Valine (Val / V) - Aliphatic</option>
+                    </select>
+                    <div id="aaResultContainer" class="result-box" style="font-family: monospace; line-height: 1.5;"></div>
                 </div>
 
                 <div class="tool-section">
@@ -364,32 +394,68 @@
     <script>
         const API_URL = "https://mj-7.onrender.com";
 
-        // --- CORE INTERFACE NAVIGATION CONTROLLER ---
-        function switchTab(tabId) {
-            // Deactivate all tab layouts and buttons
+        // --- CORE DYNAMIC INTERFACE NAVIGATION CONTROLLER ---
+        function switchTab(event, tabId) {
             var contents = document.querySelectorAll('.tab-content');
             var buttons = document.querySelectorAll('.tab-btn');
             
             contents.forEach(content => content.classList.remove('active'));
             buttons.forEach(btn => btn.classList.remove('active'));
 
-            // Activate chosen target section container
             document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // --- 1. LOCAL AMINO ACID REFERENCE MATRIX LOGIC ---
+        var aaDatabase = {
+            'A': { name: "Alanine", triple: "Ala", mass: "89.10", pI: "6.00", class: "Aliphatic / Nonpolar / Hydrophobic", pka: "COOH: 2.34, NH3+: 9.69, R-Group: N/A" },
+            'R': { name: "Arginine", triple: "Arg", mass: "174.20", pI: "10.76", class: "Positively Charged / Basic / Hydrophilic", pka: "COOH: 2.17, NH3+: 9.04, R-Group (Guanidino): 12.48" },
+            'N': { name: "Asparagine", triple: "Asn", mass: "132.12", pI: "5.41", class: "Uncharged Polar / Hydrophilic", pka: "COOH: 2.02, NH3+: 8.80, R-Group: N/A" },
+            'D': { name: "Aspartic Acid", triple: "Asp", mass: "133.10", pI: "2.77", class: "Negatively Charged / Acidic", pka: "COOH: 1.88, NH3+: 9.60, R-Group (Carboxyl): 3.65" },
+            'C': { name: "Cysteine", triple: "Cys", mass: "121.16", pI: "5.07", class: "Uncharged Polar / Reactive Thiol", pka: "COOH: 1.96, NH3+: 10.28, R-Group (Sulfhydryl): 8.18" },
+            'E': { name: "Glutamic Acid", triple: "Glu", mass: "147.13", pI: "3.22", class: "Negatively Charged / Acidic", pka: "COOH: 2.19, NH3+: 9.67, R-Group (Carboxyl): 4.25" },
+            'Q': { name: "Glutamine", triple: "Gln", mass: "146.15", pI: "5.65", class: "Uncharged Polar / Amide side-chain", pka: "COOH: 2.17, NH3+: 9.13, R-Group: N/A" },
+            'G': { name: "Glycine", triple: "Gly", mass: "75.07", pI: "5.97", class: "Nonpolar / Achiral Smallest Residue", pka: "COOH: 2.34, NH3+: 9.60, R-Group: N/A" },
+            'H': { name: "Histidine", triple: "His", mass: "155.16", pI: "7.59", class: "Basic / Aromatic Imidazole Ring", pka: "COOH: 1.82, NH3+: 9.17, R-Group (Imidazole): 6.00" },
+            'I': { name: "Isoleucine", triple: "Ile", mass: "131.18", pI: "6.02", class: "Aliphatic / Nonpolar Branched-Chain", pka: "COOH: 2.36, NH3+: 9.68, R-Group: N/A" },
+            'L': { name: "Leucine", triple: "Leu", mass: "131.18", pI: "5.98", class: "Aliphatic / Nonpolar Branched-Chain", pka: "COOH: 2.36, NH3+: 9.60, R-Group: N/A" },
+            'K': { name: "Lysine", triple: "Lys", mass: "146.19", pI: "9.74", class: "Positively Charged / Basic Aliphatic", pka: "COOH: 2.18, NH3+: 8.95, R-Group (Butylammonium): 10.53" },
+            'M': { name: "Methionine", triple: "Met", mass: "149.21", pI: "5.74", class: "Nonpolar / Thioether Sulfur-Containing", pka: "COOH: 2.28, NH3+: 9.21, R-Group: N/A" },
+            'F': { name: "Phenylalanine", triple: "Phe", mass: "165.19", pI: "5.48", class: "Nonpolar / Hydrophobic Benzene Aromatic", pka: "COOH: 1.83, NH3+: 9.13, R-Group: N/A" },
+            'P': { name: "Proline", triple: "Pro", mass: "115.13", pI: "6.30", class: "Nonpolar Aliphatic Cyclic Imino Acid", pka: "COOH: 1.99, NH3+: 10.60, R-Group: N/A" },
+            'S': { name: "Serine", triple: "Ser", mass: "105.09", pI: "5.68", class: "Uncharged Polar / Hydroxyl Nucleophile", pka: "COOH: 2.21, NH3+: 9.15, R-Group: N/A" },
+            'T': { name: "Threonine", triple: "Thr", mass: "119.12", pI: "5.60", class: "Uncharged Polar / Hydroxyl Branched", pka: "COOH: 2.09, NH3+: 9.10, R-Group: N/A" },
+            'W': { name: "Tryptophan", triple: "Trp", mass: "204.23", pI: "5.89", class: "Nonpolar / Aromatic Indole Fluorescent Ring", pka: "COOH: 2.38, NH3+: 9.39, R-Group: N/A" },
+            'Y': { name: "Tyrosine", triple: "Tyr", mass: "181.19", pI: "5.66", class: "Polar / Phenolic Hydroxyl Aromatic", pka: "COOH: 2.20, NH3+: 9.11, R-Group (Phenol): 10.07" },
+            'V': { name: "Valine", triple: "Val", mass: "117.15", pI: "5.96", class: "Aliphatic / Nonpolar Branched-Chain", pka: "COOH: 2.32, NH3+: 9.62, R-Group: N/A" }
+        };
+
+        function loadAminoAcidProfile() {
+            var selectedAA = document.getElementById('aaSelect').value;
+            var displayBox = document.getElementById('aaResultContainer');
+            if (!displayBox) return;
+
+            if (!selectedAA) {
+                displayBox.style.display = "none";
+                displayBox.innerHTML = "";
+                return;
+            }
+
+            var item = aaDatabase[selectedAA];
+            displayBox.style.display = "block";
             
-            // Highlight current button node
-            var currentBtn = KakuroFindButton(tabId);
-            if (currentBtn) currentBtn.classList.add('active');
+            var html = "<div style='background: #fffdf5; border-left: 4px solid #b8860b; padding: 15px; border-radius: 4px;'>";
+            html += "<h4 style='color: #8b6508; margin-bottom: 5px;'>" + item.name + " (" + item.triple + " / " + selectedAA + ")</h4>";
+            html += "<p><strong>Side-Chain Classification:</strong> " + item.class + "</p>";
+            html += "<p><strong>Molecular Weight:</strong> " + item.mass + " g/mol</p>";
+            html += "<p style='font-size: 15px; color: #4b0082;'><strong>Isoelectric Point (pI Value): " + item.pI + "</strong></p>";
+            html += "<p style='font-size: 12px; color: #555; margin-top: 5px;'><strong>Dissociation Profile constants (pKa):</strong> <br>" + item.pka + "</p>";
+            html += "</div>";
+            
+            displayBox.innerHTML = html;
         }
 
-        function KakuroFindButton(tabId) {
-            if (tabId === 'tab-analytics') return document.querySelector('button[onclick="switchTab(\'tab-analytics\')"]');
-            if (tabId === 'tab-solutions') return document.querySelector('button[onclick="switchTab(\'tab-solutions\')"]');
-            if (tabId === 'tab-kinetics') return document.querySelector('button[onclick="switchTab(\'tab-kinetics\')"]');
-            if (tabId === 'tab-notebook') return document.querySelector('button[onclick="switchTab(\'tab-notebook\')"]');
-            return null;
-        }
-
-        // --- 1. LOCAL LAB REPORT GENERATOR LOGIC ---
+        // --- 2. LOCAL LAB REPORT GENERATOR LOGIC ---
         function generateLabReport() {
             var author = document.getElementById('reportAuthor').value.trim() || "Anonymous Researcher";
             var title = document.getElementById('reportTitle').value.trim() || "Untitled Experiment Log";
@@ -427,32 +493,12 @@
             displayBox.innerHTML = "<div style='background: #f0fff4; border-left: 4px solid #2e7d32; padding: 12px; color: #2e7d32; font-weight: bold; border-radius: 4px;'>✅ Report File Generated & Downloaded Successfully!</div>";
         }
 
-        // --- 2. LOCAL BIOMETHODOLOGY SEARCH INDEX ENGINE ---
+        // --- 3. LOCAL BIOMETHODOLOGY SEARCH INDEX ENGINE ---
         var protocolDatabase = {
-            "dna_extract": "METHODOLOGY: GENOMIC DNA ISOLATION (PHENOL-CHLOROFORM)\n\n" +
-                           "1. Cell Lysis: Resuspend cell pellet in 500 uL of Lysis Buffer. Add 10 uL of Proteinase K (20 mg/mL). Incubate at 56C for 1 hour to digest cellular structural proteins.\n" +
-                           "2. Phase Extraction: Add equal volume (500 uL) of Phenol-Chloroform-Isoamyl Alcohol (25:24:1). Vortex heavily, then spin down at 12,000 x g for 10 minutes at 4C.\n" +
-                           "3. Isolation: Meticulously pipet the top clear aqueous phase layer into a clean microcentrifuge tube without disturbing the dirty white interphase line.\n" +
-                           "4. Precipitation: Add 2 volumes of ice-cold 100% Ethanol and 0.1 volume of 3M Sodium Acetate. Mix by inversion. Spin down at max speed for 15 minutes to pellet the raw DNA matrix strands.\n" +
-                           "5. Washing: Discard supernatant layer. Rinse pellet gently with 70% Ethanol, air-dry briefly, and resuspend in 50 uL of Sterile TE Buffer.",
-            
-            "sds_page": "METHODOLOGY: SDS-PAGE POLYACRYLAMIDE GEL ELECTROPHORESIS\n\n" +
-                        "1. Casting: Assemble glass sandwich plates. Pour a 10% Resolving Gel base mix, layer top with Isopropanol to flatten. Once polymerized, pour 4% Stacking Gel layer on top and insert matrix well combs.\n" +
-                        "2. Sample Prep: Blend protein sample matrix fractions with 4X SDS Reducing Loading Buffer. Heat denature sample vials at 95C for 5 minutes flat.\n" +
-                        "3. Loading: Mount gel into running cell tank and fill chambers with 1X Tris-Glycine-SDS Running Buffer. Remove comb teeth carefully and load 15 uL sample aliquots.\n" +
-                        "4. Electrophoresis Run: Close lid safety wires. Run core at a constant 80V through stacking gel zones, then ramp up safely to 120V as tracking dye crosses into resolution gel space.",
-            
-            "bradford": "METHODOLOGY: BRADFORD PROTEIN QUANTIFICATION ASSAY\n\n" +
-                        "1. Reagent Prep: Dilute Coomassie Brilliant Blue G-250 dye concentrate down into working standard analytical configurations.\n" +
-                        "2. Calibration Curve: Set up standard dilution sample sets using Bovine Serum Albumin (BSA) fractions across clean parameters (0, 2, 4, 8, 12, 16, 20 ug/mL volumes).\n" +
-                        "3. Reaction Phase: Add 100 uL of unknown sample or standards into standard cuvettes, then add 1.0 mL of working Bradford reagent solution. Incubate at room temperature for 5 minutes.\n" +
-                        "4. Spectrophotometry analysis: Zero path line with blank matrix tube. Measure optical density spectrum absorption metrics at exactly 595 nm tracking shifts.",
-            
-            "western": "METHODOLOGY: WESTERN BLOT MEMBRANE BLOCKING PROTOCOL\n\n" +
-                        "1. Membrane Prep: Post-transfer phase, submerge PVDF or Nitrocellulose matrix sheets inside clean shaking trays.\n" +
-                        "2. Blocking Preparation: Prepare fresh 5% (w/v) Non-Fat Dry Milk or BSA dissolved inside 1X TBST solution.\n" +
-                        "3. Matrix Incubation: Submerge transfer sheet within blocking mix layout. Agitate tray continuously upon a standard bench orbital rocker matrix at room speed for 1 hour flat.\n" +
-                        "4. Washing: Wash sheet 3 times with fresh 1X TBST mix for 5 minutes per cycle before applying target Primary Antibody pairings."
+            "dna_extract": "METHODOLOGY: GENOMIC DNA ISOLATION (PHENOL-CHLOROFORM)\n\n1. Cell Lysis: Resuspend cell pellet in 500 uL of Lysis Buffer. Add 10 uL of Proteinase K (20 mg/mL). Incubate at 56C for 1 hour.\n2. Phase Extraction: Add equal volume (500 uL) of Phenol-Chloroform-Isoamyl Alcohol (25:24:1). Vortex heavily, then spin down at 12,000 x g for 10 minutes.\n3. Isolation: Meticulously pipet the top clear aqueous phase layer into a clean microcentrifuge tube without disturbing the dirty white interphase line.\n4. Precipitation: Add 2 volumes of ice-cold 100% Ethanol and 0.1 volume of 3M Sodium Acetate. Mix by inversion. Spin down at max speed for 15 minutes.\n5. Washing: Discard supernatant layer. Rinse pellet gently with 70% Ethanol, air-dry briefly, and resuspend in 50 uL of Sterile TE Buffer.",
+            "sds_page": "METHODOLOGY: SDS-PAGE POLYACRYLAMIDE GEL ELECTROPHORESIS\n\n1. Casting: Assemble glass sandwich plates. Pour a 10% Resolving Gel base mix, layer top with Isopropanol to flatten. Once polymerized, pour 4% Stacking Gel layer on top.\n2. Sample Prep: Blend protein sample matrix fractions with 4X SDS Reducing Loading Buffer. Heat denature sample vials at 95C for 5 minutes flat.\n3. Loading: Mount gel into running cell tank and fill chambers with 1X Tris-Glycine-SDS Running Buffer. Remove comb teeth carefully and load 15 uL sample aliquots.\n4. Electrophoresis Run: Close lid safety wires. Run core at a constant 80V through stacking gel zones, then ramp up safely to 120V as tracking dye crosses into resolution gel space.",
+            "bradford": "METHODOLOGY: BRADFORD PROTEIN QUANTIFICATION ASSAY\n\n1. Reagent Prep: Dilute Coomassie Brilliant Blue G-250 dye concentrate down into working standard analytical configurations.\n2. Calibration Curve: Set up standard dilution sample sets using Bovine Serum Albumin (BSA) fractions across clean parameters (0, 2, 4, 8, 12, 16, 20 ug/mL volumes).\n3. Reaction Phase: Add 100 uL of unknown sample or standards into standard cuvettes, then add 1.0 mL of working Bradford reagent solution. Incubate at room temperature for 5 minutes.\n4. Spectrophotometry analysis: Zero path line with blank matrix tube. Measure optical density spectrum absorption metrics at exactly 595 nm tracking shifts.",
+            "western": "METHODOLOGY: WESTERN BLOT MEMBRANE BLOCKING PROTOCOL\n\n1. Membrane Prep: Post-transfer phase, submerge PVDF or Nitrocellulose matrix sheets inside clean shaking trays.\n2. Blocking Preparation: Prepare fresh 5% (w/v) Non-Fat Dry Milk or BSA dissolved inside 1X TBST solution.\n3. Matrix Incubation: Submerge transfer sheet within blocking mix layout. Agitate tray continuously upon a standard bench orbital rocker matrix at room speed for 1 hour flat.\n4. Washing: Wash sheet 3 times with fresh 1X TBST mix for 5 minutes per cycle before applying target Primary Antibody pairings."
         };
 
         function searchProtocol() {
@@ -470,7 +516,7 @@
             displayBox.innerHTML = protocolDatabase[selectedKey];
         }
 
-        // --- 3. REMOTE COMMUNICATIONS BACKEND FALLBACKS ---
+        // --- 4. REMOTE ARCHITECTURE COMMUNICATIONS BACKEND CORES ---
         async function analyzeSequence() {
             var inputField = document.getElementById('sequenceInput');
             var resultDiv = document.getElementById('sequenceResult');
@@ -575,7 +621,7 @@
             }
         }
 
-        // --- 4. LOCAL AI PEPTIDE CORE MATRIX PREDICTOR ---
+        // --- 5. LOCAL AI PEPTIDE CORE MATRIX PREDICTOR ---
         function runAIPredictor() {
             var inputField = document.getElementById('aiPeptideInput');
             var displayBox = document.getElementById('aiResultContainer');
@@ -606,16 +652,13 @@
             var hydroRatio = (hydrophobicCount / seq.length) * 100;
             var solubility = "High Fluidity (Aqueous Buffer Soluble)";
             var strategy = "Ion-Exchange Matrix Chromatography (IEX)";
-            var confidence = 94.2;
 
             if (hydroRatio > 45) {
                 solubility = "Low Fluidity (Requires Dimethyl Sulfoxide [DMSO] / Organic Solvent)";
                 strategy = "Reverse-Phase HPLC (RP-HPLC) via Hydrophobic C18 Columns";
-                confidence = 91.8;
             } else if (Math.abs(charge) === 0 && hydroRatio < 30) {
                 solubility = "Moderate Stability (Neutral Hydrophilic balance)";
                 strategy = "Size-Exclusion Chromatography (Gel Filtration Columns)";
-                confidence = 89.5;
             }
 
             displayBox.style.display = "block";
@@ -631,7 +674,7 @@
             displayBox.innerHTML = outputHtml;
         }
 
-        // --- 5. STANDALONE LOCAL LABORATORY CALCULATORS ---
+        // --- 6. STANDALONE LOCAL LABORATORY CALCULATORS ---
         function calculateMolarityMass() {
             var mw = parseFloat(document.getElementById('molInputMW').value);
             var molarity = parseFloat(document.getElementById('molInputMolarity').value);
@@ -664,7 +707,7 @@
 
             if (isNaN(A) || isNaN(epsilon) || isNaN(l) || A < 0 || epsilon <= 0 || l <= 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check absorbance scale values.</p>";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check absorbance parameters.</p>";
                 return;
             }
 
@@ -686,7 +729,7 @@
 
             if (isNaN(targetPH) || isNaN(pKa) || isNaN(totalConc) || totalConc <= 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Missing configuration constants.</p>";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Missing numeric targets.</p>";
                 return;
             }
 
@@ -697,8 +740,8 @@
             displayBox.style.display = "block";
             displayBox.innerHTML = "<div style='background: #fffbf0; border-left: 4px solid #d4af37; padding: 15px; border-radius: 4px;'>" +
                                    "<h4>Buffer Matrix Calculated! ⚗️</h4>" +
-                                   "<p><strong>Weak Acid Concentration [HA]:</strong> " + acidConc.toFixed(4) + " M</p>" +
-                                   "<p><strong>Conjugate Base Concentration [A⁻]:</strong> " + baseConc.toFixed(4) + " M</p></div>";
+                                   "<p><strong>Weak Acid [HA]:</strong> " + acidConc.toFixed(4) + " M</p>" +
+                                   "<p><strong>Conjugate Base [A⁻]:</strong> " + baseConc.toFixed(4) + " M</p></div>";
         }
 
         function calculateEnzymeKinetics() {
@@ -710,7 +753,7 @@
 
             if (isNaN(vmax) || isNaN(km) || isNaN(substrate) || vmax <= 0 || km <= 0 || substrate < 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Invalid structural kinetics speed metrics.</p>";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check kinetic baseline factors.</p>";
                 return;
             }
 
@@ -729,7 +772,7 @@
 
             if (isNaN(radius) || isNaN(rpm) || radius <= 0 || rpm <= 0) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check rotor dimensions.</p>";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check geometry metrics.</p>";
                 return;
             }
 
@@ -749,7 +792,7 @@
 
             if (isNaN(c1) || isNaN(c2) || isNaN(v2) || c1 <= 0 || c2 <= 0 || v2 <= 0 || c2 >= c1) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check working standard dilution vectors.</p>";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Check ratio metrics alignment.</p>";
                 return;
             }
 
@@ -759,11 +802,11 @@
             displayBox.style.display = "block";
             displayBox.innerHTML = "<div style='background: #e6fffa; border-left: 4px solid #319795; padding: 15px; border-radius: 4px;'>" +
                                    "<h4>Dilution Formed! 💦</h4>" +
-                                   "<p><strong>Stock Volume Volume (V₁):</strong> " + v1.toFixed(2) + " mL</p>" +
-                                   "<p><strong>Solvent Buffer Volume:</strong> " + diluentNeeded.toFixed(2) + " mL</p></div>";
+                                   "<p><strong>Stock Volume (V₁):</strong> " + v1.toFixed(2) + " mL</p>" +
+                                   "<p><strong>Solvent Volume:</strong> " + diluentNeeded.toFixed(2) + " mL</p></div>";
         }
 
-        // --- COMMAND RESET DISPLAYS ---
+        // --- COMMAND RESET FIELDS UTILITIES ---
         function clearBox() { document.getElementById('sequenceInput').value = ''; document.getElementById('sequenceResult').style.display='none'; }
         function clearDataBox() { document.getElementById('dataInput').value = ''; document.getElementById('dataResult').style.display='none'; }
         function clearAIBox() { document.getElementById('aiPeptideInput').value = ''; document.getElementById('aiResultContainer').style.display='none'; }
