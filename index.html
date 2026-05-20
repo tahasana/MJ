@@ -145,140 +145,112 @@
             <p>Built with ❤️ for science</p>
         </div>
     </footer>
+<script>
+const API_URL = "https://mj-7.onrender.com";
 
-    <script>
-        const API_URL = "https://mj-7.onrender.com";
+// --- SECTION 1: SEQUENCE ANALYSIS ENGINE ---
+async function analyzeSequence() {
+    var inputField = document.getElementById('sequenceInput');
+    if (!inputField) return;
+    var sequence = inputField.value.trim();
+    
+    if (!sequence || sequence.includes("Analysis Complete")) {
+        alert("Please clear the box and enter a valid sequence!");
+        return;
+    }
 
-        // --- 1. SEQUENCE ENGINE ROUTER ---
-        async function analyzeSequence() {
-            var inputField = document.getElementById('sequenceInput');
-            var resultDiv = document.getElementById('sequenceResult');
-            if (!inputField || !resultDiv) return;
+    inputField.value = "Sending data to server... Please wait.";
 
-            var sequence = inputField.value.trim();
-            if (!sequence) {
-                resultDiv.style.display = "block";
-                resultDiv.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Please enter a valid sequence chain first.</p>";
-                return;
+    try {
+        const response = await fetch(API_URL + "/api/analyze-sequence", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sequence: sequence })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            var resultText = "Analysis Complete! ✅\n";
+            resultText += "----------------------------------------\n";
+            resultText += "Classification:  " + data.analysis.sequence_type + "\n";
+            resultText += "Total Length:    " + data.analysis.length + " residues\n";
+            resultText += "GC Content Ratio: " + data.analysis.gc_content + "%\n";
+            resultText += "Est. Mass (MW):  " + data.analysis.molecular_weight + " g/mol\n\n";
+            
+            if (data.analysis.protein_translation) {
+                resultText += "🧬 Local Translated Chain:\n" + data.analysis.protein_translation;
             }
 
-            resultDiv.style.display = "block";
-            resultDiv.innerHTML = "<p style='color: #4b0082; font-weight: bold;'>⏳ Processing sequence setup on Render server... Please wait.</p>";
-
-            try {
-                var response = await fetch(API_URL + "/api/analyze-sequence", {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ sequence: sequence })
-                });
-                var data = await response.json();
-
-                if (data.success) {
-                    var htmlContent = "<div style='margin-top: 15px; padding: 15px; background: #fbfbfe; border-left: 4px solid #4b0082; border-radius: 4px;'>";
-                    htmlContent += "<h4 style='color: #4b0082; margin-bottom: 8px;'>Analysis Complete! ✅</h4>";
-                    htmlContent += "<p><strong>Classification:</strong> " + data.analysis.sequence_type + "</p>";
-                    htmlContent += "<p><strong>Length:</strong> " + data.analysis.length + " residues</p>";
-                    htmlContent += "<p><strong>GC Content Ratio:</strong> " + data.analysis.gc_content + "%</p>";
-                    htmlContent += "<p><strong>Molecular Weight:</strong> " + data.analysis.molecular_weight + " g/mol</p>";
-                    if (data.analysis.protein_translation) {
-                        htmlContent += "<div style='margin-top: 10px; padding: 8px; background: #f1f0f5; border-radius: 4px; font-family: monospace; word-break: break-all;'><strong>🧬 Translated Chain:</strong><br>" + data.analysis.protein_translation + "</div>";
-                    }
-                    htmlContent += "</div>";
-                    resultDiv.innerHTML = htmlContent;
-                } else {
-                    resultDiv.innerHTML = "<p style='color: #ff4d4d;'><strong>Engine Error:</strong> " + data.error + "</p>";
-                }
-            } catch (error) {
-                resultDiv.innerHTML = "<p style='color: #b27b00; font-weight: bold;'>⏳ Server Wake-Up: Free server instances spin down during periods of inactivity. Please allow 15 seconds and click again!</p>";
-            }
+            inputField.value = resultText;
+        } else {
+            inputField.value = "Engine Error: " + data.error;
         }
+    } catch (error) {
+        inputField.value = "Server is waking up. Please wait 30 seconds and click again!";
+    }
+}
 
-        // --- 2. BACKEND API MONITOR ---
-        async function checkHealth() {
-            var healthResult = document.getElementById('healthResult');
-            if (!healthResult) return;
+// --- SECTION 2: DATA ANALYSIS ENGINE ---
+async function analyzeData() {
+    var inputField = document.getElementById('dataInput');
+    if (!inputField) return;
+    var rawData = inputField.value.trim();
+    
+    if (!rawData || rawData.includes("Analysis Complete")) {
+        alert("Please enter valid numerical laboratory coordinates first!");
+        return;
+    }
 
-            healthResult.style.display = "block";
-            healthResult.innerHTML = "<p style='color: #4b0082; font-weight: bold;'>Sending echo trace command to server...</p>";
+    inputField.value = "Sending array data to Render server... Please wait.";
 
-            try {
-                var response = await fetch(API_URL + "/");
-                if (response.ok) {
-                    healthResult.innerHTML = "<div style='margin-top: 15px; padding: 12px; background: #f0fff4; border-left: 4px solid #2e7d32; color: #2e7d32; border-radius: 4px; font-weight: bold;'>✅ System Status: Online & Connected to Render API Gateway</div>";
-                } else {
-                    healthResult.innerHTML = "<p style='color: #ff4d4d;'>⚠️ Server returned operational handling errors.</p>";
-                }
-            } catch (error) {
-                healthResult.innerHTML = "<p style='color: #b27b00; font-weight: bold;'>⏳ Sending cluster wake signals... Re-try tracking in 10 seconds.</p>";
-            }
-        }
+    try {
+        const response = await fetch(API_URL + "/api/analyze-data", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ experimental_data: rawData })
+        });
 
-        // --- 3. QUANTITATIVE EXPERIMENTAL MATH ENGINE ---
-        async function analyzeData() {
-            var inputField = document.getElementById('dataInput');
-            var dataResult = document.getElementById('dataResult');
-            if (!inputField || !dataResult) return;
+        const data = await response.json();
 
-            var rawData = inputField.value.trim();
-            if (!rawData) {
-                dataResult.style.display = "block";
-                dataResult.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Please enter numerical parameters (e.g., 0.12, 0.45) first.</p>";
-                return;
+        if (data.success) {
+            var resultText = "Analysis Complete! 📊\n";
+            resultText += "----------------------------------------\n";
+            resultText += "Total Lab Coordinates (N): " + data.results.count + "\n";
+            resultText += "Mean Sample Average (μ):   " + data.results.mean + "\n";
+            resultText += "Standard Deviation (σ):    " + data.results.std_dev + "\n";
+            resultText += "Sample Cluster Variance:   " + data.results.variance + "\n";
+            resultText += "Maximum Metric Found:      " + data.results.max + "\n";
+            resultText += "Minimum Metric Found:      " + data.results.min + "\n\n";
+            
+            if (data.results.anomalies && data.results.anomalies.length > 0) {
+                resultText += "⚠️ WARNING: SYSTEM ANOMALIES DETECTED!\n";
+                resultText += "The following data points deviate past the normal threshold:\n";
+                resultText += "Values: [ " + data.results.anomalies.join(', ') + " ]\n";
+                resultText += "➔ Highly indicative of systematic pipetting error or sample contamination.";
+            } else {
+                resultText += "✅ Quality Control Passed: No mathematical anomalies or outliers flagged in this dataset.";
             }
 
-            dataResult.style.display = "block";
-            dataResult.innerHTML = "<p style='color: #4b0082; font-weight: bold;'>Calculating data points and 3-Sigma limits...</p>";
-
-            try {
-                var response = await fetch(API_URL + "/api/analyze-data", {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ experimental_data: rawData })
-                });
-                var data = await response.json();
-
-                if (data.success) {
-                    var htmlContent = "<div style='padding: 15px; background: #fbfbfe; border-left: 4px solid #4b0082; border-radius: 4px; margin-top:15px;'>";
-                    htmlContent += "<h4 style='color: #4b0082; margin-bottom: 8px;'>Biostatistics Matrix Complete! 📊</h4>";
-                    htmlContent += "<p><strong>Samples Processed (N):</strong> " + data.results.count + "</p>";
-                    htmlContent += "<p><strong>Mean Average (μ):</strong> " + data.results.mean + "</p>";
-                    htmlContent += "<p><strong>Standard Deviation (σ):</strong> " + data.results.std_dev + "</p>";
-                    htmlContent += "<p><strong>Calculated Variance (σ²):</strong> " + data.results.variance + "</p>";
-                    
-                    if (data.results.anomalies && data.results.anomalies.length > 0) {
-                        htmlContent += "<div style='margin-top: 12px; padding: 10px; background: #fff5f5; border-left: 4px solid #ff4d4d; color: #c62828; border-radius: 4px; font-size: 13px;'>";
-                        htmlContent += "<strong>⚠️ ANOMALIES DETECTED (Outliers):</strong> [ " + data.results.anomalies.join(', ') + " ]<br>";
-                        htmlContent += "<span>➔ Sits past quality checkpoints. Highly indicative of pipetting faults or contaminated matrix lines.</span>";
-                        htmlContent += "</div>";
-                    } else {
-                        htmlContent += "<div style='margin-top: 12px; padding: 10px; background: #f0fff4; border-left: 4px solid #2e7d32; color: #2e7d32; border-radius: 4px; font-size: 13px;'>";
-                        htmlContent += "<strong>✅ Quality Control Passed:</strong> No statistical tracking deviances isolated in this set.";
-                        htmlContent += "</div>";
-                    }
-                    htmlContent += "</div>";
-                    dataResult.innerHTML = htmlContent;
-                } else {
-                    dataResult.innerHTML = "<p style='color: #ff4d4d;'><strong>Engine Error:</strong> " + data.error + "</p>";
-                }
-            } catch (error) {
-                dataResult.innerHTML = "<p style='color: #b27b00; font-weight: bold;'>⏳ Core Initialization: Checking channel connection arrays. Click again in a brief moment.</p>";
-            }
+            inputField.value = resultText;
+        } else {
+            inputField.value = "Engine Error: " + data.error;
         }
+    } catch (error) {
+        inputField.value = "Waking up background server... Please wait 15 seconds and click again!";
+    }
+}
 
-        // --- 4. DATA FIELDS WIPE RE-TRICK CONTROLLERS ---
-        function clearBox() {
-            var inputField = document.getElementById('sequenceInput');
-            var resultDiv = document.getElementById('sequenceResult');
-            if (inputField) inputField.value = '';
-            if (resultDiv) { resultDiv.innerHTML = ''; resultDiv.style.display = 'none'; }
-        }
+// --- SECTION 3: UTILITY CLEAR BUTTONS ---
+function clearBox() {
+    var inputField = document.getElementById('sequenceInput');
+    if (inputField) inputField.value = '';
+}
 
-        function clearDataBox() {
-            var inputField = document.getElementById('dataInput');
-            var dataResult = document.getElementById('dataResult');
-            if (inputField) inputField.value = '';
-            if (dataResult) { dataResult.innerHTML = ''; dataResult.style.display = 'none'; }
-        }
-    </script>
+function clearDataBox() {
+    var inputField = document.getElementById('dataInput');
+    if (inputField) inputField.value = '';
+}
+</script>
 </body>
 </html>
