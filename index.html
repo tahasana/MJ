@@ -94,24 +94,25 @@
 <script>
 const API_URL = "https://mj-7.onrender.com";
 
-// --- SECTION 1: SEQUENCE ANALYSIS ENGINE ---
+// --- 1. SEQUENCE ANALYSIS ENGINE (OUTPUTS TO #sequenceResult) ---
 async function analyzeSequence() {
-    const inputField = document.getElementById('sequenceInput');
-    if (!inputField) {
-        alert("Sequence input field not found in HTML!");
-        return;
-    }
+    var inputField = document.getElementById('sequenceInput');
+    var resultDiv = document.getElementById('sequenceResult');
     
-    const sequence = inputField.value.trim();
-    if (!sequence || sequence.includes("Analysis Complete")) {
-        alert("Please enter a valid biochemical sequence!");
+    if (!inputField || !resultDiv) return;
+    var sequence = inputField.value.trim();
+    
+    if (!sequence) {
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = "<p style='color: #ff4d4d; font-weight: bold; margin-top: 10px;'>❌ Please enter a valid sequence chain first.</p>";
         return;
     }
 
-    inputField.value = "Sending sequence to Render server... Please wait.";
+    resultDiv.style.display = "block";
+    resultDiv.innerHTML = "<p style='color: #4b0082; margin-top: 10px; font-weight: bold;'>⏳ Processing sequence layout on Render server... Please wait.</p>";
 
     try {
-        const response = await fetch(`${API_URL}/api/analyze-sequence`, {
+        const response = await fetch(API_URL + "/api/analyze-sequence", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ sequence: sequence })
@@ -120,42 +121,75 @@ async function analyzeSequence() {
         const data = await response.json();
 
         if (data.success) {
-            let resultText = `Analysis Complete! ✅\n\n`;
-            resultText += `Classification: ${data.analysis.sequence_type}\n`;
-            resultText += `Length: ${data.analysis.length} residues\n`;
-            resultText += `GC Content: ${data.analysis.gc_content}%\n\n`;
+            var htmlContent = "<div style='margin-top: 15px; padding: 15px; background: #fbfbfe; border-left: 4px solid #4b0082; border-radius: 4px; text-align: left; line-height: 1.6;'>";
+            htmlContent += "<h4 style='color: #4b0082; margin-bottom: 8px; font-size: 16px;'>Analysis Complete! ✅</h4>";
+            htmlContent += "<p style='margin: 4px 0;'><strong>Classification:</strong> " + data.analysis.sequence_type + "</p>";
+            htmlContent += "<p style='margin: 4px 0;'><strong>Length:</strong> " + data.analysis.length + " residues</p>";
+            htmlContent += "<p style='margin: 4px 0;'><strong>GC Content Ratio:</strong> " + data.analysis.gc_content + "%</p>";
+            htmlContent += "<p style='margin: 4px 0;'><strong>Molecular Weight:</strong> " + data.analysis.molecular_weight + " g/mol</p>";
             
             if (data.analysis.protein_translation) {
-                resultText += `🧬 Protein Translation:\n${data.analysis.protein_translation}\n\n`;
+                htmlContent += "<div style='margin-top: 12px; padding: 10px; background: #f1f0f5; border-radius: 4px; font-family: monospace; font-size: 13px; word-break: break-all;'>";
+                htmlContent += "<strong>🧬 Local Translated Chain:</strong><br>" + data.analysis.protein_translation;
+                htmlContent += "</div>";
             }
-
-            inputField.value = resultText;
+            
+            htmlContent += "</div>";
+            resultDiv.innerHTML = htmlContent;
         } else {
-            inputField.value = "Engine Error: " + data.error;
+            resultDiv.innerHTML = "<p style='color: #ff4d4d; margin-top: 10px;'><strong>Engine Error:</strong> " + data.error + "</p>";
         }
     } catch (error) {
-        inputField.value = "Connection failed. Please wait 30 seconds for the free server to wake up and try again!";
+        resultDiv.innerHTML = "<p style='color: #b27b00; margin-top: 10px; font-weight: bold;'>⏳ Server Initialization: The free tier backend server takes roughly 30 seconds to wake up from sleep mode. Please wait a moment and click the button again!</p>";
     }
 }
 
-// --- SECTION 2: DATA ANALYSIS ENGINE ---
-async function analyzeData() {
-    const inputField = document.getElementById('dataInput');
-    if (!inputField) {
-        alert("Data input field not found in HTML!");
-        return;
-    }
-
-    const rawData = inputField.value.trim();
-    if (!rawData || rawData.includes("Analysis Complete")) {
-        alert("Please enter valid numerical laboratory numbers first!");
-        return;
-    }
-
-    inputField.value = "Sending array data to Render server... Please wait.";
+// --- 2. LIVE HEALTH CHECK SYSTEM (OUTPUTS TO #healthResult) ---
+async function checkHealth() {
+    var healthResult = document.getElementById('healthResult');
+    if (!healthResult) return;
+    
+    healthResult.style.display = "block";
+    healthResult.innerHTML = "<p style='color: #4b0082; margin-top: 10px; font-weight: bold;'>Ping sent to server core...</p>";
 
     try {
-        const response = await fetch(`${API_URL}/api/analyze-data`, {
+        const response = await fetch(API_URL + "/");
+        if (response.ok) {
+            healthResult.innerHTML = "<div style='margin-top: 15px; padding: 12px; background: #f0fff4; border-left: 4px solid #2e7d32; color: #2e7d32; border-radius: 4px; font-weight: bold; text-align: left;'>✅ System Node Status: Online & Connected to Render Core API</div>";
+        } else {
+            healthResult.innerHTML = "<p style='color: #ff4d4d; margin-top: 10px;'>⚠️ Server returned an error response.</p>";
+        }
+    } catch (error) {
+        healthResult.innerHTML = "<p style='color: #b27b00; margin-top: 10px; font-weight: bold;'>⏳ Waking up server core cluster... Click again in 15 seconds.</p>";
+    }
+}
+
+// --- 3. EXPERIMENTAL DATA ANALYSIS ENGINE ---
+async function analyzeData() {
+    var inputField = document.getElementById('dataInput');
+    if (!inputField) return;
+    
+    var rawData = inputField.value.trim();
+    var dataResult = document.getElementById('dataResult');
+    
+    if (!dataResult) {
+        var parent = inputField.parentElement;
+        dataResult = document.createElement('div');
+        dataResult.id = 'dataResult';
+        dataResult.className = 'result-box';
+        dataResult.style.marginTop = '15px';
+        parent.appendChild(dataResult);
+    }
+
+    if (!rawData) {
+        dataResult.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Please enter numerical values (e.g., 0.12, 0.45, 0.23) first.</p>";
+        return;
+    }
+
+    dataResult.innerHTML = "<p style='color: #4b0082; font-weight: bold;'>Running multivariate outlier identification checks...</p>";
+
+    try {
+        const response = await fetch(API_URL + "/api/analyze-data", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ experimental_data: rawData })
@@ -164,49 +198,54 @@ async function analyzeData() {
         const data = await response.json();
 
         if (data.success) {
-            let resultText = `Analysis Complete! 📊\n`;
-            resultText += `----------------------------------------\n`;
-            resultText += `Total Samples Processed (N): ${data.results.count}\n`;
-            resultText += `Mean Sample Average (μ):     ${data.results.mean}\n`;
-            resultText += `Standard Deviation (σ):    ${data.results.std_dev}\n`;
-            resultText += `Calculated Variance (σ²):   ${data.results.variance}\n`;
-            resultText += `Maximum Value Found:       ${data.results.max}\n`;
-            resultText += `Minimum Value Found:       ${data.results.min}\n\n`;
+            var htmlContent = "<div style='padding: 15px; background: #fbfbfe; border-left: 4px solid #4b0082; border-radius: 4px; text-align: left; line-height: 1.6;'>";
+            htmlContent += "<h4 style='color: #4b0082; margin-bottom: 8px; font-size: 16px;'>Biostatistics Matrix Complete! 📊</h4>";
+            htmlContent += "<p style='margin: 4px 0;'><strong>Total Samples Processed (N):</strong> " + data.results.count + "</p>";
+            htmlContent += "<p style='margin: 4px 0;'><strong>Mean Average (μ):</strong> " + data.results.mean + "</p>";
+            htmlContent += "<p style='margin: 4px 0;'><strong>Standard Deviation (σ):</strong> " + data.results.std_dev + "</p>";
+            htmlContent += "<p style='margin: 4px 0;'><strong>Calculated Variance (σ²):</strong> " + data.results.variance + "</p>";
             
             if (data.results.anomalies && data.results.anomalies.length > 0) {
-                resultText += `⚠️ WARNING: SYSTEM ANOMALIES DETECTED!\n`;
-                resultText += `The following data points deviate beyond the normal threshold:\n`;
-                resultText += `Values: [ ${data.results.anomalies.join(', ')} ]\n`;
-                resultText += `➔ Highly indicative of systematic pipetting error or sample contamination.`;
+                htmlContent += "<div style='margin-top: 12px; padding: 10px; background: #fff5f5; border-left: 4px solid #ff4d4d; color: #c62828; border-radius: 4px; font-size: 13px;'>";
+                htmlContent += "<strong>⚠️ SYSTEM ANOMALIES DETECTED!</strong><br>";
+                htmlContent += "Outlier Values: [ " + data.results.anomalies.join(', ') + " ]<br>";
+                htmlContent += "<span style='font-size:12px; color:#555;'>➔ Deviates past the standard 3-Sigma threshold. This indicates pipetting bubbles or localized sample contamination.</span>";
+                htmlContent += "</div>";
             } else {
-                resultText += `✅ Quality Control Passed: No mathematical anomalies or outliers flagged in this dataset.`;
+                htmlContent += "<div style='margin-top: 12px; padding: 10px; background: #f0fff4; border-left: 4px solid #2e7d32; color: #2e7d32; border-radius: 4px; font-size: 13px;'>";
+                htmlContent += "<strong>✅ Quality Control Passed:</strong> No statistical deviations or processing outliers flagged in this sample.";
+                htmlContent += "</div>";
             }
-
-            inputField.value = resultText;
+            
+            htmlContent += "</div>";
+            dataResult.innerHTML = htmlContent;
         } else {
-            inputField.value = "Engine Error: " + data.error;
+            dataResult.innerHTML = "<p style='color: #ff4d4d;'><strong>Engine Error:</strong> " + data.error + "</p>";
         }
     } catch (error) {
-        inputField.value = "Connection failed. Give the server 30 seconds to wake up and try again!";
+        dataResult.innerHTML = "<p style='color: #b27b00; font-weight: bold;'>⏳ API Wake-Up: Free hosting environment waking up. Please click button again in a moment.</p>";
     }
 }
 
-// --- SECTION 3: UTILITY CLEAR BUTTONS ---
+// --- 4. CLEAR SECTIONS ---
 function clearBox() {
-    const inputField = document.getElementById('sequenceInput');
+    var inputField = document.getElementById('sequenceInput');
+    var resultDiv = document.getElementById('sequenceResult');
     if (inputField) inputField.value = '';
+    if (resultDiv) {
+        resultDiv.innerHTML = '';
+        resultDiv.style.display = 'none';
+    }
 }
 
 function clearDataBox() {
-    const inputField = document.getElementById('dataInput');
+    var inputField = document.getElementById('dataInput');
+    var dataResult = document.getElementById('dataResult');
     if (inputField) inputField.value = '';
+    if (dataResult) {
+        dataResult.innerHTML = '';
+    }
 }
-
-// Fixes alignment mapping for older action hooks if present
-document.addEventListener('DOMContentLoaded', () => {
-    const oldBtn = document.querySelector('button[onclick="checkHealth()"]');
-    if (oldBtn) oldBtn.setAttribute('onclick', 'analyzeSequence()');
-});
 </script>
 </body>
-</html> 
+</html>
