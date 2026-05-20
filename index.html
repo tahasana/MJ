@@ -60,6 +60,7 @@
                 <h3>Sequence Analyzer</h3>
                 <textarea id="sequenceInput" placeholder="Enter DNA/RNA/Protein sequence..." rows="5"></textarea>
                 <button class="btn btn-primary" onclick="analyzeSequence()">Analyze Sequence</button>
+<button class="btn btn-secondary" onclick="clearBox()" style="margin-left: 10px; background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Clear Box</button>
                 <div id="sequenceResult" class="result-box"></div>
             </div>
 
@@ -121,6 +122,9 @@ ${data.analysis.summary}`;
         inputField.value = "Server is waking up. Please wait 30 seconds and try again!";
     }
 }
+ function clearBox() {
+    document.getElementById('sequenceInput').value = '';
+}    
 </script> 
 </body>
 </html>
