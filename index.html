@@ -176,6 +176,32 @@
                 <div id="beerResultContainer" class="result-box"></div>
             </div>
 
+            <div class="tool-section">
+                <h3>⚗️ Henderson-Hasselbalch Buffer Prep Assistant</h3>
+                <p>Calculate the specific concentration ratio of weak acid and conjugate base required to achieve a target pH buffer.</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                    <div>
+                        <label>Target pH</label>
+                        <input type="number" id="bufferTargetPH" placeholder="e.g., 7.4" step="any">
+                    </div>
+                    <div>
+                        <label>Acid Dissociation Constant (pKa)</label>
+                        <input type="number" id="bufferPKa" placeholder="e.g., 7.21 (Phosphate)" step="any">
+                    </div>
+                    <div>
+                        <label>Total Buffer Concentration (M)</label>
+                        <input type="number" id="bufferTotalConc" placeholder="e.g., 0.1" step="any">
+                    </div>
+                </div>
+
+                <div>
+                    <button class="btn btn-primary" onclick="calculateBufferRatios()">Calculate Buffer Ratio</button>
+                    <button class="btn btn-secondary" onclick="clearBufferBox()">Clear Box</button>
+                </div>
+                <div id="bufferResultContainer" class="result-box"></div>
+            </div>
+
         </div>
     </section>
 
@@ -338,10 +364,7 @@
                 return;
             }
 
-            // c = A / (epsilon * l) -> Output in Molar (M)
             var concentrationM = A / (epsilon * l);
-            
-            // Generate clean metric scales for laboratory analysis conversion (mM and uM)
             var concentrationMM = concentrationM * 1000;
             var concentrationUM = concentrationM * 1000000;
 
@@ -357,7 +380,41 @@
             displayBox.innerHTML = outputHtml;
         }
 
-        // --- 6. DISPLAY RESET FIELDS ---
+        // --- 6. LOCAL HENDERSON-HASSELBALCH LOGIC (100% LOCAL) ---
+        function calculateBufferRatios() {
+            var targetPH = parseFloat(document.getElementById('bufferTargetPH').value);
+            var pKa = parseFloat(document.getElementById('bufferPKa').value);
+            var totalConc = parseFloat(document.getElementById('bufferTotalConc').value);
+            var displayBox = document.getElementById('bufferResultContainer');
+            if (!displayBox) return;
+
+            if (isNaN(targetPH) || isNaN(pKa) || isNaN(totalConc) || totalConc <= 0) {
+                displayBox.style.display = "block";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Please enter valid numeric values. Total concentration must be positive.</p>";
+                return;
+            }
+
+            // Ratio = 10^(pH - pKa) = [Base]/[Acid]
+            var ratio = Math.pow(10, targetPH - pKa);
+            
+            // [Acid] = Total / (Ratio + 1)
+            var acidConc = totalConc / (ratio + 1);
+            // [Base] = Total - [Acid]
+            var baseConc = totalConc - acidConc;
+
+            displayBox.style.display = "block";
+            var outputHtml = "<div style='background: #fffbf0; border-left: 4px solid #d4af37; padding: 15px; border-radius: 4px;'>";
+            outputHtml += "<h4 style='color: #b8860b; margin-bottom: 5px;'>Buffer Matrix Calculated! ⚗️</h4>";
+            outputHtml += "<p style='color: #333;'>To achieve a total concentration of <strong>" + totalConc + " M</strong> at <strong>pH " + targetPH + "</strong>:</p>";
+            outputHtml += "<p style='font-size: 16px; margin: 8px 0; color: #c62828;'><strong>Weak Acid Concentration [HA]:</strong> " + acidConc.toFixed(4) + " M</p>";
+            outputHtml += "<p style='font-size: 16px; margin: 8px 0; color: #2e7d32;'><strong>Conjugate Base Concentration [A⁻]:</strong> " + baseConc.toFixed(4) + " M</p>";
+            outputHtml += "<p style='font-size: 15px; margin-top: 8px; color: #333;'><strong>Molar Base / Acid Ratio:</strong> " + ratio.toFixed(4) + "</p>";
+            outputHtml += "</div>";
+
+            displayBox.innerHTML = outputHtml;
+        }
+
+        // --- 7. DISPLAY RESET FIELDS ---
         function clearBox() {
             var inputField = document.getElementById('sequenceInput');
             var resultDiv = document.getElementById('sequenceResult');
@@ -385,6 +442,14 @@
             document.getElementById('beerExtinction').value = '';
             document.getElementById('beerPathLength').value = '1';
             var displayBox = document.getElementById('beerResultContainer');
+            if (displayBox) { displayBox.innerHTML = ''; displayBox.style.display = 'none'; }
+        }
+
+        function clearBufferBox() {
+            document.getElementById('bufferTargetPH').value = '';
+            document.getElementById('bufferPKa').value = '';
+            document.getElementById('bufferTotalConc').value = '';
+            var displayBox = document.getElementById('bufferResultContainer');
             if (displayBox) { displayBox.innerHTML = ''; displayBox.style.display = 'none'; }
         }
     </script>
