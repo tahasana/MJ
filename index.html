@@ -228,6 +228,28 @@
                 <div id="enzymeResultContainer" class="result-box" style="font-family: monospace;"></div>
             </div>
 
+            <div class="tool-section">
+                <h3>🌀 Centrifuge RCF & RPM Converter</h3>
+                <p>Convert instrument speeds (RPM) to Relative Centrifugal Force (RCF or g-force) using your rotor's geometry.</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                    <div>
+                        <label>Rotor Radius (r) (cm)</label>
+                        <input type="number" id="rotorRadius" placeholder="e.g., 9.5" step="any">
+                    </div>
+                    <div>
+                        <label>Rotation Speed (RPM)</label>
+                        <input type="number" id="rotorRPM" placeholder="e.g., 5000" step="any">
+                    </div>
+                </div>
+
+                <div>
+                    <button class="btn btn-primary" onclick="calculateRCF()">Calculate G-Force</button>
+                    <button class="btn btn-secondary" onclick="clearCentrifugeBox()">Clear Box</button>
+                </div>
+                <div id="rcfResultContainer" class="result-box" style="font-family: monospace;"></div>
+            </div>
+
         </div>
     </section>
 
@@ -450,7 +472,6 @@
                 return;
             }
 
-            // Michaelis-Menten Equation: v0 = (Vmax * [S]) / (Km + [S])
             var v0 = (vmax * substrate) / (km + substrate);
             var percentSaturation = (substrate / (km + substrate)) * 100;
 
@@ -465,7 +486,34 @@
             displayBox.innerHTML = outputHtml;
         }
 
-        // --- 8. DISPLAY RESET FIELDS ---
+        // --- 8. LOCAL CENTRIFUGATION RCF LOGIC (100% LOCAL) ---
+        function calculateRCF() {
+            var radius = parseFloat(document.getElementById('rotorRadius').value);
+            var rpm = parseFloat(document.getElementById('rotorRPM').value);
+            var displayBox = document.getElementById('rcfResultContainer');
+            if (!displayBox) return;
+
+            if (isNaN(radius) || isNaN(rpm) || radius <= 0 || rpm <= 0) {
+                displayBox.style.display = "block";
+                displayBox.innerHTML = "<p style='color: #ff4d4d; font-weight: bold;'>❌ Error: Please enter positive numeric values for radius and RPM.</p>";
+                return;
+            }
+
+            // Formula: RCF = 1.118e-5 * r * (RPM)^2
+            var rcf = 0.00001118 * radius * Math.pow(rpm, 2);
+
+            displayBox.style.display = "block";
+            var outputHtml = "<div style='background: #f0f7ff; border-left: 4px solid #3498db; padding: 15px; border-radius: 4px;'>";
+            outputHtml += "<h4 style='color: #2980b9; margin-bottom: 5px;'>Parameters Computed! 🌀</h4>";
+            outputHtml += "<p style='color: #333;'>At a spin rate of <strong>" + rpm + " RPM</strong> with a <strong>" + radius + " cm</strong> rotor assembly:</p>";
+            outputHtml += "<p style='font-size: 18px; color: #1a5276; margin: 10px 0;'><strong>⚡ Relative Centrifugal Force (RCF): " + Math.round(rcf) + " × g</strong></p>";
+            outputHtml += "<span style='font-size: 12px; color: #666;'>➔ Protocol Guideline: Always balance your tube pairs symmetrically across the center spindle before securing the centrifuge casing cover shut.</span>";
+            outputHtml += "</div>";
+
+            displayBox.innerHTML = outputHtml;
+        }
+
+        // --- 9. DISPLAY RESET FIELDS ---
         function clearBox() {
             var inputField = document.getElementById('sequenceInput');
             var resultDiv = document.getElementById('sequenceResult');
@@ -509,6 +557,13 @@
             document.getElementById('enzymeKm').value = '';
             document.getElementById('enzymeSubstrate').value = '';
             var displayBox = document.getElementById('enzymeResultContainer');
+            if (displayBox) { displayBox.innerHTML = ''; displayBox.style.display = 'none'; }
+        }
+
+        function clearCentrifugeBox() {
+            document.getElementById('rotorRadius').value = '';
+            document.getElementById('rotorRPM').value = '';
+            var displayBox = document.getElementById('rcfResultContainer');
             if (displayBox) { displayBox.innerHTML = ''; displayBox.style.display = 'none'; }
         }
     </script>
