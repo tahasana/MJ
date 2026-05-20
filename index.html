@@ -78,20 +78,23 @@
         </div>
     </footer>
 
-    <script>
+<script>
 const API_URL = "https://mj-7.onrender.com";
 
 async function analyzeSequence() {
     const sequence = document.getElementById('sequenceInput').value;
     const resultBox = document.getElementById('sequenceResult');
     
+    // 1. Check if the box is empty
     if (!sequence) {
-        resultBox.innerHTML = '<div style="color: red; background: #ffe6e6; padding: 10px; border-radius: 5px; border: 1px solid red;">Please enter a sequence first.</div>';
+        resultBox.innerHTML = '<div style="background: #ffe6e6; color: red; padding: 15px; border: 2px solid red;">Please enter a sequence!</div>';
         return;
     }
 
-    resultBox.innerHTML = '<div style="color: blue; background: #e6f3ff; padding: 10px; border-radius: 5px; border: 1px solid blue;">Analyzing sequence... please wait.</div>';
+    // 2. Show a loading message so you know the button clicked
+    resultBox.innerHTML = '<div style="background: #e6f3ff; color: blue; padding: 15px; border: 2px solid blue;">Sending data to server... Please wait.</div>';
 
+    // 3. Send to Render
     try {
         const response = await fetch(`${API_URL}/api/analyze-sequence`, {
             method: 'POST',
@@ -101,24 +104,25 @@ async function analyzeSequence() {
 
         const data = await response.json();
 
+        // 4. Print the successful results
         if (data.success) {
             resultBox.innerHTML = `
-                <div style="color: black !important; background-color: white !important; border: 2px solid #28a745 !important; padding: 15px !important; margin-top: 15px !important; border-radius: 8px !important; display: block !important; visibility: visible !important;">
-                    <h4 style="color: #28a745; margin-top: 0;">Analysis Complete:</h4>
+                <div style="background-color: #d4edda; color: #155724; padding: 20px; border: 2px solid #28a745; border-radius: 5px; margin-top: 15px;">
+                    <h3 style="margin-top: 0;">✅ Analysis Complete</h3>
                     <p><strong>Classification:</strong> ${data.analysis.sequence_type}</p>
                     <p><strong>Length:</strong> ${data.analysis.length} residues</p>
                     <p><strong>GC Content:</strong> ${data.analysis.gc_content}%</p>
-                    <hr style="border-top: 1px solid #ccc;">
-                    <p style="margin-bottom: 0;">${data.analysis.summary.replace(/\n/g, '<br>')}</p>
+                    <hr style="border-top: 1px solid #c3e6cb;">
+                    <p>${data.analysis.summary.replace(/\n/g, '<br>')}</p>
                 </div>
             `;
         } else {
-            resultBox.innerHTML = `<div style="color: red; background: #ffe6e6; padding: 10px; border-radius: 5px; border: 1px solid red;">Analysis failed: ${data.error}</div>`;
+            resultBox.innerHTML = `<div style="background: #ffe6e6; color: red; padding: 15px; border: 2px solid red;">Error: ${data.error}</div>`;
         }
     } catch (error) {
-        resultBox.innerHTML = `<div style="color: red; background: #ffe6e6; padding: 10px; border-radius: 5px; border: 1px solid red;">Network Error: Backend is waking up. Try again in 30 seconds!</div>`;
+        resultBox.innerHTML = `<div style="background: #fff3cd; color: #856404; padding: 15px; border: 2px solid #ffeeba;">Server is waking up. Please wait 30 seconds and try again!</div>`;
     }
 }
-</script>
+</script>    
 </body>
 </html>
