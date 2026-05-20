@@ -83,17 +83,14 @@
 const API_URL = "https://mj-7.onrender.com";
 
 async function analyzeSequence() {
-    // We grab the text box itself
     const inputField = document.getElementById('sequenceInput');
     const sequence = inputField.value;
     
-    // Check if empty
     if (!sequence || sequence.includes("Analysis Complete")) {
         alert("Please clear the box and enter a valid sequence!");
         return;
     }
 
-    // Change the text box to show it's loading
     inputField.value = "Sending data to server... Please wait.";
 
     try {
@@ -105,16 +102,18 @@ async function analyzeSequence() {
 
         const data = await response.json();
 
-        // Print the successful results directly into the text box
         if (data.success) {
-            inputField.value = `Analysis Complete! ✅
+            let resultText = `Analysis Complete! ✅\n\n`;
+            resultText += `Classification: ${data.analysis.sequence_type}\n`;
+            resultText += `Length: ${data.analysis.length} residues\n`;
+            resultText += `GC Content: ${data.analysis.gc_content}%\n\n`;
             
-Classification: ${data.analysis.sequence_type}
-Length: ${data.analysis.length} residues
-GC Content: ${data.analysis.gc_content}%
+            // This prints the protein chain!
+            if (data.analysis.protein_translation) {
+                resultText += `🧬 Protein Translation:\n${data.analysis.protein_translation}\n\n`;
+            }
 
-Summary:
-${data.analysis.summary}`;
+            inputField.value = resultText;
         } else {
             inputField.value = "Error: " + data.error;
         }
@@ -122,9 +121,11 @@ ${data.analysis.summary}`;
         inputField.value = "Server is waking up. Please wait 30 seconds and try again!";
     }
 }
- function clearBox() {
+
+// Your new Clear button function
+function clearBox() {
     document.getElementById('sequenceInput').value = '';
-}    
-</script> 
+}
+</script>
 </body>
 </html>
