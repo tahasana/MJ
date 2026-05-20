@@ -112,13 +112,13 @@ async function analyzeSequence() {
     resultDiv.innerHTML = "<p style='color: #4b0082; margin-top: 10px; font-weight: bold;'>⏳ Processing sequence layout on Render server... Please wait.</p>";
 
     try {
-        const response = await fetch(API_URL + "/api/analyze-sequence", {
+        var response = await fetch(API_URL + "/api/analyze-sequence", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ sequence: sequence })
         });
 
-        const data = await response.json();
+        var data = await response.json();
 
         if (data.success) {
             var htmlContent = "<div style='margin-top: 15px; padding: 15px; background: #fbfbfe; border-left: 4px solid #4b0082; border-radius: 4px; text-align: left; line-height: 1.6;'>";
@@ -140,7 +140,7 @@ async function analyzeSequence() {
             resultDiv.innerHTML = "<p style='color: #ff4d4d; margin-top: 10px;'><strong>Engine Error:</strong> " + data.error + "</p>";
         }
     } catch (error) {
-        resultDiv.innerHTML = "<p style='color: #b27b00; margin-top: 10px; font-weight: bold;'>⏳ Server Initialization: The free tier backend server takes roughly 30 seconds to wake up from sleep mode. Please wait a moment and click the button again!</p>";
+        resultDiv.innerHTML = "<p style='color: #b27b00; margin-top: 10px; font-weight: bold;'>⏳ Server Initialization: Waking up background services. Please wait a brief moment and click again!</p>";
     }
 }
 
@@ -153,7 +153,7 @@ async function checkHealth() {
     healthResult.innerHTML = "<p style='color: #4b0082; margin-top: 10px; font-weight: bold;'>Ping sent to server core...</p>";
 
     try {
-        const response = await fetch(API_URL + "/");
+        var response = await fetch(API_URL + "/");
         if (response.ok) {
             healthResult.innerHTML = "<div style='margin-top: 15px; padding: 12px; background: #f0fff4; border-left: 4px solid #2e7d32; color: #2e7d32; border-radius: 4px; font-weight: bold; text-align: left;'>✅ System Node Status: Online & Connected to Render Core API</div>";
         } else {
@@ -189,13 +189,13 @@ async function analyzeData() {
     dataResult.innerHTML = "<p style='color: #4b0082; font-weight: bold;'>Running multivariate outlier identification checks...</p>";
 
     try {
-        const response = await fetch(API_URL + "/api/analyze-data", {
+        var response = await fetch(API_URL + "/api/analyze-data", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ experimental_data: rawData })
         });
 
-        const data = await response.json();
+        var data = await response.json();
 
         if (data.success) {
             var htmlContent = "<div style='padding: 15px; background: #fbfbfe; border-left: 4px solid #4b0082; border-radius: 4px; text-align: left; line-height: 1.6;'>";
@@ -223,7 +223,7 @@ async function analyzeData() {
             dataResult.innerHTML = "<p style='color: #ff4d4d;'><strong>Engine Error:</strong> " + data.error + "</p>";
         }
     } catch (error) {
-        dataResult.innerHTML = "<p style='color: #b27b00; font-weight: bold;'>⏳ API Wake-Up: Free hosting environment waking up. Please click button again in a moment.</p>";
+        dataResult.innerHTML = "<p style='color: #b27b00; font-weight: bold;'>⏳ API Wake-Up: Free hosting tier spinning up background dynos. Please click the button again in a brief moment.</p>";
     }
 }
 
