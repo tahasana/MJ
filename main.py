@@ -78,24 +78,13 @@ class MJBiochemist:
                 proteins.append(amino_acid)
             protein_translation = "".join(proteins)
 
-        summary = f"### Structural Breakdown\n"
-        summary += f"* **Classification:** Confirmed {seq_type} molecular sequence.\n"
-        summary += f"* **Total Chain Length:** {length} monomers.\n"
-        if seq_type in ["DNA", "RNA"]:
-            summary += f"* **GC Ratio:** {gc_content}% (Indicates structural stability and melting point characteristics).\n"
-            summary += f"* **Transcription Output (RNA equivalent):** `{transcription[:50]}`{'...' if len(transcription) > 50 else ''}\n"
-            summary += f"* **Predicted Translated Protein Chain:** `{protein_translation[:50]}`{'...' if len(protein_translation) > 50 else ''}\n"
-        else:
-            summary += "* **Note:** Detailed codon translation skipped as input format matches structural protein properties rather than open-reading nucleic frame blueprints."
-
         return {
             "success": True,
             "analysis": {
                 "sequence_type": seq_type,
                 "length": length,
                 "gc_content": gc_content,
-                "nucleotide_counts": counts,
-                "summary": summary
+                "protein_translation": protein_translation
             }
         }
 
