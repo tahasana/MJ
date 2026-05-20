@@ -92,8 +92,10 @@
     </footer>
 
  <script>
+<script>
 const API_URL = "https://mj-7.onrender.com";
 
+// --- SECTION 1: SEQUENCE ANALYSIS ENGINE ---
 async function analyzeSequence() {
     const inputField = document.getElementById('sequenceInput');
     const sequence = inputField.value;
@@ -120,7 +122,6 @@ async function analyzeSequence() {
             resultText += `Length: ${data.analysis.length} residues\n`;
             resultText += `GC Content: ${data.analysis.gc_content}%\n\n`;
             
-            // This prints the protein chain!
             if (data.analysis.protein_translation) {
                 resultText += `🧬 Protein Translation:\n${data.analysis.protein_translation}\n\n`;
             }
@@ -134,38 +135,169 @@ async function analyzeSequence() {
     }
 }
 
-// Your new Clear button function
-function clearBox() {
-    document.getElementById('sequenceInput').value = '';
-}
-// Your existing Sequence clear button function
-function clearBox() {
-    document.getElementById('sequenceInput').value = '';
-}
-
-// --- NEW DATA ANALYSIS ENGINE ---
+// --- SECTION 2: DATA ANALYSIS ENGINE ---
 async function analyzeData() {
     const inputField = document.getElementById('dataInput');
     const rawData = inputField.value;
     
-    if (!rawData) {
-        alert("Please enter some numerical data first!");
+    if (!rawData || rawData.includes("Analysis Complete")) {
+        alert("Please enter valid numerical laboratory numbers first!");
         return;
     }
 
-    inputField.value = "Sending data to backend... Please wait.";
+    inputField.value = "Sending array data to Render server... Please wait.";
 
-    setTimeout(() => {
-        inputField.value = "Frontend UI connected! Ready for Python backend integration.\n\nRaw Input:\n" + rawData;
-    }, 1500);
+    try {
+        const response = await fetch(`${API_URL}/api/analyze-data`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ experimental_data: rawData })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            let resultText = `Analysis Complete! 📊\n`;
+            resultText += `----------------------------------------\n`;
+            resultText += `Total Samples Processed (N): ${data.results.count}\n`;
+            resultText += `Mean Sample Average (μ):     ${data.results.mean}\n`;
+            resultText += `Standard Deviation (σ):    ${data.results.std_dev}\n`;
+            resultText += `Calculated Variance (σ²):   ${data.results.variance}\n`;
+            resultText += `Maximum Value Found:       ${data.results.max}\n`;
+            resultText += `Minimum Value Found:       ${data.results.min}\n\n`;
+            
+            if (data.results.anomalies && data.results.anomalies.length > 0) {
+                resultText += `⚠️ WARNING: SYSTEM ANOMALIES DETECTED!\n`;
+                resultText += `The following data points deviate beyond the normal threshold:\n`;
+                resultText += `Values: [ ${data.results.anomalies.join(', ')} ]\n`;
+                resultText += `➔ Highly indicative of systematic pipetting error or sample contamination.`;
+            } else {
+                resultText += `✅ Quality Control Passed: No mathematical anomalies or outliers flagged in this dataset.`;
+            }
+
+            inputField.value = resultText;
+        } else {
+            inputField.value = "Engine Error: " + data.error;
+        }
+    } catch (error) {
+        inputField.value = "Connection failed. Give the server 30 seconds to wake up and try again!";
+    }
+}
+
+// --- SECTION 3: CLEAR BUTTONS ---
+function clearBox() {
+    document.getElementById('sequenceInput').value = '';
 }
 
 function clearDataBox() {
     document.getElementById('dataInput').value = '';
 }
 </script>
-</body>
-</html>     
+<script>
+const API_URL = "https://mj-7.onrender.com";
+
+// --- SECTION 1: SEQUENCE ANALYSIS ENGINE ---
+async function analyzeSequence() {
+    const inputField = document.getElementById('sequenceInput');
+    const sequence = inputField.value;
+    
+    if (!sequence || sequence.includes("Analysis Complete")) {
+        alert("Please clear the box and enter a valid sequence!");
+        return;
+    }
+
+    inputField.value = "Sending data to server... Please wait.";
+
+    try {
+        const response = await fetch(`${API_URL}/api/analyze-sequence`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sequence: sequence })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            let resultText = `Analysis Complete! ✅\n\n`;
+            resultText += `Classification: ${data.analysis.sequence_type}\n`;
+            resultText += `Length: ${data.analysis.length} residues\n`;
+            resultText += `GC Content: ${data.analysis.gc_content}%\n\n`;
+            
+            if (data.analysis.protein_translation) {
+                resultText += `🧬 Protein Translation:\n${data.analysis.protein_translation}\n\n`;
+            }
+
+            inputField.value = resultText;
+        } else {
+            inputField.value = "Error: " + data.error;
+        }
+    } catch (error) {
+        inputField.value = "Server is waking up. Please wait 30 seconds and try again!";
+    }
+}
+
+// --- SECTION 2: DATA ANALYSIS ENGINE ---
+async function analyzeData() {
+    const inputField = document.getElementById('dataInput');
+    const rawData = inputField.value;
+    
+    if (!rawData || rawData.includes("Analysis Complete")) {
+        alert("Please enter valid numerical laboratory numbers first!");
+        return;
+    }
+
+    inputField.value = "Sending array data to Render server... Please wait.";
+
+    try {
+        const response = await fetch(`${API_URL}/api/analyze-data`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ experimental_data: rawData })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            let resultText = `Analysis Complete! 📊\n`;
+            resultText += `----------------------------------------\n`;
+            resultText += `Total Samples Processed (N): ${data.results.count}\n`;
+            resultText += `Mean Sample Average (μ):     ${data.results.mean}\n`;
+            resultText += `Standard Deviation (σ):    ${data.results.std_dev}\n`;
+            resultText += `Calculated Variance (σ²):   ${data.results.variance}\n`;
+            resultText += `Maximum Value Found:       ${data.results.max}\n`;
+            resultText += `Minimum Value Found:       ${data.results.min}\n\n`;
+            
+            if (data.results.anomalies && data.results.anomalies.length > 0) {
+                resultText += `⚠️ WARNING: SYSTEM ANOMALIES DETECTED!\n`;
+                resultText += `The following data points deviate beyond the normal threshold:\n`;
+                resultText += `Values: [ ${data.results.anomalies.join(', ')} ]\n`;
+                resultText += `➔ Highly indicative of systematic pipetting error or sample contamination.`;
+            } else {
+                resultText += `✅ Quality Control Passed: No mathematical anomalies or outliers flagged in this dataset.`;
+            }
+
+            inputField.value = resultText;
+        } else {
+            inputField.value = "Engine Error: " + data.error;
+        }
+    } catch (error) {
+        inputField.value = "Connection failed. Give the server 30 seconds to wake up and try again!";
+    }
+}
+
+// --- SECTION 3: CLEAR BUTTONS ---
+function clearBox() {
+    document.getElementById('sequenceInput').value = '';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const healthBtn = document.querySelector('button[onclick="checkHealth()"]');
+    if (healthBtn) healthBtn.setAttribute('onclick', 'analyzeSequence()');
+});
+
+function clearDataBox() {
+    document.getElementById('dataInput').value = '';
+}
 </script>
 </body>
 </html>
