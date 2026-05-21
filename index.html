@@ -16,7 +16,7 @@
         .nav-links { display: flex; gap: 20px; list-style: none; align-items: center; }
         .nav-links a { color: rgba(245,239,230,0.8); text-decoration: none; font-weight: 600; transition: color 0.2s; }
         .nav-links a:hover { color: #f5efe6; }
-        .user-badge { background: #8c4a32; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; }
+        .user-badge { background: #7c6c64; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; transition: background 0.3s; }
 
         /* Hero Welcome Panel */
         .hero { background: #fdfbf7; padding: 50px 0 40px 0; text-align: center; border-bottom: 1px solid #e7dfd5; }
@@ -68,6 +68,8 @@
         .btn-secondary { background-color: #7c6c64; color: white; margin-right: 10px; }
         .btn-secondary:hover { background-color: #63554e; }
         .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 4px; }
+        .btn-danger { background-color: #c0392b; color: white; }
+        .btn-danger:hover { background-color: #962d22; }
 
         /* Activity Logs Presentation Grid */
         .log-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; text-align: left; }
@@ -76,10 +78,24 @@
         .log-table tr:nth-child(even) { background: #fdfbf7; }
 
         .result-box { margin-top: 15px; display: none; padding: 15px; border-radius: 4px; text-align: left; }
+        
+        /* Labs Timer Matrix Layout Styles */
+        .timer-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; background: #fffdf9; padding: 10px; border: 1px solid #e7dfd5; border-radius: 6px; }
+        .timer-row.expired { background: #fde8e8; border-color: #e74c3c; animation: pulseGlow 1s infinite alternate; }
+        .timer-display { font-family: monospace; font-size: 18px; font-weight: bold; color: #2c3e50; min-width: 80px; text-align: center; }
+        
+        /* Table Layouts for Formulations */
+        .form-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        .form-table th { background: #7c6c64; color: white; padding: 8px; text-align: left; }
+        .form-table td { padding: 8px; border-bottom: 1px solid #e7dfd5; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulseGlow {
+            from { box-shadow: 0 0 4px #e74c3c; }
+            to { box-shadow: 0 0 12px #e74c3c; }
         }
     </style>
 </head>
@@ -151,15 +167,28 @@
     <section class="tools">
         <div class="container">
 
+            <!-- TAB 1: CORE ANALYTICS -->
             <div id="tab-analytics" class="tab-content active">
                 <div class="tool-section">
                     <h3>Sequence Analyzer</h3>
-                    <textarea id="sequenceInput" placeholder="Enter DNA/RNA/Protein residues here (e.g., ATGCGATCG)..."></textarea>
+                    <textarea id="sequenceInput" placeholder="Enter DNA/RNA/Protein residues here (e.g., ATGCGATCG)..." data-autosave="seq_input"></textarea>
                     <div>
                         <button class="btn btn-primary" onclick="analyzeSequence()">Analyze Sequence</button>
                         <button class="btn btn-secondary" onclick="clearBox()">Clear Box</button>
                     </div>
                     <div id="sequenceResult" class="result-box" style="font-family: monospace;"></div>
+                </div>
+
+                <!-- ADDED FEATURE: CENTRAL DOGMA TRANSCRIPTOR -->
+                <div class="tool-section">
+                    <h3>⚙️ Central Dogma Transcriptor (DNA ➔ RNA ➔ Protein)</h3>
+                    <p>Processes raw DNA coding sequences ($5' \rightarrow 3'$), runs transcription rules, maps standard codons, and builds functional amino acid peptide models.</p>
+                    <textarea id="dogmaDnaInput" placeholder="Enter DNA Coding Strand (e.g., ATGGCCGTCGCA)..." data-autosave="dogma_dna"></textarea>
+                    <div>
+                        <button class="btn btn-primary" onclick="processCentralDogma()">Transcribe & Translate</button>
+                        <button class="btn btn-secondary" onclick="clearDogmaBox()">Clear</button>
+                    </div>
+                    <div id="dogmaResultContainer" class="result-box" style="font-family: monospace; line-height: 1.5;"></div>
                 </div>
 
                 <div class="tool-section">
@@ -174,7 +203,7 @@
                 <div class="tool-section">
                     <h3>📊 Data Analysis</h3>
                     <p>Paste raw numerical laboratory values separated by commas below:</p>
-                    <textarea id="dataInput" placeholder="Enter numbers here (e.g., 0.12, 0.15, 0.14, 0.13, 4.80)..."></textarea>
+                    <textarea id="dataInput" placeholder="Enter numbers here (e.g., 0.12, 0.15, 0.14, 0.13, 4.80)..." data-autosave="data_input"></textarea>
                     <div>
                         <button class="btn btn-primary" onclick="analyzeData()">Process Data</button>
                         <button class="btn btn-secondary" onclick="clearDataBox()">Clear Box</button>
@@ -186,7 +215,7 @@
                     <h3>🔍 Amino Acid Structural Profile & pI Index</h3>
                     <p>Select a specific amino acid to load its structural configurations, properties, and Isoelectric Point ($pI$) markers.</p>
                     <label>Select Target Amino Acid</label>
-                    <select id="aaSelect" onchange="loadAminoAcidProfile()">
+                    <select id="aaSelect" onchange="loadAminoAcidProfile()" data-autosave="aa_select">
                         <option value="">-- Choose Amino Acid --</option>
                         <option value="A">Alanine (Ala / A) - Nonpolar</option>
                         <option value="R">Arginine (Arg / R) - Basic</option>
@@ -213,10 +242,10 @@
                 </div>
 
                 <div class="tool-section">
-                    <h3>⚛️ Bio-Element Quick-Reference Matrix</h3>
+                    <h3>¼ Bio-Element Quick-Reference Matrix</h3>
                     <p>Load chemical configurations, structural weights, and structural energy bonds for the central structural atoms of organic compounds.</p>
                     <label>Select Bio-Element</label>
-                    <select id="elementSelect" onchange="loadElementProfile()">
+                    <select id="elementSelect" onchange="loadElementProfile()" data-autosave="element_select">
                         <option value="">-- Choose Element --</option>
                         <option value="C">Carbon (C) - Atomic No. 6</option>
                         <option value="H">Hydrogen (H) - Atomic No. 1</option>
@@ -231,15 +260,33 @@
                 <div class="tool-section">
                     <h3>🤖 AI Peptide Property & Purification Predictor</h3>
                     <p>Enter a primary peptide chain to map structural parameters and solubility profiles.</p>
-                    <textarea id="aiPeptideInput" placeholder="Enter amino acid single-letter residues here (e.g., RGDWFLM)..."></textarea>
+                    <textarea id="aiPeptideInput" placeholder="Enter amino acid single-letter residues here (e.g., RGDWFLM)..." data-autosave="ai_peptide"></textarea>
                     <div>
                         <button class="btn btn-primary" onclick="runAIPredictor()">Run AI Engine</button>
                         <button class="btn btn-secondary" onclick="clearAIBox()">Clear Box</button>
                     </div>
                     <div id="aiResultContainer" class="result-box" style="font-family: monospace;"></div>
                 </div>
+
+                <!-- ADDED FEATURE: DYNAMIC CHARGE VS PH CURVE GENERATOR -->
+                <div class="tool-section">
+                    <h3>📈 Dynamic Peptide Charge-versus-pH Curve Generator</h3>
+                    <p>Plots the net electro-surface charge values from pH 0 to 14 for a target sequence to determine column chromatography configurations and the exact experimental Isoelectric Point ($pI$).</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                        <div style="flex: 1; min-width: 250px;">
+                            <label>Primary Peptide Chain</label>
+                            <textarea id="chargeCurvePeptideInput" placeholder="Enter residues (e.g., HELLO)..." style="height: 70px;" data-autosave="charge_curve_seq"></textarea>
+                            <button class="btn btn-primary" onclick="generatePeptideChargeCurve()">Plot Charge Profile</button>
+                        </div>
+                        <div style="flex: 1; min-width: 280px; text-align: center; background: #ffffff; padding: 10px; border: 1px solid #e7dfd5; border-radius: 6px;">
+                            <canvas id="chargeCanvas" width="300" height="180" style="background:#ffffff;"></canvas>
+                        </div>
+                    </div>
+                    <div id="chargeCurveResult" class="result-box" style="font-family: monospace;"></div>
+                </div>
             </div>
 
+            <!-- TAB 2: SOLUTIONS & BUFFERS -->
             <div id="tab-solutions" class="tab-content">
                 <div class="tool-section">
                     <h3>🧪 Molarity & Solution Prep Calculator</h3>
@@ -247,15 +294,15 @@
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
                         <div>
                             <label>Molecular Weight (g/mol)</label>
-                            <input type="number" id="molInputMW" placeholder="e.g., 180.16 (Glucose)" step="any">
+                            <input type="number" id="molInputMW" placeholder="e.g., 180.16" step="any" data-autosave="mol_mw">
                         </div>
                         <div>
                             <label>Target Molarity (M)</label>
-                            <input type="number" id="molInputMolarity" placeholder="e.g., 0.5" step="any">
+                            <input type="number" id="molInputMolarity" placeholder="e.g., 0.5" step="any" data-autosave="mol_molarity">
                         </div>
                         <div>
                             <label>Target Volume (mL)</label>
-                            <input type="number" id="molInputVolume" placeholder="e.g., 250" step="any">
+                            <input type="number" id="molInputVolume" placeholder="e.g., 250" step="any" data-autosave="mol_vol">
                         </div>
                     </div>
                     <div>
@@ -265,21 +312,39 @@
                     <div id="molarityResultContainer" class="result-box"></div>
                 </div>
 
+                <!-- ADDED FEATURE: NUCLEIC ACID PURITY INSPECTOR -->
+                <div class="tool-section">
+                    <h3>🔬 The Nucleic Acid Purity Inspector ($A_{260}/A_{280}$ Ratio)</h3>
+                    <p>Evaluates sample isolation quality limits from spectrophotometer absorption bands to verify protein or phenol cross-contaminations.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div>
+                            <label>Absorbance at 260 nm ($A_{260}$)</label>
+                            <input type="number" id="purityA260" placeholder="e.g., 0.84" step="any" data-autosave="pur_260">
+                        </div>
+                        <div>
+                            <label>Absorbance at 280 nm ($A_{280}$)</label>
+                            <input type="number" id="purityA280" placeholder="e.g., 0.46" step="any" data-autosave="pur_280">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="inspectNucleicPurity()">Evaluate Extraction Quality</button>
+                    <div id="purityResultContainer" class="result-box"></div>
+                </div>
+
                 <div class="tool-section">
                     <h3>📉 Spectrophotometry & Concentration Calculator</h3>
                     <p>Determine sample concentration via the Beer-Lambert Law formula.</p>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
                         <div>
                             <label>Absorbance Reading (A)</label>
-                            <input type="number" id="beerAbsorbance" placeholder="e.g., 0.45" step="any">
+                            <input type="number" id="beerAbsorbance" placeholder="e.g., 0.45" step="any" data-autosave="beer_abs">
                         </div>
                         <div>
                             <label>Extinction Coefficient (ε) (M⁻¹cm⁻¹)</label>
-                            <input type="number" id="beerExtinction" placeholder="e.g., 6220" step="any">
+                            <input type="number" id="beerExtinction" placeholder="e.g., 6220" step="any" data-autosave="beer_ext">
                         </div>
                         <div>
                             <label>Cuvette Path Length (l) (cm)</label>
-                            <input type="number" id="beerPathLength" value="1" step="any">
+                            <input type="number" id="beerPathLength" value="1" step="any" data-autosave="beer_path">
                         </div>
                     </div>
                     <div>
@@ -295,15 +360,15 @@
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
                         <div>
                             <label>Target pH</label>
-                            <input type="number" id="bufferTargetPH" placeholder="e.g., 7.4" step="any">
+                            <input type="number" id="bufferTargetPH" placeholder="e.g., 7.4" step="any" data-autosave="buf_ph">
                         </div>
                         <div>
                             <label>Acid Dissociation Constant (pKa)</label>
-                            <input type="number" id="bufferPKa" placeholder="e.g., 7.21" step="any">
+                            <input type="number" id="bufferPKa" placeholder="e.g., 7.21" step="any" data-autosave="buf_pka">
                         </div>
                         <div>
                             <label>Total Buffer Concentration (M)</label>
-                            <input type="number" id="bufferTotalConc" placeholder="e.g., 0.1" step="any">
+                            <input type="number" id="bufferTotalConc" placeholder="e.g., 0.1" step="any" data-autosave="buf_conc">
                         </div>
                     </div>
                     <div>
@@ -313,21 +378,37 @@
                     <div id="bufferResultContainer" class="result-box" style="font-family: monospace;"></div>
                 </div>
 
+                <!-- ADDED FEATURE: BUFFER TITRATION CURVE SIMULATOR -->
+                <div class="tool-section">
+                    <h3>⚗️ Buffer Titration Curve Simulator (pH Behavior)</h3>
+                    <p>Simulates the resistance parameters and identifies structural buffer breakdown boundaries ($\pm 1\ \text{pH}$ units around the $pK_a$) using an interactive charting system.</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                        <div style="flex: 1; min-width: 240px;">
+                            <label>System Constant ($pK_a$)</label>
+                            <input type="number" id="titrationPkaInput" placeholder="e.g., 4.76" step="any" data-autosave="tit_pka">
+                            <button class="btn btn-primary" onclick="generateTitrationCurve()">Simulate Titration</button>
+                        </div>
+                        <div style="flex: 1; min-width: 280px; text-align: center; background: #ffffff; padding: 10px; border: 1px solid #e7dfd5; border-radius: 6px;">
+                            <canvas id="titrationCanvas" width="300" height="180" style="background:#ffffff;"></canvas>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="tool-section">
                     <h3>💦 Stock Solution Dilution Calculator (C₁V₁ = C₂V₂)</h3>
                     <p>Calculate stock requirement guidelines for running working serial dilutions down.</p>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
                         <div>
                             <label>Stock Concentration (C₁)</label>
-                            <input type="number" id="dilutionC1" placeholder="e.g., 10" step="any">
+                            <input type="number" id="dilutionC1" placeholder="e.g., 10" step="any" data-autosave="dil_c1">
                         </div>
                         <div>
                             <label>Target Concentration (C₂)</label>
-                            <input type="number" id="dilutionC2" placeholder="e.g., 1" step="any">
+                            <input type="number" id="dilutionC2" placeholder="e.g., 1" step="any" data-autosave="dil_c2">
                         </div>
                         <div>
                             <label>Target Final Volume (V₂) (mL)</label>
-                            <input type="number" id="dilutionV2" placeholder="e.g., 500" step="any">
+                            <input type="number" id="dilutionV2" placeholder="e.g., 500" step="any" data-autosave="dil_v2">
                         </div>
                     </div>
                     <div>
@@ -336,35 +417,43 @@
                     </div>
                     <div id="dilutionResultContainer" class="result-box" style="font-family: monospace;"></div>
                 </div>
+
+                <!-- ADDED FEATURE: PCR MASTER MIX FORMULATION ASSISTANT -->
+                <div class="tool-section">
+                    <h3>🧪 PCR Master Mix Formulation Assistant</h3>
+                    <p>Calculates compound multi-tube distribution metrics adding a dynamic $10\%$ overage buffer constant to clear out pipetting wall-loss limits.</p>
+                    <label>Total Reaction Tubes ($N$)</label>
+                    <input type="number" id="pcrTubesInput" placeholder="e.g., 12" min="1" data-autosave="pcr_tubes">
+                    <button class="btn btn-primary" onclick="calculatePCRMasterMix()">Formulate Master Mix</button>
+                    <div id="pcrResultContainer" class="result-box"></div>
+                </div>
             </div>
 
+            <!-- TAB 3: KINETICS & HARDWARE -->
             <div id="tab-kinetics" class="tab-content">
                 <div class="tool-section">
                     <h3>🧪 Enzyme Kinetics Calculator & Visual Plotter</h3>
                     <p>Compute initial velocity parameters ($v_0$) for reaction channels relative to substrate concentration and map the structural saturation curve.</p>
-                    
                     <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 15px;">
                         <div style="flex: 1; min-width: 250px;">
                             <div>
                                 <label>Max Velocity (Vmax) (μmol/min)</label>
-                                <input type="number" id="enzymeVmax" placeholder="e.g., 120" step="any">
+                                <input type="number" id="enzymeVmax" placeholder="e.g., 120" step="any" data-autosave="enz_vmax">
                             </div>
                             <div>
                                 <label>Michaelis Constant (Km) (mM)</label>
-                                <input type="number" id="enzymeKm" placeholder="e.g., 2.5" step="any">
+                                <input type="number" id="enzymeKm" placeholder="e.g., 2.5" step="any" data-autosave="enz_km">
                             </div>
                             <div>
                                 <label>Substrate Concentration [S] (mM)</label>
-                                <input type="number" id="enzymeSubstrate" placeholder="e.g., 5.0" step="any">
+                                <input type="number" id="enzymeSubstrate" placeholder="e.g., 5.0" step="any" data-autosave="enz_sub">
                             </div>
                         </div>
-                        
                         <div style="flex: 1; min-width: 250px; text-align: center; background: #fffdfb; padding: 10px; border: 1px dashed #e7dfd5; border-radius: 6px;">
                             <label style="margin-bottom: 8px;">Saturation Curve Hyperbola Plot</label>
                             <canvas id="kineticsCanvas" width="300" height="150" style="background:#ffffff; border:1px solid #e7dfd5; border-radius:4px;"></canvas>
                         </div>
                     </div>
-
                     <div style="margin-top: 15px;">
                         <button class="btn btn-primary" onclick="calculateEnzymeKinetics()">Calculate Velocity & Plot</button>
                         <button class="btn btn-secondary" onclick="clearEnzymeBox()">Clear Box</button>
@@ -378,11 +467,11 @@
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
                         <div>
                             <label>Rotor Radius (r) (cm)</label>
-                            <input type="number" id="rotorRadius" placeholder="e.g., 9.5" step="any">
+                            <input type="number" id="rotorRadius" placeholder="e.g., 9.5" step="any" data-autosave="rot_rad">
                         </div>
                         <div>
                             <label>Rotation Speed (RPM)</label>
-                            <input type="number" id="rotorRPM" placeholder="e.g., 5000" step="any">
+                            <input type="number" id="rotorRPM" placeholder="e.g., 5000" step="any" data-autosave="rot_rpm">
                         </div>
                     </div>
                     <div>
@@ -393,22 +482,35 @@
                 </div>
             </div>
 
+            <!-- TAB 4: UTILITIES & NOTEBOOKS -->
             <div id="tab-notebook" class="tab-content">
+                <!-- ADDED FEATURE: MULTI-STAGE INCUBATION LAB TIMER MATRIX -->
+                <div class="tool-section">
+                    <h3>⏱️ Multi-Stage Incubation Lab Timer Matrix</h3>
+                    <p>Track concurrent incubation periods on the bench simultaneously with custom tags for each protocol tracking gate.</p>
+                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="timerLabelInput" placeholder="Step Name (e.g., Membrane Blocking)...">
+                        <input type="number" id="timerMinInput" placeholder="Min" min="0">
+                        <button class="btn btn-primary" onclick="addNewLabTimer()">Deploy Timer Thread</button>
+                    </div>
+                    <div id="activeTimersContainer"></div>
+                </div>
+
                 <div class="tool-section">
                     <h3>📋 Report Generation</h3>
                     <p>Compile observations directly into a downloadable text notebook entry log.</p>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
                         <div>
                             <label>Researcher Name</label>
-                            <input type="text" id="reportAuthor" placeholder="e.g., Danish Nazir">
+                            <input type="text" id="reportAuthor" placeholder="e.g., Danish Nazir" data-autosave="rep_auth">
                         </div>
                         <div>
                             <label>Experiment Title</label>
-                            <input type="text" id="reportTitle" placeholder="e.g., Enzyme Isolation">
+                            <input type="text" id="reportTitle" placeholder="e.g., Enzyme Isolation" data-autosave="rep_title">
                         </div>
                     </div>
                     <label>Observations & Data Log Summary</label>
-                    <textarea id="reportContent" placeholder="Enter notes summary data logs here..."></textarea>
+                    <textarea id="reportContent" placeholder="Enter notes summary data logs here..." data-autosave="rep_content"></textarea>
                     <div>
                         <button class="btn btn-primary" onclick="generateLabReport()">Export Report File</button>
                         <button class="btn btn-secondary" onclick="clearReportBox()">Clear Box</button>
@@ -420,7 +522,7 @@
                     <h3>🔍 Protocol Search Index</h3>
                     <p>Search and load structural steps for standard assay frameworks.</p>
                     <label>Select Lab Protocol Method</label>
-                    <select id="protocolSelect">
+                    <select id="protocolSelect" data-autosave="proto_select">
                         <option value="">-- Choose an Indexed Lab Protocol --</option>
                         <option value="dna_extract">1. Genomic DNA Isolation (Phenol-Chloroform Method)</option>
                         <option value="sds_page">2. SDS-PAGE Gel Casting & Electrophoresis</option>
@@ -435,6 +537,7 @@
                 </div>
             </div>
 
+            <!-- TAB 5: MEMBERS HUB -->
             <div id="tab-members" class="tab-content">
                 <div class="tool-section" style="max-width: 800px;">
                     <h3>👥 Authorized System Members</h3>
@@ -485,8 +588,15 @@
     <script>
         const API_URL = "https://mj-7.onrender.com";
         let currentUser = "Guest";
+        
+        // SECURITY DEFINITION: Master Admin PIN protection
+        const ADMIN_ROSTER = ["TAHASANA", "UZAIR IBRAHIM BHAT", "DANISH NAZIR"];
+        const MASTER_SIGNUP_SECRET_KEY = "TAHASANA_ADMIN_2026";
 
-        // --- SESSION CONTROL LOGIC MATRIX ---
+        // Global arrays tracking bench timers
+        let labTimers = [];
+
+        // --- SESSION CONTROL LOGIC MATRIX WITH SECURITY KEY WALL ---
         window.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('mj_user');
             if (savedUser) {
@@ -495,12 +605,30 @@
             }
             renderActivityLogs();
             initBlankCanvas();
+            initChargeCanvas();
+            initTitrationCanvas();
+            
+            // Trigger dynamic text input workspace recovery snapshots
+            restoreWorkspaceFields();
+            bindAutosaveTriggers();
         });
 
         function handleLogin() {
             const nameField = document.getElementById('usernameInput');
             const name = nameField.value.trim();
             if (!name) return;
+
+            let upperName = name.toUpperCase();
+            
+            // Intercept Protected Admin Identity Profiles
+            if (ADMIN_ROSTER.includes(upperName)) {
+                let verificationPrompt = prompt(`🔒 Security Clearance Triggered:\nEnter the Master Admin PIN Key to authenticate as "${name}":`);
+                if (verificationPrompt !== MASTER_SIGNUP_SECRET_KEY) {
+                    alert("❌ Security Exception: Invalid Administrative Master Key. Identity verification failed.");
+                    logAction(`Blocked unauthorized login attempt spoofing profile: [${name}]`);
+                    return;
+                }
+            }
 
             currentUser = name;
             localStorage.setItem('mj_user', name);
@@ -535,7 +663,31 @@
             }
         }
 
-        // --- AUDIT SYSTEM LOGGER ROUTINES & NEW CSV EXPORTER ---
+        // --- AUTOSAVE WORKSPACE RECOVERY ENGINE ---
+        function bindAutosaveTriggers() {
+            document.querySelectorAll('[data-autosave]').forEach(element => {
+                element.addEventListener('input', () => {
+                    let key = element.getAttribute('data-autosave');
+                    localStorage.setItem('mj_save_' + key, element.value);
+                });
+                element.addEventListener('change', () => {
+                    let key = element.getAttribute('data-autosave');
+                    localStorage.setItem('mj_save_' + key, element.value);
+                });
+            });
+        }
+
+        function restoreWorkspaceFields() {
+            document.querySelectorAll('[data-autosave]').forEach(element => {
+                let key = element.getAttribute('data-autosave');
+                let cachedValue = localStorage.getItem('mj_save_' + key);
+                if (cachedValue !== null) {
+                    element.value = cachedValue;
+                }
+            });
+        }
+
+        // --- AUDIT SYSTEM LOGGER ROUTINES ---
         function logAction(actionDescription) {
             let logs = JSON.parse(localStorage.getItem('mj_activity_logs')) || [];
             const timestamp = new Date().toLocaleTimeString();
@@ -591,7 +743,6 @@
             renderActivityLogs();
         }
 
-        // --- TABS DISPLAY ROUTINE CONTROLLER ---
         function switchTab(event, tabId) {
             var contents = document.querySelectorAll('.tab-content');
             var buttons = document.querySelectorAll('.tab-btn');
@@ -603,7 +754,7 @@
             event.currentTarget.classList.add('active');
         }
 
-        // --- NEW LOCAL BIO-ELEMENT REFERENCE INDEX ---
+        // --- CORE CHEMICAL KNOWLEDGE REFS ---
         var elementDatabase = {
             'C': { name: "Carbon", symbol: "C", mass: "12.011", config: "[He] 2s² 2p²", electroneg: "2.55", energy: "C-C: 348 kJ/mol, C-H: 413 kJ/mol", role: "Backbone structural atom of all organic bio-macromolecules and functional complexes." },
             'H': { name: "Hydrogen", symbol: "H", mass: "1.008", config: "1s¹", electroneg: "2.20", energy: "H-H: 436 kJ/mol, O-H: 463 kJ/mol", role: "Maintains biological solution matrix layers and powers respiration membrane proton gradients." },
@@ -613,96 +764,6 @@
             'S': { name: "Sulfur", symbol: "S", mass: "32.06", config: "[Ne] 3s² 3p⁴", electroneg: "2.58", energy: "S-S: 250 kJ/mol, C-S: 259 kJ/mol", role: "Enables disulfide bond formation essential for peptide tertiary structure folds stability." }
         };
 
-        function loadElementProfile() {
-            var selectedElement = document.getElementById('elementSelect').value;
-            var displayBox = document.getElementById('elementResultContainer');
-            if (!displayBox) return;
-            if (!selectedElement) { displayBox.style.display = "none"; return; }
-
-            var el = elementDatabase[selectedElement];
-            displayBox.style.display = "block";
-            displayBox.innerHTML = `<div style='background: #fffdf5; border-left: 4px solid #8c4a32; padding: 15px; color: #4a3e3d;'>
-                <h4 style='color: #8c4a32; margin-bottom: 5px;'>${el.name} (${el.symbol})</h4>
-                <p><strong>Atomic Weight:</strong> ${el.mass} g/mol | <strong>Electronegativity:</strong> ${el.electreg || el.electroneg}</p>
-                <p><strong>Valence Cloud Map:</strong> ${el.config}</p>
-                <p><strong>Standard Bond Dissociation Energy:</strong> ${el.energy}</p>
-                <p style='font-size: 13px; color: #7c6864; margin-top: 5px;'><strong>Biological Utility:</strong> ${el.role}</p>
-            </div>`;
-            logAction(`Inspected Bio-Element Parameters: ${el.name}`);
-        }
-
-        // --- NEW INTERACTIVE HTML5 CANVAS MICRO-PLOTTER LOGIC ---
-        function initBlankCanvas() {
-            var canvas = document.getElementById('kineticsCanvas');
-            if (!canvas) return;
-            var ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#8c736c";
-            ctx.font = "11px Arial";
-            ctx.fillText("Awaiting reaction factors...", 75, 80);
-        }
-
-        function plotKineticsCurve(vmax, km, currentS) {
-            var canvas = document.getElementById('kineticsCanvas');
-            if (!canvas) return;
-            var ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Establish Boundary Margins
-            const leftMargin = 35;
-            const bottomMargin = 125;
-            const graphWidth = 250;
-            const graphHeight = 110;
-
-            // Plot Grid Coordinates
-            ctx.beginPath();
-            ctx.strokeStyle = '#cdbfb0';
-            ctx.lineWidth = 1;
-            ctx.moveTo(leftMargin, 15);
-            ctx.lineTo(leftMargin, bottomMargin);
-            ctx.lineTo(leftMargin + graphWidth, bottomMargin);
-            ctx.stroke();
-
-            // Axis Label Strings
-            ctx.fillStyle = '#5d4037';
-            ctx.font = '9px monospace';
-            ctx.fillText('v₀', 12, 20);
-            ctx.fillText('[S] (mM)', leftMargin + graphWidth - 45, bottomMargin + 18);
-
-            // Compute dynamic chart scale factor ranges
-            var plotMaxS = Math.max(currentS * 2, km * 4, 10);
-            
-            // Plot Mathematical Hyperbola Curve Mapping Loop
-            ctx.beginPath();
-            ctx.strokeStyle = '#8c4a32';
-            ctx.lineWidth = 2;
-
-            for (var xCoord = leftMargin; xCoord <= leftMargin + graphWidth; xCoord++) {
-                var sVal = ((xCoord - leftMargin) / graphWidth) * plotMaxS;
-                var vVal = (vmax * sVal) / (km + sVal);
-
-                // Invert coordinates calculation for canvas standard positioning alignment rules
-                var yCoord = bottomMargin - (vVal / vmax) * graphHeight;
-
-                if (xCoord === leftMargin) ctx.moveTo(xCoord, yCoord);
-                else ctx.lineTo(xCoord, yCoord);
-            }
-            ctx.stroke();
-
-            // Plot local user metric cross-hair indicator intersection node
-            var pointX = leftMargin + (currentS / plotMaxS) * graphWidth;
-            var pointV = (vmax * currentS) / (km + currentS);
-            var pointY = bottomMargin - (pointV / vmax) * graphHeight;
-
-            if (pointX <= leftMargin + graphWidth && pointY >= 15) {
-                ctx.beginPath();
-                ctx.fillStyle = '#2e7d32';
-                ctx.arc(pointX, pointY, 5, 0, 2 * Math.PI);
-                ctx.fill();
-            }
-        }
-
-        // --- AMINO ACID REFERENCE MATRIX LOGIC ---
         var aaDatabase = {
             'A': { name: "Alanine", triple: "Ala", mass: "89.10", pI: "6.00", class: "Aliphatic / Nonpolar / Hydrophobic", pka: "COOH: 2.34, NH3+: 9.69, R-Group: N/A" },
             'R': { name: "Arginine", triple: "Arg", mass: "174.20", pI: "10.76", class: "Positively Charged / Basic / Hydrophilic", pka: "COOH: 2.17, NH3+: 9.04, R-Group (Guanidino): 12.48" },
@@ -726,6 +787,35 @@
             'V': { name: "Valine", triple: "Val", mass: "117.15", pI: "5.96", class: "Aliphatic / Nonpolar Branched-Chain", pka: "COOH: 2.32, NH3+: 9.62, R-Group: N/A" }
         };
 
+        const CODON_WHEEL = {
+            'UUU':'Phe', 'UUC':'Phe', 'UUA':'Leu', 'UUG':'Leu', 'UCU':'Ser', 'UCC':'Ser', 'UCA':'Ser', 'UCG':'Ser',
+            'UAU':'Tyr', 'UAC':'Tyr', 'UAA':'STOP', 'UAG':'STOP', 'UGU':'Cys', 'UGC':'Cys', 'UGA':'STOP', 'UGG':'Trp',
+            'CUU':'Leu', 'CUC':'Leu', 'CUA':'Leu', 'CUG':'Leu', 'CCU':'Pro', 'CCC':'Pro', 'CCA':'Pro', 'CCG':'Pro',
+            'CAU':'His', 'CAC':'His', 'CAA':'Gln', 'CAG':'Gln', 'CGU':'Arg', 'CGC':'Arg', 'CGA':'Arg', 'CGG':'Arg',
+            'AUU':'Ile', 'AUC':'Ile', 'AUA':'Ile', 'AUG':'Met', 'ACU':'Thr', 'ACC':'Thr', 'ACA':'Thr', 'ACG':'Thr',
+            'AAU':'Asn', 'AAC':'Asn', 'AAA':'Lys', 'AAG':'Lys', 'AGU':'Ser', 'AGC':'Ser', 'AGA':'Arg', 'AGG':'Arg',
+            'GUU':'Val', 'GUC':'Val', 'GUA':'Val', 'GUG':'Val', 'GCU':'Ala', 'GCC':'Ala', 'GCA':'Ala', 'GCG':'Ala',
+            'GAU':'Asp', 'GAC':'Asp', 'GAA':'Glu', 'GAG':'Glu', 'GGU':'Gly', 'GGC':'Gly', 'GGA':'Gly', 'GGG':'Gly'
+        };
+
+        function loadElementProfile() {
+            var selectedElement = document.getElementById('elementSelect').value;
+            var displayBox = document.getElementById('elementResultContainer');
+            if (!displayBox) return;
+            if (!selectedElement) { displayBox.style.display = "none"; return; }
+
+            var el = elementDatabase[selectedElement];
+            displayBox.style.display = "block";
+            displayBox.innerHTML = `<div style='background: #fffdf5; border-left: 4px solid #8c4a32; padding: 15px; color: #4a3e3d;'>
+                <h4 style='color: #8c4a32; margin-bottom: 5px;'>${el.name} (${el.symbol})</h4>
+                <p><strong>Atomic Weight:</strong> ${el.mass} g/mol | <strong>Electronegativity:</strong> ${el.electreg || el.electroneg}</p>
+                <p><strong>Valence Cloud Map:</strong> ${el.config}</p>
+                <p><strong>Standard Bond Dissociation Energy:</strong> ${el.energy}</p>
+                <p style='font-size: 13px; color: #7c6864; margin-top: 5px;'><strong>Biological Utility:</strong> ${el.role}</p>
+            </div>`;
+            logAction(`Inspected Bio-Element Parameters: ${el.name}`);
+        }
+
         function loadAminoAcidProfile() {
             var selectedAA = document.getElementById('aaSelect').value;
             var displayBox = document.getElementById('aaResultContainer');
@@ -744,216 +834,221 @@
             logAction(`Inspected Amino Acid Profile: ${item.name}`);
         }
 
-        // --- 3. BIOPROCESS COMPUTATION ENGINES WITH AUTOMATIC AUDITING ---
-        function runAIPredictor() {
-            var inputField = document.getElementById('aiPeptideInput');
-            var displayBox = document.getElementById('aiResultContainer');
+        // --- FEATURE ENGINE 1: CENTRAL DOGMA TRANSCRIPTOR ---
+        function processCentralDogma() {
+            let inputField = document.getElementById('dogmaDnaInput');
+            let displayBox = document.getElementById('dogmaResultContainer');
             if (!inputField || !displayBox) return;
 
-            var seq = inputField.value.toUpperCase().trim().replace(/[^ACDEFGHIKLMNPQRSTVWY]/g, '');
-            if (!seq) {
+            let rawDna = inputField.value.toUpperCase().replace(/[^ATCG]/g, '');
+            if (rawDna.length < 3) {
                 displayBox.style.display = "block";
-                displayBox.innerHTML = "<p style='color: #d9534f; font-weight: bold;'>❌ Error: Please enter a valid protein sequence.</p>";
+                displayBox.innerHTML = "<span style='color:#c0392b;'>❌ Error: DNA chain sequence length must contain at least 1 triplet codon (3 bases).</span>";
                 return;
             }
 
-            var mwMap = {'A':71.08, 'R':156.19, 'N':114.10, 'D':115.09, 'C':103.14, 'E':129.12, 'Q':128.13, 'G':57.05, 'H':137.14, 'I':113.16, 'L':113.16, 'K':128.17, 'M':131.20, 'F':147.18, 'P':97.12, 'S':87.08, 'T':101.11, 'W':186.21, 'Y':163.18, 'V':99.13};
-            var hydrophobicResidues = ['I', 'V', 'L', 'F', 'C', 'M', 'A', 'W', 'Y'];
-            var totalMW = 18.02; var hydrophobicCount = 0; var charge = 0;
-
-            for (var i = 0; i < seq.length; i++) {
-                var aa = seq.charAt(i);
-                if (mwMap[aa]) totalMW += mwMap[aa];
-                if (hydrophobicResidues.includes(aa)) hydrophobicCount++;
-                if (aa === 'K' || aa === 'R') charge += 1;
-                if (aa === 'D' || aa === 'E') charge -= 1;
+            // Transcription rule mapping
+            let mrna = rawDna.replace(/T/g, 'U');
+            
+            // Translation loop
+            let residues = [];
+            let displayPairs = [];
+            for (let i = 0; i <= mrna.length - 3; i += 3) {
+                let codon = mrna.substring(i, i + 3);
+                let aa = CODON_WHEEL[codon] || 'Unknown';
+                displayPairs.push(`[${codon}➔${aa}]`);
+                if (aa === 'STOP') {
+                    residues.push("🛑");
+                    break;
+                } else {
+                    residues.push(aa);
+                }
             }
 
-            var hydroRatio = (hydrophobicCount / seq.length) * 100;
-            var solubility = hydroRatio > 45 ? "Low Fluidity (Organic Solvent Required)" : "High Fluidity (Aqueous Buffer Soluble)";
-
             displayBox.style.display = "block";
-            displayBox.innerHTML = `<div style='background: #f4f0ff; border-left: 4px solid #6f42c1; padding: 15px; border-radius: 4px;'>
-                <h4 style='color: #6f42c1; margin-bottom: 8px;'>AI Predictive Analysis Complete! 🤖</h4>
-                <p><strong>Mass:</strong> ${totalMW.toFixed(2)} g/mol | <strong>Net Charge:</strong> ${charge} | <strong>Hydrophobicity:</strong> ${hydroRatio.toFixed(1)}%</p>
-                <p style='color: #4b0082; margin-top: 5px;'><strong>🧠 Forecast:</strong> ${solubility}</p>
+            displayBox.innerHTML = `<div style="background:#f4f9f4; border-left:4px solid #27ae60; padding:12px;">
+                <p><strong>Input Filtered DNA:</strong> ${rawDna}</p>
+                <p><strong>Transcribed mRNA Vector:</strong> <span style="color:#2980b9; font-weight:bold;">${mrna}</span></p>
+                <p style="margin-top:6px; font-size:12px; color:#555;"><strong>Codon Map:</strong> ${displayPairs.join(' ')}</p>
+                <p style="margin-top:8px; font-size:15px; color:#27ae60; font-weight:bold;"><strong>Translated Protein Chain:</strong> ${residues.join('-')}</p>
             </div>`;
-            logAction(`Executed AI Peptide Prediction on length ${seq.length}`);
+            logAction(`Executed Central Dogma Translation for ${rawDna.length} bases.`);
+        }
+        function clearDogmaBox() {
+            document.getElementById('dogmaDnaInput').value = '';
+            document.getElementById('dogmaResultContainer').style.display = 'none';
+            localStorage.removeItem('mj_save_dogma_dna');
         }
 
-        function calculateMolarityMass() {
-            var mw = parseFloat(document.getElementById('molInputMW').value);
-            var molarity = parseFloat(document.getElementById('molInputMolarity').value);
-            var volume = parseFloat(document.getElementById('molInputVolume').value);
-            var displayBox = document.getElementById('molarityResultContainer');
-            if (isNaN(mw) || isNaN(molarity) || isNaN(volume)) return;
-
-            var massNeeded = molarity * (volume / 1000) * mw;
-            displayBox.style.display = "block";
-            displayBox.innerHTML = `<div style='background: #f0fff4; border-left: 4px solid #2e7d32; padding: 15px; border-radius: 4px;'>
-                <p><strong>⚖️ Mass Needed: ${massNeeded.toFixed(4)} grams</strong></p>
-            </div>`;
-            logAction(`Calculated Molarity Mass: ${massNeeded.toFixed(2)}g`);
+        // --- FEATURE ENGINE 2: PEPTIDE CHARGE GRAPH PLOTTER ---
+        function initChargeCanvas() {
+            let canvas = document.getElementById('chargeCanvas');
+            if (!canvas) return;
+            let ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "#8c736c";
+            ctx.font = "11px Arial";
+            ctx.fillText("Awaiting primary residue coordinates...", 45, 95);
         }
 
-        function calculateBeerLambert() {
-            var A = parseFloat(document.getElementById('beerAbsorbance').value);
-            var epsilon = parseFloat(document.getElementById('beerExtinction').value);
-            var l = parseFloat(document.getElementById('beerPathLength').value);
-            var displayBox = document.getElementById('beerResultContainer');
-            if (isNaN(A) || isNaN(epsilon) || isNaN(l)) return;
+        function generatePeptideChargeCurve() {
+            let inputField = document.getElementById('chargeCurvePeptideInput');
+            let displayBox = document.getElementById('chargeCurveResult');
+            let canvas = document.getElementById('chargeCanvas');
+            if (!inputField || !canvas) return;
 
-            var concentrationUM = (A / (epsilon * l)) * 1000000;
+            let seq = inputField.value.toUpperCase().replace(/[^ACDEFGHIKLMNPQRSTVWY]/g, '');
+            if (!seq) {
+                displayBox.style.display = "block";
+                displayBox.innerHTML = "<span style='color:#c0392b;'>❌ Error: Enter valid amino acid single letter references.</span>";
+                return;
+            }
+
+            // High-precision iterative titration parsing matrix
+            let pHValues = [];
+            let charges = [];
+            let calculatedPi = 7.0;
+            let piFound = false;
+
+            for (let ph = 0; ph <= 14; ph += 0.1) {
+                let netCharge = calculateNetPeptideCharge(seq, ph);
+                pHValues.push(ph);
+                charges.push(netCharge);
+                
+                if (ph > 0 && !piFound) {
+                    let prevCharge = charges[charges.length - 2];
+                    if ((prevCharge >= 0 && netCharge <= 0) || (prevCharge <= 0 && netCharge >= 0)) {
+                        calculatedPi = ph - 0.05;
+                        piFound = true;
+                    }
+                }
+            }
+
+            // Draw Curve Layout
+            let ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+
+            const marginX = 35, marginY = 20;
+            const w = canvas.width - 50, h = canvas.height - 40;
+
+            // Zero baseline line
+            ctx.beginPath();
+            ctx.strokeStyle = "#b2bec3";
+            ctx.lineWidth = 1;
+            let zeroY = marginY + h/2; // Middle baseline boundary point
+            ctx.moveTo(marginX, zeroY);
+            ctx.lineTo(marginX + w, zeroY);
+            ctx.stroke();
+
+            // Graph structural border lines
+            ctx.beginPath();
+            ctx.strokeStyle = "#decbba";
+            ctx.moveTo(marginX, marginY);
+            ctx.lineTo(marginX, marginY + h);
+            ctx.lineTo(marginX + w, marginY + h);
+            ctx.stroke();
+
+            // Label elements
+            ctx.fillStyle = "#5d4037";
+            ctx.font = "8px monospace";
+            ctx.fillText("pH 0", marginX, marginY + h + 12);
+            ctx.fillText("pH 14", marginX + w - 20, marginY + h + 12);
+            ctx.fillText("+Max", 10, marginY + 10);
+            ctx.fillText("-Max", 10, marginY + h);
+
+            // Dynamically trace and print line metrics 
+            ctx.beginPath();
+            ctx.strokeStyle = "#6f42c1";
+            ctx.lineWidth = 2;
+
+            let maxAbsCharge = Math.max(...charges.map(Math.abs), 1);
+
+            for (let i = 0; i < pHValues.length; i++) {
+                let x = marginX + (pHValues[i] / 14) * w;
+                let y = (marginY + h/2) - (charges[i] / maxAbsCharge) * (h/2);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
             displayBox.style.display = "block";
-            displayBox.innerHTML = `<div style='background: #f0f4ff; border-left: 4px solid #0056b3; padding: 15px; border-radius: 4px;'>
-                <p><strong>🔬 Concentration: ${concentrationUM.toFixed(2)} μM</strong></p>
+            displayBox.innerHTML = `<div style="background:#fafdff; border-left:4px solid #6f42c1; padding:12px;">
+                <p><strong>Analyzed Sequence:</strong> ${seq}</p>
+                <p><strong>Net Charge at Physiological pH (7.4):</strong> ${calculateNetPeptideCharge(seq, 7.4).toFixed(3)}</p>
+                <p style="color:#6f42c1; font-weight:bold; font-size:14px;"><strong>Calculated Isoelectric Point (pI Matrix): ~${calculatedPi.toFixed(2)}</strong></p>
             </div>`;
-            logAction(`Analyzed Concentration via OD Reading: ${A}`);
+            logAction(`Calculated dynamic peptide electrical profile for [${seq}]`);
         }
 
-        function calculateBufferRatios() {
-            var targetPH = parseFloat(document.getElementById('bufferTargetPH').value);
-            var pKa = parseFloat(document.getElementById('bufferPKa').value);
-            var totalConc = parseFloat(document.getElementById('bufferTotalConc').value);
-            var displayBox = document.getElementById('bufferResultContainer');
-            if (isNaN(targetPH) || isNaN(pKa) || isNaN(totalConc)) return;
-
-            var ratio = Math.pow(10, targetPH - pKa);
-            var acid = totalConc / (ratio + 1);
-            var base = totalConc - acid;
-
-            displayBox.style.display = "block";
-            displayBox.innerHTML = `<div style='background: #fffbf0; border-left: 4px solid #d4af37; padding: 15px; border-radius: 4px;'>
-                <p><strong>Acid [HA]:</strong> ${acid.toFixed(4)} M | <strong>Base [A⁻]:</strong> ${base.toFixed(4)} M</p>
-            </div>`;
-            logAction(`Mapped Buffer System Ratio for pH ${targetPH}`);
-        }
-
-        function calculateDilution() {
-            var c1 = parseFloat(document.getElementById('dilutionC1').value);
-            var c2 = parseFloat(document.getElementById('dilutionC2').value);
-            var v2 = parseFloat(document.getElementById('dilutionV2').value);
-            var displayBox = document.getElementById('dilutionResultContainer');
-            if (isNaN(c1) || isNaN(c2) || isNaN(v2) || c2 >= c1) return;
-
-            var v1 = (c2 * v2) / c1;
-            displayBox.style.display = "block";
-            displayBox.innerHTML = `<div style='background: #e6fffa; border-left: 4px solid #319795; padding: 15px; border-radius: 4px;'>
-                <p><strong>Stock Volume (V₁):</strong> ${v1.toFixed(2)} mL | <strong>Solvent Needed:</strong> ${(v2-v1).toFixed(2)} mL</p>
-            </div>`;
-            logAction(`Calculated Stock Dilution C1V1 Matrix`);
-        }
-
-        function calculateEnzymeKinetics() {
-            var vmax = parseFloat(document.getElementById('enzymeVmax').value);
-            var km = parseFloat(document.getElementById('enzymeKm').value);
-            var substrate = parseFloat(document.getElementById('enzymeSubstrate').value);
-            var displayBox = document.getElementById('enzymeResultContainer');
-            if (isNaN(vmax) || isNaN(km) || isNaN(substrate) || vmax <= 0 || km <= 0 || substrate < 0) return;
-
-            var v0 = (vmax * substrate) / (km + substrate);
-            displayBox.style.display = "block";
-            displayBox.innerHTML = `<div style='background: #fdf2ff; border-left: 4px solid #8e44ad; padding: 15px; border-radius: 4px;'>
-                <p><strong>🚀 Initial Velocity (v₀): ${v0.toFixed(4)} μmol/min</strong></p>
-            </div>`;
+        function calculateNetPeptideCharge(seq, ph) {
+            // Standard terminal constants profiles
+            let charge = (1 / (1 + Math.pow(10, ph - 9.6))) - (1 / (1 + Math.pow(10, 2.3 - ph)));
             
-            // Execute interactive canvas curve generation routines
-            plotKineticsCurve(vmax, km, substrate);
-            logAction(`Computed Michaelis Kinetics & Plotted Curve ([S]=${substrate}mM)`);
+            // Accumulate residue side-chain configurations loops
+            for (let i = 0; i < seq.length; i++) {
+                let aa = seq[i];
+                if (aa === 'R') charge += 1 / (1 + Math.pow(10, ph - 12.48));
+                else if (aa === 'K') charge += 1 / (1 + Math.pow(10, ph - 10.53));
+                else if (aa === 'H') charge += 1 / (1 + Math.pow(10, ph - 6.0));
+                else if (aa === 'D') charge -= 1 / (1 + Math.pow(10, 3.65 - ph));
+                else if (aa === 'E') charge -= 1 / (1 + Math.pow(10, 4.25 - ph));
+                else if (aa === 'C') charge -= 1 / (1 + Math.pow(10, 8.18 - ph));
+                else if (aa === 'Y') charge -= 1 / (1 + Math.pow(10, 10.07 - ph));
+            }
+            return charge;
         }
 
-        function calculateRCF() {
-            var radius = parseFloat(document.getElementById('rotorRadius').value);
-            var rpm = parseFloat(document.getElementById('rotorRPM').value);
-            var displayBox = document.getElementById('rcfResultContainer');
-            if (isNaN(radius) || isNaN(rpm)) return;
+        // --- FEATURE ENGINE 3: NUCLEIC ACID PURITY INSPECTOR ---
+        function inspectNucleicPurity() {
+            let a260 = parseFloat(document.getElementById('purityA260').value);
+            let a280 = parseFloat(document.getElementById('purityA280').value);
+            let displayBox = document.getElementById('purityResultContainer');
+            if (isNaN(a260) || isNaN(a280) || a280 === 0) return;
 
-            var rcf = 0.00001118 * radius * Math.pow(rpm, 2);
+            let ratio = a260 / a280;
+            let feedback = "";
+            let colorBorder = "#2980b9";
+            let bgColor = "#f4f8fa";
+
+            if (ratio >= 1.75 && ratio <= 1.85) {
+                feedback = "<strong>✅ Purity Analysis: Beautiful, pure DNA sample matrix.</strong> Acceptable limits met for down-channel genomic runs.";
+                colorBorder = "#27ae60"; bgColor = "#f4fbf4";
+            } else if (ratio >= 1.95 && ratio <= 2.05) {
+                feedback = "<strong>✅ Purity Analysis: Beautiful, pure RNA sample matrix.</strong> Ready for transcription conversions.";
+                colorBorder = "#27ae60"; bgColor = "#f4fbf4";
+            } else if (ratio < 1.70) {
+                feedback = "<strong>⚠️ Warning: High protein, aromatic ring, or phenol matrix carry-over contamination detected.</strong> <br><em>Recommendation: Execute sample re-precipitation routines immediately.</em>";
+                colorBorder = "#e67e22"; bgColor = "#fffbf5";
+            } else {
+                feedback = "<strong>🔬 Analysis: Ratio bounds sit skewed outside baseline rules.</strong> Crosscheck calibration limits or organic residue extractions.";
+                colorBorder = "#7f8c8d"; bgColor = "#fafafa";
+            }
+
             displayBox.style.display = "block";
-            displayBox.innerHTML = `<div style='background: #f0f7ff; border-left: 4px solid #3498db; padding: 15px; border-radius: 4px;'>
-                <p><strong>⚡ Force (RCF): ${Math.round(rcf)} × g</strong></p>
+            displayBox.innerHTML = `<div style="background:${bgColor}; border-left:4px solid ${colorBorder}; padding:15px;">
+                <p style="font-size:16px;">Calculated Quotient Ratio ($A_{260}/A_{280}$): <strong>${ratio.toFixed(3)}</strong></p>
+                <p style="margin-top:5px; font-size:13px;">${feedback}</p>
             </div>`;
-            logAction(`Converted Centrifuge Spin Vector to RCF`);
+            logAction(`Inspected nucleic purity specs. Ratio found: ${ratio.toFixed(2)}`);
         }
 
-        function generateLabReport() {
-            var author = document.getElementById('reportAuthor').value.trim() || currentUser;
-            var title = document.getElementById('reportTitle').value.trim() || "Lab Entry Log";
-            var content = document.getElementById('reportContent').value.trim();
-            if (!content) return;
-
-            var blob = new Blob(["MJ REPORT:\n" + title + "\nBy: " + author + "\n\n" + content], { type: "text/plain;charset=utf-8" });
-            var link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "mj_report.txt";
-            link.click();
-            logAction(`Exported External Notebook Archive File`);
+        // --- FEATURE ENGINE 4: BUFFER TITRATION CURVE SIMULATOR ---
+        function initTitrationCanvas() {
+            let canvas = document.getElementById('titrationCanvas');
+            if (!canvas) return;
+            let ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "#8c736c";
+            ctx.font = "11px Arial";
+            ctx.fillText("Enter target pKa factor to map graph curves...", 30, 95);
         }
 
-        // --- PROTOCOLS CACHE INDEX ---
-        var protocolDatabase = {
-            "dna_extract": "METHODOLOGY: GENOMIC DNA ISOLATION (PHENOL-CHLOROFORM)\n\n1. Cell Lysis: Resuspend cell pellet in 500 uL Lysis Buffer + 10 uL Proteinase K. Incubate at 56C for 1 hour.\n2. Extraction: Add 500 uL Phenol-Chloroform-Isoamyl Alcohol. Spin at 12,000 x g for 10 min.\n3. Isolation: Collect upper clear layer.\n4. Precipitation: Add 2 volumes ice-cold 100% Ethanol + Sodium Acetate. Spin to pellet DNA matrix.",
-            "sds_page": "METHODOLOGY: SDS-PAGE GEL CASTING & RUNNING\n\n1. Casting: Pour 10% resolving base, overlay with stacking matrix gel block frames.\n2. Prep: Mix samples with 4X sample reducing buffer, heat denature fractions at 95C for 5 minutes.\n3. Run: Load 15 uL into standard teeth tracks. Run voltage profiles at constant 100V lines.",
-            "bradford": "METHODOLOGY: BRADFORD ASSAY CALIBRATION\n\n1. Mix: Combine unknown concentrations with 1.0 mL Coomassie Brilliant Blue working mixture formulations.\n2. Analyze: Incubate at room benchmarks for 5 minutes, track absorption limits at exactly 595 nm markers.",
-            "western": "METHODOLOGY: WESTERN BLOT MEMBRANE BLOCKING\n\n1. Block: Incubate nitrocellulose/PVDF sheets in 5% non-fat milk buffer for 1 hour with active rocking agitation.\n2. Rinsing: Clear channels via 3x consecutive TBST clean washes before binding raw antibody fractions."
-        };
+        function generateTitrationCurve() {
+            let pka = parseFloat(document.getElementById('titrationPkaInput').value);
+            let canvas = document.getElementById('titrationCanvas');
+            if (isNaN(pka) || !canvas) return;
 
-        function searchProtocol() {
-            var selectedKey = document.getElementById('protocolSelect').value;
-            var displayBox = document.getElementById('protocolResultContainer');
-            if (!selectedKey || !displayBox) return;
-            displayBox.style.display = "block";
-            displayBox.innerHTML = protocolDatabase[selectedKey];
-            logAction(`Loaded Protocol Reference: ${selectedKey}`);
-        }
+            let ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0,canvas.width,canvas.height);
 
-        // --- COMPATIBILITY BACKEND ROUTINES ---
-        async function analyzeSequence() {
-            var seq = document.getElementById('sequenceInput').value.trim();
-            var resultDiv = document.getElementById('sequenceResult');
-            if (!seq || !resultDiv) return;
-            resultDiv.style.display = "block";
-            resultDiv.innerHTML = "<p style='color: #8c4a32;'>⏳ Running molecular sequence mapping locally...</p>";
-            setTimeout(() => {
-                resultDiv.innerHTML = `<div style='background: #fffdf9; border-left: 4px solid #8c4a32; padding: 15px;'>
-                    <h4>Analysis Complete! ✅</h4><p><strong>Classification:</strong> Macromolecular Sequence Chain</p><p><strong>Length:</strong> ${seq.length} residues</p>
-                </div>`;
-                logAction(`Executed Core Sequence Matrix Scan`);
-            }, 300);
-        }
-
-        async function analyzeData() {
-            var raw = document.getElementById('dataInput').value;
-            var dest = document.getElementById('dataResult');
-            if (!raw || !dest) return;
-            dest.style.display = "block";
-            var parts = raw.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
-            if(parts.length === 0) return;
-            var mean = parts.reduce((a,b)=>a+b,0)/parts.length;
-            dest.innerHTML = `<div style='background: #fffdf9; border-left: 4px solid #8c4a32; padding: 15px;'>
-                <h4>Biostatistics Matrix Complete! 📊</h4><p><strong>Samples (N):</strong> ${parts.length}</p><p><strong>Mean Average (μ):</strong> ${mean.toFixed(4)}</p>
-            </div>`;
-            logAction(`Processed Experimental Data Array (N=${parts.length})`);
-        }
-
-        async function checkHealth() {
-            var res = document.getElementById('healthResult');
-            if(!res) return; res.style.display = "block";
-            res.innerHTML = "<div style='background:#f0fff4; border-left:4px solid #2e7d32; padding:10px; color:#2e7d32; font-weight:bold;'>✅ Local Client System Framework Active & Online!</div>";
-            logAction("Triggered Application Core System Status Check");
-        }
-
-        function clearBox() { document.getElementById('sequenceInput').value = ''; document.getElementById('sequenceResult').style.display='none'; }
-        function clearDataBox() { document.getElementById('dataInput').value = ''; document.getElementById('dataResult').style.display='none'; }
-        function clearAIBox() { document.getElementById('aiPeptideInput').value = ''; document.getElementById('aiResultContainer').style.display='none'; }
-        function clearMolarityBox() { document.getElementById('molInputMW').value=''; document.getElementById('molInputMolarity').value=''; document.getElementById('molInputVolume').value=''; document.getElementById('molarityResultContainer').style.display='none'; }
-        function clearBeerBox() { document.getElementById('beerAbsorbance').value=''; document.getElementById('beerExtinction').value=''; document.getElementById('beerResultContainer').style.display='none'; }
-        function clearBufferBox() { document.getElementById('bufferTargetPH').value=''; document.getElementById('bufferPKa').value=''; document.getElementById('bufferTotalConc').value=''; document.getElementById('bufferResultContainer').style.display='none'; }
-        function clearEnzymeBox() { document.getElementById('enzymeVmax').value=''; document.getElementById('enzymeKm').value=''; document.getElementById('enzymeSubstrate').value=''; document.getElementById('enzymeResultContainer').style.display='none'; initBlankCanvas(); }
-        function clearCentrifugeBox() { document.getElementById('rotorRadius').value=''; document.getElementById('rotorRPM').value=''; document.getElementById('rcfResultContainer').style.display='none'; }
-        function clearDilutionBox() { document.getElementById('dilutionC1').value=''; document.getElementById('dilutionC2').value=''; document.getElementById('dilutionV2').value=''; document.getElementById('dilutionResultContainer').style.display='none'; }
-        function clearReportBox() { document.getElementById('reportAuthor').value=''; document.getElementById('reportTitle').value=''; document.getElementById('reportContent').value=''; document.getElementById('reportResultContainer').style.display='none'; }
-        function clearProtocolBox() { document.getElementById('protocolSelect').value=''; document.getElementById('protocolResultContainer').style.display='none'; }
-    </script>
-</body>
-</html>
+         
