@@ -388,7 +388,7 @@
                     <div class="timer-grid">
                         <div><div class="timer-node" id="timerDisplayA">60:00</div><label style="text-align:center; font-size:11px;">1. Cell Lysis</label><button class="btn btn-primary btn-sm" style="width:100%; margin-top:4px;" onclick="triggerLabClock('A', 3600)">Start Phase</button></div>
                         <div><div class="timer-node" id="timerDisplayB">10:00</div><label style="text-align:center; font-size:11px;">2. Centrifuge Pelleting</label><button class="btn btn-primary btn-sm" style="width:100%; margin-top:4px;" onclick="triggerLabClock('B', 600)">Start Phase</button></div>
-                        <div><div class="timer-node" id="timerDisplayC rounded">60:00</div><label style="text-align:center; font-size:11px;">3. Membrane Blocking</label><button class="btn btn-primary btn-sm" style="width:100%; margin-top:4px;" onclick="triggerLabClock('C', 3600)">Start Phase</button></div>
+                        <div><div class="timer-node" id="timerDisplayC">60:00</div><label style="text-align:center; font-size:11px;">3. Membrane Blocking</label><button class="btn btn-primary btn-sm" style="width:100%; margin-top:4px;" onclick="triggerLabClock('C', 3600)">Start Phase</button></div>
                     </div>
                 </div>
 
@@ -463,11 +463,11 @@
 
     <script>
         const MASTER_ADMIN_NAME = "Tahasana";
-        const SECRET_ADMIN_PASSCODE = "1926"; // Secret validation entry key
+        const SECRET_ADMIN_PASSCODE = "1926"; // Master PIN
         let activeUserSessionProfile = null;
         let countdownClockIntervalsCache = {};
 
-        // --- SECTION A: CIPHER STORAGE SECURITY LAYERS ---
+        // --- SECTION A: CIPHER STORAGE SECURITY LAYERS (BUG-PROOF FALLBACK) ---
         function maskWrite(key, dataObj) {
             const str = btoa(encodeURIComponent(JSON.stringify(dataObj)));
             localStorage.setItem(key, str);
@@ -475,7 +475,17 @@
 
         function maskRead(key) {
             const data = localStorage.getItem(key); if(!data) return null;
-            try { return JSON.parse(decodeURIComponent(atob(data))); } catch(e) { return null; }
+            try { 
+                // Decode securely if it's new masked format
+                return JSON.parse(decodeURIComponent(atob(data))); 
+            } catch(e) { 
+                try {
+                    // Fail-safe migration: if old raw unencrypted JSON exists, parse it directly
+                    return JSON.parse(data);
+                } catch(err) { 
+                    return null; 
+                }
+            }
         }
 
         // --- SECTION B: GATEWAY CONTROLLER ACCESS MANAGER ---
@@ -511,7 +521,9 @@
             }
 
             let registry = maskRead('mj_user_registry_node') || [];
-            if(registry.some(u => u.email.toLowerCase() === email.toLowerCase())) { alert("Identity node already registered."); return; }
+            if(!Array.isArray(registry)) registry = [];
+            
+            if(registry.some(u => u.email && u.email.toLowerCase() === email.toLowerCase())) { alert("Identity node already registered."); return; }
 
             const profile = { name, email, phone, pass, role: (name.toLowerCase() === MASTER_ADMIN_NAME.toLowerCase() ? 'Admin' : 'Member') };
             registry.push(profile);
@@ -524,9 +536,9 @@
         function executeSystemLogin() {
             const email = document.getElementById('loginEmail').value.trim();
             const pass = document.getElementById('loginPass').value;
-            let registry = maskRead('mj_user_registry_node') || [];
+            let registry = maskRead('mj_user_registry_node');
 
-            if (registry.length === 0) {
+            if (!registry || !Array.isArray(registry) || registry.length === 0) {
                 registry = [
                     { name: "Tahasana", email: "tahasana@mj.edu", phone: "+91-999-0001", pass: "admin123", role: "Admin" },
                     { name: "Uzair Ibrahim Bhat", email: "uzair@mj.edu", phone: "+91-999-0002", pass: "uzair123", role: "Member" },
@@ -535,7 +547,7 @@
                 maskWrite('mj_user_registry_node', registry);
             }
 
-            const match = registry.find(u => u.email.toLowerCase() === email.toLowerCase() && u.pass === pass);
+            const match = registry.find(u => u.email && u.email.toLowerCase() === email.toLowerCase() && u.pass === pass);
             if(!match) { alert("Authentication failed. Invalid verification access token."); return; }
             initializeActiveSession(match);
         }
@@ -611,6 +623,7 @@
         // --- SECTION F: BACKGROUND DATA LEDGER FORENSIC ENGINE ---
         function logSystemAction(name, rawPayload) {
             let logs = maskRead('mj_forensic_audit_ledger') || [];
+            if(!Array.isArray(logs)) logs = [];
             const d = new Date();
             const dateStr = d.getDate() + " " + d.toLocaleString('en-US', { month: 'short' }) + " " + d.getFullYear();
             const timeStr = d.toLocaleTimeString('en-US', { hour12: false });
@@ -630,7 +643,7 @@
             const logs = maskRead('mj_forensic_audit_ledger') || [];
             const anonymize = document.getElementById('adminAnonymizeCheckbox').checked;
 
-            if(logs.length === 0) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#8c736c;">No data logged.</td></tr>'; return; }
+            if(!Array.isArray(logs) || logs.length === 0) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#8c736c;">No data logged.</td></tr>'; return; }
             tbody.innerHTML = logs.map((l, index) => `
                 <tr>
                     <td><strong>${l.timestamp}</strong></td>
@@ -647,13 +660,14 @@
         function renderGlobalSystemMembersList() {
             const target = document.getElementById('adminUserProfilesDisplayContainer'); if(!target) return;
             const registry = maskRead('mj_user_registry_node') || [];
+            if(!Array.isArray(registry)) return;
             target.innerHTML = registry.map(u => `• Name string: <strong>${u.name}</strong> | Email Node: <code>${u.email}</code> | Access Rank: [${u.role}]`).join('<br>');
         }
 
         function purgeSystemAuditLogs() { if(confirm("Purge global matrix arrays logs permanently?")) { localStorage.removeItem('mj_forensic_audit_ledger'); renderGlobalSystemLogMatrix(); } }
 
         function exportLogMatrixToCSV() {
-            const logs = maskRead('mj_forensic_audit_ledger') || []; if(logs.length===0) return;
+            const logs = maskRead('mj_forensic_audit_ledger') || []; if(!Array.isArray(logs) || logs.length===0) return;
             const anonymize = document.getElementById('adminAnonymizeCheckbox').checked;
             let csv = "Timestamp,User Node,Action Type,Payload Metrics\n";
             logs.forEach(l => { csv += `"${l.timestamp}","${anonymize?'ANON_NODE':l.user}","${l.action}","${l.payload.replace(/"/g, '""')}"\n`; });
@@ -897,27 +911,4 @@
             for(var x=lm; x<=lm+gw; x++) {
                 var ratio = (x-lm)/gw; if(ratio<=0) ratio=0.001; if(ratio>=1) ratio=0.999;
                 var currentPH = pka + Math.log10(ratio/(1-ratio));
-                var y = bm - (currentPH/14)*gh; if(y<10) y=10; if(y>bm) y=bm;
-                if(x===lm) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-            }
-            ctx.stroke();
-            logSystemAction("Titration Curves Graph Generated", `Dissociation Constant Selected: pKa ${pka}`);
-        }
-
-        function runCentrifugeConverter() {
-            var r = parseFloat(document.getElementById('rotorRadius').value);
-            var rpm = parseFloat(document.getElementById('rotorRPM').value);
-            var out = document.getElementById('rcfResultContainer'); out.style.display="block";
-            
-            var rcf = 0.00001118 * r * Math.pow(rpm, 2);
-            out.innerHTML = `<strong>⚡ Resulting Relative Centrifugal Force (Gravitational Field Metric):</strong> ${Math.round(rcf)} × g`;
-            logSystemAction("Centrifuge Angular Velocity Translated", `Rotor Radius:${r}cm | RPM Vector Speed:${rpm} ➔ G-Force: ${Math.round(rcf)}g`);
-        }
-
-        function runPeptideChargeCurveEngine() {
-            var input = document.getElementById('chargeCurveInput').value.toUpperCase().trim().replace(/[^ACDEFGHIKLMNPQRSTVWY]/g, '');
-            var out = document.getElementById('chargeCurveResultContainer'); out.style.display="block"; if(!input) return;
-            
-            var canvas = document.getElementById('chargeCanvas'); var ctx = canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height);
-            const lm = 30, bm = 115, gw = 270, gh = 95;
-            ctx.beginPath(); ctx.strokeStyle='#cdbfb0'; ctx.moveTo(lm,10); ctx.lineTo(lm,bm); ctx.lineTo(lm+gw,bm); ctx.moveTo(lm, bm-gh/2); ctx.lineTo(lm+gw, bm-gh/2
+                var y = bm - (currentPH/14)*gh; if(y<10
