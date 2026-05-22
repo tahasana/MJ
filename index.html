@@ -5,1023 +5,400 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MJ - Biochemistry AI Tool</title>
     <style>
-        /* Retro-Vintage Autumn Design Variables */
-        :root {
-            --bg-canvas: #fbf9f5;
-            --header-dark: #2d1a12;
-            --header-light: #5d4037;
-            --accent-rust: #8c4a32;
-            --border-oat: #e7dfd5;
-            --text-main: #4a3e3d;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-canvas); color: var(--text-main); line-height: 1.6; }
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-        
-        #lockdownWindow {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-canvas);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .auth-card {
-            background: #fdfcf9;
-            border: 2px solid var(--border-oat);
-            border-radius: 12px;
-            padding: 40px;
-            width: 100%;
-            max-width: 440px;
-            box-shadow: 0 10px 30px rgba(93, 64, 55, 0.08);
-            text-align: center;
-        }
-
-        .auth-card h1 { font-size: 46px; color: var(--header-light); margin-bottom: 4px; font-weight: 800; letter-spacing: 1px; }
-        .auth-card p { color: #8c736c; font-size: 14px; margin-bottom: 25px; }
-        .auth-card h3 { color: var(--header-light); margin-bottom: 15px; font-size: 18px; }
-        .auth-card input { width: 100%; padding: 11px 14px; border: 2px solid #dcd5cc; border-radius: 6px; font-size: 14px; margin-bottom: 12px; outline: none; background: white; color: var(--text-main); }
-        .auth-card input:focus { border-color: var(--accent-rust); }
-        .auth-toggle-msg { font-size: 12.5px; color: var(--accent-rust); margin-top: 18px; cursor: pointer; font-weight: bold; text-decoration: underline; }
-        
-        .btn-block { width: 100%; padding: 11px; font-size: 14px; font-weight: bold; background-color: var(--accent-rust); color: white; border: none; border-radius: 6px; cursor: pointer; }
-        .btn-block:hover { background-color: #6f3724; }
-
-        .navbar { background: linear-gradient(135deg, var(--header-light), var(--header-dark)); color: #f5efe6; padding: 18px 0; border-bottom: 3px solid var(--accent-rust); }
-        .navbar .container { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 24px; font-weight: bold; letter-spacing: 1px; color: #f5efe6; }
-        .session-badge { background: #7c6c64; padding: 5px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; transition: background 0.3s; }
-        
-        .hero { background: #fdfbf7; padding: 35px 0; text-align: center; border-bottom: 1px solid var(--border-oat); }
-        .hero h2 { font-size: 38px; color: var(--header-light); margin-bottom: 8px; font-weight: 700; }
-        .hero p { color: #8c736c; font-size: 16px; margin-bottom: 12px; }
-        .dev-credit { display: inline-block; background: #decbba; color: var(--header-light); font-size: 11px; font-weight: bold; padding: 5px 14px; border-radius: 20px; border: 1px solid #cdbfb0; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        .tabs-nav { display: flex; justify-content: center; gap: 8px; margin: 25px auto 10px auto; max-width: 1000px; flex-wrap: wrap; padding: 0 10px; }
-        .tab-btn { padding: 12px 18px; font-size: 13px; font-weight: bold; background: var(--border-oat); color: var(--header-light); border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s ease-in-out; border-bottom: 2px solid #cdbfb0; }
-        .tab-btn:hover { background: #decbba; color: var(--header-dark); }
-        .tab-btn.active { background: var(--accent-rust); color: white; border-bottom: 2px solid #5d2211; box-shadow: 0 4px 10px rgba(140,74,50,0.25); }
-        
-        .app-workspace { padding: 15px 0 50px 0; background: white; border-top: 1px solid var(--border-oat); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #fbf9f5; color: #4a3e3d; }
+        .navbar { background: #5d4037; color: white; padding: 15px; text-align: center; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .section { background: white; margin: 20px 0; padding: 20px; border-radius: 8px; border-left: 4px solid #8c4a32; }
+        h2 { color: #8c4a32; margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-top: 10px; margin-bottom: 5px; }
+        input, textarea, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace; }
+        button { background: #8c4a32; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px; }
+        button:hover { background: #6f3724; }
+        .result { background: #fffdf9; padding: 15px; border-left: 4px solid #8c4a32; margin-top: 15px; display: none; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn { padding: 10px 15px; background: #e7dfd5; border: none; cursor: pointer; border-radius: 4px; }
+        .tab-btn.active { background: #8c4a32; color: white; }
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
-        
-        .tool-section { max-width: 800px; margin: 0 auto 25px auto; padding: 22px; background: #fdfcf9; border: 1px solid var(--border-oat); border-radius: 8px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.01); }
-        .tool-section h3 { color: var(--accent-rust); margin-bottom: 12px; font-size: 19px; border-bottom: 2px solid var(--border-oat); padding-bottom: 6px; }
-        .tool-section p { font-size: 13.5px; color: #6e5d5a; margin-bottom: 12px; }
-        
-        textarea { width: 100%; height: 100px; padding: 12px; border: 2px solid #dcd5cc; border-radius: 6px; font-family: monospace; font-size: 13.5px; margin-bottom: 12px; resize: vertical; outline: none; background: white; color: #332928; }
-        textarea:focus { border-color: var(--accent-rust); }
-        input[type="number"], input[type="text"], select { width: 100%; padding: 10px; border: 2px solid #dcd5cc; border-radius: 6px; font-size: 13.5px; margin-bottom: 12px; outline: none; background: white; color: #332928; }
-        input[type="number"]:focus, input[type="text"]:focus, select:focus { border-color: var(--accent-rust); }
-        label { font-size: 12.5px; font-weight: bold; color: var(--header-light); display: block; margin-bottom: 4px; }
-        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
-        
-        .btn { padding: 9px 18px; font-size: 13px; font-weight: bold; border-radius: 4px; border: none; cursor: pointer; display: inline-block; transition: background 0.2s; margin-right: 8px; }
-        .btn-primary { background-color: var(--accent-rust); color: white; }
-        .btn-primary:hover { background-color: #6f3724; }
-        .btn-secondary { background-color: #7c6c64; color: white; }
-        .btn-secondary:hover { background-color: #63554e; }
-        .btn-danger { background-color: #b71c1c; color: white; }
-        .btn-danger:hover { background-color: #801010; }
-        .btn-sm { padding: 5px 10px; font-size: 11.5px; border-radius: 4px; }
-        
-        .result-box { margin-top: 12px; display: none; padding: 14px; border-radius: 4px; text-align: left; border-left: 4px solid var(--accent-rust); background: #fffdf9; font-size: 13.5px; }
-
-        .timer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 12px; background: #decbba; padding: 12px; border-radius: 6px; }
-        .timer-node { background: var(--header-light); color: white; padding: 10px; border-radius: 4px; text-align: center; font-weight: bold; font-family: monospace; font-size: 18px; }
-
-        .log-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; text-align: left; }
-        .log-table th { background: var(--header-light); color: white; padding: 10px; font-weight: bold; }
-        .log-table td { padding: 10px; border-bottom: 1px solid var(--border-oat); color: var(--text-main); vertical-align: top; }
-        .log-table tr:nth-child(even) { background: #fdfbf7; }
-        .log-data-drawer { background: #f5efe6; padding: 10px; border-radius: 4px; margin-top: 5px; font-family: monospace; font-size: 11.5px; white-space: pre-wrap; word-break: break-all; border-left: 3px solid var(--accent-rust); display: none; }
-        .toggle-drawer-btn { color: var(--accent-rust); cursor: pointer; text-decoration: underline; font-weight: bold; }
-
-        footer { padding: 30px 0; text-align: center; font-size: 13.5px; color: #8c736c; border-top: 1px solid var(--border-oat); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-content.active { display: block; }
     </style>
 </head>
 <body>
+    <div class="navbar">
+        <h1>🧬 MJ - Biochemistry AI Tool</h1>
+        <p>Fast Calculations & Analysis</p>
+    </div>
 
-    <div id="lockdownWindow">
-        <div class="auth-card">
-            <h1>🧬 MJ</h1>
-            <p>Automated Laboratory Gateway Panel</p>
-            
-            <div id="loginFormSubFrame">
-                <h3>Account Verification</h3>
-                <input type="email" id="loginEmail" placeholder="Laboratory Email Address">
-                <input type="password" id="loginPass" placeholder="Security Password">
-                <button class="btn-block" onclick="executeSystemLogin()">Verify Token Session</button>
-                <div class="auth-toggle-msg" onclick="toggleAuthView(true)">New Researcher? Register Registry Access</div>
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('sequences')">Sequences</button>
+            <button class="tab-btn" onclick="showTab('solutions')">Solutions</button>
+            <button class="tab-btn" onclick="showTab('kinetics')">Kinetics</button>
+            <button class="tab-btn" onclick="showTab('tools')">Tools</button>
+        </div>
+
+        <!-- SEQUENCES TAB -->
+        <div id="sequences" class="tab-content active">
+            <div class="section">
+                <h2>Sequence Length & GC Content</h2>
+                <label>Enter DNA/RNA sequence:</label>
+                <textarea id="seqInput" placeholder="ATGCGATCG..."></textarea>
+                <button onclick="analyzeSequence()">Analyze</button>
+                <div id="seqResult" class="result"></div>
             </div>
 
-            <div id="signupFormSubFrame" style="display: none;">
-                <h3>New Node Sign-Up Registration</h3>
-                <input type="text" id="regName" placeholder="Full Core Member Name">
-                <input type="email" id="regEmail" placeholder="Valid Institutional Email">
-                <input type="text" id="regPhone" placeholder="Mobile Phone Contact Line">
-                <input type="password" id="regPass" placeholder="Create Security Access Pass">
-                
-                <div id="adminPinWrapper" style="display: none; background: #decbba; padding: 10px; border-radius: 6px; margin-bottom: 12px; text-align: left;">
-                    <label style="color: var(--header-dark); font-weight: bold;">⚠️ Admin Identity Validation PIN Required:</label>
-                    <input type="password" id="regAdminPin" placeholder="Enter System Secret Master PIN" style="margin-bottom: 0;">
-                </div>
+            <div class="section">
+                <h2>DNA → RNA → Protein Translation</h2>
+                <label>Enter coding DNA:</label>
+                <textarea id="dnaInput" placeholder="ATGATGATG..."></textarea>
+                <button onclick="translate()">Translate</button>
+                <div id="transResult" class="result"></div>
+            </div>
 
-                <button class="btn-block" onclick="executeSystemRegistration()">Commit Register Sequence</button>
-                <div class="auth-toggle-msg" onclick="toggleAuthView(false)">Return to Existing Terminal Login</div>
+            <div class="section">
+                <h2>Amino Acid Lookup</h2>
+                <select id="aaSelect" onchange="lookupAA()">
+                    <option value="">Select amino acid...</option>
+                    <option value="A">Alanine (A)</option>
+                    <option value="R">Arginine (R)</option>
+                    <option value="D">Aspartic Acid (D)</option>
+                    <option value="N">Asparagine (N)</option>
+                    <option value="C">Cysteine (C)</option>
+                    <option value="E">Glutamic Acid (E)</option>
+                    <option value="Q">Glutamine (Q)</option>
+                    <option value="G">Glycine (G)</option>
+                    <option value="H">Histidine (H)</option>
+                    <option value="I">Isoleucine (I)</option>
+                    <option value="L">Leucine (L)</option>
+                    <option value="K">Lysine (K)</option>
+                    <option value="M">Methionine (M)</option>
+                    <option value="F">Phenylalanine (F)</option>
+                    <option value="P">Proline (P)</option>
+                    <option value="S">Serine (S)</option>
+                    <option value="T">Threonine (T)</option>
+                    <option value="W">Tryptophan (W)</option>
+                    <option value="Y">Tyrosine (Y)</option>
+                    <option value="V">Valine (V)</option>
+                </select>
+                <div id="aaResult" class="result"></div>
+            </div>
+        </div>
+
+        <!-- SOLUTIONS TAB -->
+        <div id="solutions" class="tab-content">
+            <div class="section">
+                <h2>Molarity Calculator (M = n/V)</h2>
+                <label>Formula Weight (g/mol):</label>
+                <input type="number" id="mw" placeholder="e.g., 180.16">
+                <label>Target Molarity (M):</label>
+                <input type="number" id="molarity" placeholder="e.g., 0.5">
+                <label>Target Volume (mL):</label>
+                <input type="number" id="volume" placeholder="e.g., 250">
+                <button onclick="calcMolarity()">Calculate Mass</button>
+                <div id="molResult" class="result"></div>
+            </div>
+
+            <div class="section">
+                <h2>Beer-Lambert Law (A = ε·c·l)</h2>
+                <label>Absorbance (A):</label>
+                <input type="number" id="absorbance" placeholder="e.g., 0.45">
+                <label>Extinction Coefficient (M⁻¹cm⁻¹):</label>
+                <input type="number" id="extinction" placeholder="e.g., 6220">
+                <label>Path Length (cm):</label>
+                <input type="number" id="pathLength" value="1">
+                <button onclick="calcBeerLambert()">Calculate Concentration</button>
+                <div id="beerResult" class="result"></div>
+            </div>
+
+            <div class="section">
+                <h2>Dilution Calculator (C₁V₁ = C₂V₂)</h2>
+                <label>Stock Concentration (C₁):</label>
+                <input type="number" id="c1" placeholder="e.g., 10">
+                <label>Target Concentration (C₂):</label>
+                <input type="number" id="c2" placeholder="e.g., 1">
+                <label>Target Volume (mL) (V₂):</label>
+                <input type="number" id="v2" placeholder="e.g., 500">
+                <button onclick="calcDilution()">Calculate Volumes</button>
+                <div id="dilResult" class="result"></div>
+            </div>
+
+            <div class="section">
+                <h2>Henderson-Hasselbalch Buffer</h2>
+                <label>Target pH:</label>
+                <input type="number" id="targetPH" placeholder="e.g., 7.4" step="0.1">
+                <label>pKa:</label>
+                <input type="number" id="pka" placeholder="e.g., 7.21" step="0.1">
+                <label>Total Buffer Concentration (M):</label>
+                <input type="number" id="bufConc" placeholder="e.g., 0.1" step="0.01">
+                <button onclick="calcBuffer()">Calculate Proportions</button>
+                <div id="bufResult" class="result"></div>
+            </div>
+        </div>
+
+        <!-- KINETICS TAB -->
+        <div id="kinetics" class="tab-content">
+            <div class="section">
+                <h2>Michaelis-Menten Kinetics</h2>
+                <label>Vmax (μmol/min):</label>
+                <input type="number" id="vmax" placeholder="e.g., 120">
+                <label>Km (mM):</label>
+                <input type="number" id="km" placeholder="e.g., 2.5">
+                <label>[S] Substrate (mM):</label>
+                <input type="number" id="substrate" placeholder="e.g., 5.0">
+                <button onclick="calcEnzyme()">Calculate v₀</button>
+                <div id="enzymeResult" class="result"></div>
+            </div>
+
+            <div class="section">
+                <h2>Centrifuge RPM ↔ RCF Converter</h2>
+                <label>Rotor Radius (cm):</label>
+                <input type="number" id="radius" placeholder="e.g., 9.5">
+                <label>RPM:</label>
+                <input type="number" id="rpm" placeholder="e.g., 4000">
+                <button onclick="calcRCF()">Calculate G-Force</button>
+                <div id="rcfResult" class="result"></div>
+            </div>
+
+            <div class="section">
+                <h2>Outlier Detection (3-Sigma)</h2>
+                <label>Enter data (comma-separated):</label>
+                <textarea id="dataInput" placeholder="0.12, 0.14, 0.13, 4.85..."></textarea>
+                <button onclick="findOutliers()">Find Outliers</button>
+                <div id="outlierResult" class="result"></div>
+            </div>
+        </div>
+
+        <!-- TOOLS TAB -->
+        <div id="tools" class="tab-content">
+            <div class="section">
+                <h2>Simple Lab Timer</h2>
+                <label>Seconds:</label>
+                <input type="number" id="timerInput" placeholder="60" value="60">
+                <button onclick="startTimer()">Start Timer</button>
+                <div id="timerDisplay" style="font-size: 36px; font-weight: bold; text-align: center; margin-top: 20px; color: #8c4a32;">0:00</div>
+            </div>
+
+            <div class="section">
+                <h2>PCR Master Mix Calculator</h2>
+                <label>Number of reactions:</label>
+                <input type="number" id="numReactions" placeholder="e.g., 24">
+                <button onclick="calcPCR()">Calculate Mix</button>
+                <div id="pcrResult" class="result"></div>
+            </div>
+
+            <div class="section">
+                <h2>Quick DNA Extraction Protocol</h2>
+                <div class="result" style="display: block;">
+                    <strong>PHENOL-CHLOROFORM EXTRACTION</strong><br><br>
+                    1. Add tissue to lysis buffer (10mM Tris, 10mM NaCl)<br>
+                    2. Add Proteinase K (25µL of 20mg/mL)<br>
+                    3. Incubate at 55°C for 4 hours<br>
+                    4. Add equal volume phenol:chloroform:IAA (25:24:1)<br>
+                    5. Vortex 30 sec, centrifuge 10,000g for 10 min at 4°C<br>
+                    6. Transfer aqueous layer<br>
+                    7. Repeat phenol extraction until interface clear<br>
+                    8. Add 1 volume ice-cold isopropanol<br>
+                    9. Spool DNA with glass rod<br>
+                    10. Rinse with 70% ethanol, air dry<br>
+                    11. Resuspend in TE buffer overnight at 4°C
+                </div>
             </div>
         </div>
     </div>
-
-    <nav class="navbar">
-        <div class="container">
-            <div class="logo">🧬 MJ</div>
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <div class="session-badge" id="navUserDisplay">Session: Guest Mode</div>
-                <button class="btn btn-secondary btn-sm" style="margin-right: 0;" onclick="executeSystemLogout()">Logout Node</button>
-            </div>
-        </div>
-    </nav>
-
-    <section class="hero">
-        <div class="container">
-            <h2>Welcome to MJ</h2>
-            <p>AI-Powered Biochemistry Analysis Workspace</p>
-            <div class="dev-credit">⚙️ System Architect: Tahasana</div>
-        </div>
-    </section>
-
-    <div class="tabs-nav">
-        <button class="tab-btn active" onclick="switchTab(event, 'tab-analytics')">🧬 Core Analytics & AI</button>
-        <button class="tab-btn" onclick="switchTab(event, 'tab-solutions')">🧪 Solutions & Buffers</button>
-        <button class="tab-btn" onclick="switchTab(event, 'tab-kinetics')">🌀 Kinetics & Hardware</button>
-        <button class="tab-btn" onclick="switchTab(event, 'tab-notebook')">📋 Utilities & Notebooks</button>
-        <button class="tab-btn" id="adminTabSelectorButton" onclick="switchTab(event, 'tab-members')" style="display: none; background: #f1ebd9; border-color:#decbba;">👤 Member Hub & Tracking</button>
-    </div>
-
-    <section class="app-workspace">
-        <div class="container">
-
-            <div id="tab-analytics" class="tab-content active">
-                <div class="tool-section">
-                    <h3>Macromolecular Sequence Analyzer</h3>
-                    <p>Submits nucleotide strings to isolate total sequence weights, lengths, and residue counts.</p>
-                    <textarea id="sequenceInput" class="autosave" placeholder="Enter DNA, RNA, or Protein single-letter residues (e.g., ATGCGATCG)..."></textarea>
-                    <button class="btn btn-primary" onclick="runSequenceAnalyzer()">Analyze Residues</button>
-                    <button class="btn btn-secondary" onclick="clearField('sequenceInput', 'sequenceResult')">Clear</button>
-                    <div id="sequenceResult" class="result-box" style="font-family: monospace;"></div>
-                </div>
-
-                <div class="tool-section">
-                    <h3>The Central Dogma Transcriptor (DNA ➔ RNA ➔ Protein)</h3>
-                    <p>Processes raw coding DNA template strands, synthesizes messenger RNA loops, and decodes the functional peptide folds using a local codon database matrix.</p>
-                    <textarea id="dogmaInput" class="autosave" placeholder="Enter coding DNA nucleotides template string (e.g., ATG-GCA-GTC)..."></textarea>
-                    <button class="btn btn-primary" onclick="runCentralDogmaEngine()">Transcribe & Translate Sequence</button>
-                    <button class="btn btn-secondary" onclick="clearField('dogmaInput', 'dogmaResult')">Clear</button>
-                    <div id="dogmaResult" class="result-box" style="font-family: monospace; line-height: 1.6;"></div>
-                </div>
-
-                <div class="tool-section">
-                    <h3>Amino Acid Structural Profile & pI Index</h3>
-                    <p>Pulls structural sidechain categories, exact isotopic masses, and specific Isoelectric point configurations.</p>
-                    <select id="aaSelect" class="autosave" onchange="runAminoAcidLookup()">
-                        <option value="">-- Choose Target Residue --</option>
-                        <option value="A">Alanine (Ala / A) - Aliphatic Nonpolar</option>
-                        <option value="R">Arginine (Arg / R) - Positively Charged Basic</option>
-                        <option value="N">Asparagine (Asn / N) - Polar Uncharged</option>
-                        <option value="D">Aspartic Acid (Asp / D) - Negatively Charged Acidic</option>
-                        <option value="C">Cysteine (Cys / C) - Reactive Thiol Hydrophilic</option>
-                        <option value="E">Glutamic Acid (Glu / E) - Negatively Charged Acidic</option>
-                        <option value="Q">Glutamine (Gln / Q) - Polar Amide</option>
-                        <option value="G">Glycine (Gly / G) - Flexible Achiral Structure</option>
-                        <option value="H">Histidine (His / H) - Aromatic Imidazole Catalytic Ring</option>
-                        <option value="I">Isoleucine (Ile / I) - Aliphatic Hydrophobic Core</option>
-                        <option value="L">Leucine (Leu / L) - Hydrophobic Branched Chain</option>
-                        <option value="K">Lysine (Lys / K) - Basic Amino Sidechain Aliphatic</option>
-                        <option value="M">Methionine (Met / M) - Thioether Initiator Residue</option>
-                        <option value="F">Phenylalanine (Phe / F) - Bulky Benzene Aromatic</option>
-                        <option value="P">Proline (Pro / P) - Structural Kinking Imino Ring</option>
-                        <option value="S">Serine (Ser / S) - Hydroxyl Polar Target Nucleophile</option>
-                        <option value="T">Threonine (Thr / T) - Hydroxyl Polar Branched Target</option>
-                        <option value="W">Tryptophan (Trp / W) - Indole High Fluorescent Aromatic</option>
-                        <option value="Y">Tyrosine (Tyr / Y) - Phenolic Coordinating Aromatic Ring</option>
-                        <option value="V">Valine (Val / V) - Hydrophobic Aliphatic Branched</option>
-                    </select>
-                    <div id="aaResultContainer" class="result-box" style="font-family: monospace;"></div>
-                </div>
-
-                <div class="tool-section">
-                    <h3>Bio-Element Organic Quick-Reference Matrix</h3>
-                    <p>Loads standard covalent bonding enthalpies, valence cloud weights, and atomic configurations.</p>
-                    <select id="elementSelect" class="autosave" onchange="runElementLookup()">
-                        <option value="">-- Choose Target Core Atom --</option>
-                        <option value="C">Carbon (C) - Organic Infrastructure Node</option>
-                        <option value="H">Hydrogen (H) - Solution Matrix Proton</option>
-                        <option value="N">Nitrogen (N) - Peptidyl Planar Amide Link</option>
-                        <option value="O">Oxygen (O) - Hydrogen Bond Dipole Acceptor</option>
-                        <option value="P">Phosphorus (P) - Nucleic Acid Phosphoanhydride Bridge</option>
-                        <option value="S">Sulfur (S) - Covalent Disulfide Tertiary Lock</option>
-                    </select>
-                    <div id="elementResultContainer" class="result-box" style="font-family: monospace;"></div>
-                </div>
-
-                <div class="tool-section">
-                    <h3>📊 Statistical Experimental Outlier Matrix Tracker</h3>
-                    <p>Applies standard 3-Sigma parameters across a laboratory data array to flag pipetting deviations.</p>
-                    <textarea id="dataInput" class="autosave" placeholder="Paste data floats separated by commas (e.g., 0.12, 0.14, 0.13, 4.85)..."></textarea>
-                    <button class="btn btn-primary" onclick="runStatisticalOutlierEngine()">Evaluate Dataset Array</button>
-                    <div id="dataResult" class="result-box" style="font-family: monospace;"></div>
-                </div>
-
-                <div class="tool-section">
-                    <h3>🤖 Heuristic AI Peptide Property & Separation Predictor</h3>
-                    <p>Deploys local sequence evaluations to predict structural fluidity profiles and chromatographic isolation routing lines.</p>
-                    <textarea id="aiPeptideInput" class="autosave" placeholder="Paste single-letter amino acid chain segments (e.g., RGDWFLM)..."></textarea>
-                    <button class="btn btn-primary" onclick="runAIPredictorEngine()">Run AI Property Forecast</button>
-                    <div id="aiResultContainer" class="result-box" style="font-family: monospace;"></div>
-                </div>
-            </div>
-
-            <div id="tab-solutions" class="tab-content">
-                <div class="tool-section">
-                    <h3>🧪 Solid Solution Molarity Mass Weight Engine</h3>
-                    <div class="grid-2">
-                        <div><label>Formula Weight (g/mol)</label><input type="number" id="molInputMW" class="autosave" placeholder="e.g., 180.16"></div>
-                        <div><label>Target Molarity (M)</label><input type="number" id="molInputMolarity" class="autosave" placeholder="e.g., 0.5"></div>
-                        <div><label>Target Volume (mL)</label><input type="number" id="molInputVolume" class="autosave" placeholder="e.g., 250"></div>
-                    </div>
-                    <button class="btn btn-primary" onclick="runMolarityCalculator()">Compute Target Mass</button>
-                    <div id="molarityResultContainer" class="result-box"></div>
-                </div>
-
-                <div class="tool-section">
-                    <h3>📉 Beer-Lambert Spectrophotometry Concentration Finder</h3>
-                    <div class="grid-2">
-                        <div><label>Absorbance Scale (A)</label><input type="number" id="beerAbsorbance" class="autosave" placeholder="e.g., 0.45"></div>
-                        <div><label>Extinction Coeff (M⁻¹cm⁻¹)</label><input type="number" id="beerExtinction" class="autosave" placeholder="e.g., 6220"></div>
-                        <div><label>Path Length (cm)</label><input type="number" id="beerPathLength" class="autosave" value="1"></div>
-                    </div>
-                    <button class="btn btn-primary" onclick="runBeerLambertCalculator()">Compute Absorbance Concentration</button>
-                    <div id="beerResultContainer" class="result-box"></div>
-                </div>
-
-                <div class="tool-section">
-                    <h3>🧬 Nucleic Acid Purity Inspector (A₂₆₀/A₂₈₀ Ratio Analyzer)</h3>
-                    <p>Evaluates sample isolation quality controls via optical quotient thresholds to verify macromolecular health constraints.</p>
-                    <div class="grid-2">
-                        <div><label>Absorbance at 260 nm (A₂₆₀)</label><input type="number" id="purityA260" class="autosave" placeholder="e.g., 0.38" step="any"></div>
-                        <div><label>Absorbance at 280 nm (A₂₈₀)</label><input type="number" id="purityA280" class="autosave" placeholder="e.g., 0.21" step="any"></div>
-                    </div>
-                    <button class="btn btn-primary" onclick="runPurityRatioInspector()">Inspect Sample Extract</button>
-                    <div id="purityResultContainer" class="result-box"></div>
-                </div>
-
-                <div class="tool-section">
-                    <h3>⚗️ Henderson-Hasselbalch Weak Buffer Proportion System</h3>
-                    <div class="grid-2">
-                        <div><label>Target pH Coordinate</label><input type="number" id="bufferTargetPH" class="autosave" placeholder="e.g., 7.4" step="any"></div>
-                        <div><label>Acid dissociation (pKa)</label><input type="number" id="bufferPKa" class="autosave" placeholder="e.g., 7.21" step="any"></div>
-                        <div><label>Total Strength Molarity (M)</label><input type="number" id="bufferTotalConc" class="autosave" placeholder="e.g., 0.1" step="any"></div>
-                    </div>
-                    <button class="btn btn-primary" onclick="runHendersonHasselbalchCalculator()">Compute Mixing Proportions</button>
-                    <div id="bufferResultContainer" class="result-box" style="font-family: monospace;"></div>
-                </div>
-
-                <div class="tool-section">
-                    <h3>💦 Stock Concentrate Serial Dilution Engine (C₁V₁ = C₂V₂)</h3>
-                    <div class="grid-2">
-                        <div><label>Stock Strength (C₁)</label><input type="number" id="dilutionC1" class="autosave" placeholder="e.g., 10"></div>
-                        <div><label>Target Working Strength (C₂)</label><input type="number" id="dilutionC2" class="autosave" placeholder="e.g., 1"></div>
-                        <div><label>Target Final Volume (V₂) (mL)</label><input type="number" id="dilutionV2" class="autosave" placeholder="e.g., 500"></div>
-                    </div>
-                    <button class="btn btn-primary" onclick="runDilutionEquation()">Compute Volumetric Mix</button>
-                    <div id="dilutionResultContainer" class="result-box" style="font-family: monospace;"></div>
-                </div>
-
-                <div class="tool-section">
-                    <h3>🧪 PCR Master Mix Formulation Assistant</h3>
-                    <p>Assembles individual micro-reagent ratios into a localized bulk combination workflow, factoring in a 10% buffering matrix expansion buffer to offset wall retention.</p>
-                    <label>Total Number of Reaction Tubes to Run:</label>
-                    <input type="number" id="pcrTubesCount" class="autosave" placeholder="e.g., 24">
-                    <button class="btn btn-primary" onclick="runPCRMasterMixFormulator()">Formulate Batch Mix Recipes</button>
-                    <div id="pcrMixResultContainer" class="result-box" style="font-family: monospace;"></div>
-                </div>
-            </div>
-
-            <div id="tab-kinetics" class="tab-content">
-                <div class="tool-section">
-                    <h3>📊 Enzyme Kinetics Michaelis-Menten Plotter</h3>
-                    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-                        <div style="flex: 1; min-width: 240px;">
-                            <label>Max Velocity (Vmax) (μmol/min)</label><input type="number" id="enzymeVmax" class="autosave" placeholder="e.g., 120">
-                            <label>Michaelis Constant (Km) (mM)</label><input type="number" id="enzymeKm" class="autosave" placeholder="e.g., 2.5">
-                            <label>Substrate Load [S] (mM)</label><input type="number" id="enzymeSubstrate" class="autosave" placeholder="e.g., 5.0">
-                            <button class="btn btn-primary" style="margin-top: 10px;" onclick="runEnzymeKineticsEngine()">Process & Plot Saturation Curve</button>
-                        </div>
-                        <div style="flex: 1; min-width: 240px; text-align: center; background: white; border: 1px dashed var(--border-oat); padding: 10px; border-radius: 6px;">
-                            <label style="font-size:11px; font-weight:bold; color:var(--header-light); margin-bottom:5px; display:block;">Saturation Hyperbola Trace</label>
-                            <canvas id="kineticsCanvas" width="300" height="150" style="border:1px solid var(--border-oat); background: #ffffff;"></canvas>
-                        </div>
-                    </div>
-                    <div id="enzymeResultContainer" class="result-box" style="font-family: monospace;"></div>
-                </div>
-
-                <div class="tool-section">
-                    <h3>⚗️ Buffer Titration Curve Simulator (pH Behavior)</h3>
-                    <p>Traces the active response across a buffer system following step additions of hydroxide equivalents, mapping out the functional buffering region plateau window.</p>
-                    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-                        <div style="flex: 1; min-width: 240px;">
-                            <label>Weak Dissociation Base Parameter (pKa)</label><input type="number" id="titrationPKa" class="autosave" placeholder="e.g., 4.76" step="any">
-                            <button class="btn btn-primary" style="margin-top: 10px;" onclick="runTitrationSimulator()">Simulate Titration Curve</button>
-                        </div>
-                        <div style="flex: 1; min-width: 240px; text-align: center; background: white; border: 1px dashed var(--border-oat); padding: 10px; border-radius: 6px;">
-                            <label style="font-size:11px; font-weight:bold; color:var(--header-light); margin-bottom:5px; display:block;">Sigmoidal S-Curve Buffer Trace</label>
-                            <canvas id="titrationCanvas" width="300" height="150" style="border:1px solid var(--border-oat); background: #ffffff;"></canvas>
-                        </div>
-                    </div>
-                    <div id="titrationResultContainer" class="result-box" style="font-family: monospace;"></div>
-                </div>
-
-                <div class="tool-section">
-                    <h3>🌀 Centrifuge Operational Vector Converter (RPM ⇄ RCF)</h3>
-                    <div class="grid-2">
-                        <div><label>Rotor Radius Geometry (r) (cm)</label><input type="number" id="rotorRadius" class="autosave" placeholder="e.g., 9.5"></div>
-                        <div><label>Instrument Spin Profile Speed (RPM)</label><input type="number" id="rotorRPM" class="autosave" placeholder="e.g., 4000"></div>
-                    </div>
-                    <button class="btn btn-primary" onclick="runCentrifugeConverter()">Compute Centrifugal Gravity Matrix</button>
-                    <div id="rcfResultContainer" class="result-box" style="font-family: monospace;"></div>
-                </div>
-            </div>
-
-            <div id="tab-notebook" class="tab-content">
-                <div class="tool-section">
-                    <h3>📈 Dynamic Peptide Charge-versus-pH Curve Generator</h3>
-                    <p>Scans sequence strings across the full pH continuum, plotting sidechain dissociation profiles to isolate the exact isoelectric junction crossing coordinate.</p>
-                    <textarea id="chargeCurveInput" class="autosave" placeholder="Enter target amino acid single-letter string residues (e.g., RGDDKKHE)..."></textarea>
-                    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
-                        <button class="btn btn-primary" onclick="runPeptideChargeCurveEngine()">Map Charge Spectrum Graph</button>
-                        <div style="flex: 1; min-width: 260px; text-align: center;">
-                            <canvas id="chargeCanvas" width="320" height="140" style="border: 1px solid var(--border-oat); background: #ffffff;"></canvas>
-                        </div>
-                    </div>
-                    <div id="chargeCurveResultContainer" class="result-box" style="font-family: monospace;"></div>
-                </div>
-
-                <div class="tool-section">
-                    <h3>⏱️ Multi-Stage Incubation Lab Timer Matrix</h3>
-                    <p>Runs concurrent independent down-counting interval arrays tied to time-sensitive biochemical protocols.</p>
-                    <div class="timer-grid">
-                        <div><div class="timer-node" id="timerDisplayA">60:00</div><label style="text-align:center; font-size:11px;">1. Cell Lysis</label><button class="btn btn-primary btn-sm" style="width:100%; margin-top:4px;" onclick="triggerLabClock('A', 3600)">Start Phase</button></div>
-                        <div><div class="timer-node" id="timerDisplayB">10:00</div><label style="text-align:center; font-size:11px;">2. Centrifuge Pelleting</label><button class="btn btn-primary btn-sm" style="width:100%; margin-top:4px;" onclick="triggerLabClock('B', 600)">Start Phase</button></div>
-                        <div><div class="timer-node" id="timerDisplayC">60:00</div><label style="text-align:center; font-size:11px;">3. Membrane Blocking</label><button class="btn btn-primary btn-sm" style="width:100%; margin-top:4px;" onclick="triggerLabClock('C', 3600)">Start Phase</button></div>
-                    </div>
-                </div>
-
-                <div class="tool-section">
-                    <h3>📋 Formatted Notebook Report Compiler</h3>
-                    <div class="grid-2">
-                        <div><label>Researcher Signature Name</label><input type="text" id="reportAuthor" class="autosave" placeholder="e.g., Uzair Ibrahim Bhat"></div>
-                        <div><label>Experiment Module Title</label><input type="text" id="reportTitle" class="autosave" placeholder="e.g., Extraction Quantitation Sheet"></div>
-                    </div>
-                    <label>Observation Matrix Data Logs Summary</label>
-                    <textarea id="reportContent" class="autosave" placeholder="Enter conclusions, raw readings parameters, values arrays..."></textarea>
-                    <button class="btn btn-primary" onclick="runReportCompilerExporter()">Compile & Download Notebook File</button>
-                    <div id="reportResultContainer" class="result-box"></div>
-                </div>
-
-                <div class="tool-section">
-                    <h3>🔍 Bench Methodologies Protocol Search Index</h3>
-                    <p>Loads structured step guidelines for baseline experimental assays.</p>
-                    <select id="protocolSelect" class="autosave" onchange="runProtocolDatabaseSearch()">
-                        <option value="">-- Choose Target Procedure Worksheet --</option>
-                        <option value="dna_extract">1. Extraction of Genomic DNA (Phenol-Chloroform Methodology)</option>
-                        <option value="sds_page">2. Polyacrylamide SDS-PAGE Gel Casting & Resolution Framework</option>
-                        <option value="bradford">3. Bradford Analytical Reagent Protein Quantitation Standard</option>
-                    </select>
-                    <div id="protocolResultContainer" class="result-box" style="white-space: pre-wrap; font-family: monospace; max-height: 200px; overflow-y:auto; color:#332928; font-size:12.5px; border-left:4px solid var(--accent-rust);"></div>
-                </div>
-            </div>
-
-            <div id="tab-members" class="tab-content">
-                <div class="tool-section">
-                    <h3>👤 Registered Laboratory Terminal Node Profiles</h3>
-                    <p>Active security identities holding validation keys on this local storage instance core:</p>
-                    <div id="adminUserProfilesDisplayContainer" style="font-family: monospace; font-size:13px; color:var(--header-light); line-height: 1.8;"></div>
-                </div>
-
-                <div class="tool-section" style="max-width: 950px;">
-                    <h3>📜 Central Forensic Operation Audit Ledger</h3>
-                    <p>Tracks deep system uploads, raw parameter entries, and time markers across active profiles.</p>
-                    <div style="overflow-x: auto;">
-                        <table class="log-table">
-                            <thead>
-                                <tr>
-                                    <th>Timeline Coordinates</th>
-                                    <th>Identity Node</th>
-                                    <th>Action Log Matrix Metadata Summary</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminGlobalLoggerTableBody"></tbody>
-                        </table>
-                    </div>
-                    <div style="margin-top: 20px; display:flex; justify-content: space-between; flex-wrap:wrap; gap:15px; align-items:center;">
-                        <label style="display: inline-flex; align-items: center; font-weight:bold; font-size:13px; cursor:pointer;">
-                            <input type="checkbox" id="adminAnonymizeCheckbox" onchange="renderGlobalSystemLogMatrix()" style="margin-right: 6px; width:16px; height:16px;"> Anonymize Identity Fields (Strip Profiles for Export)
-                        </label>
-                        <div>
-                            <button class="btn btn-primary btn-sm" onclick="exportLogMatrixToCSV()">📥 Export Sheet to CSV</button>
-                            <button class="btn btn-danger btn-sm" onclick="purgeSystemAuditLogs()">Purge System Logs</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 MJ - Biochemistry AI Tool. All rights reserved.</p>
-            <p>Designed, Engineered & Secured by <strong>Tahasana</strong></p>
-        </div>
-    </footer>
 
     <script>
-        const MASTER_ADMIN_NAME = "Tahasana";
-        const SECRET_ADMIN_PASSCODE = "1926";
-        let activeUserSessionProfile = null;
-        let countdownClockIntervalsCache = {};
-
-        // --- CIPHER STORAGE SECURITY LAYERS ---
-        function maskWrite(key, dataObj) {
-            const str = btoa(encodeURIComponent(JSON.stringify(dataObj)));
-            localStorage.setItem(key, str);
-        }
-
-        function maskRead(key) {
-            const data = localStorage.getItem(key);
-            if (!data) return null;
-            try {
-                return JSON.parse(decodeURIComponent(atob(data)));
-            } catch (e) {
-                return null;
-            }
-        }
-
-        // --- GATEWAY CONTROLLER ACCESS MANAGER ---
-        window.addEventListener('DOMContentLoaded', function() {
-            initAutosaveListeners();
-            const savedToken = maskRead('mj_active_session_token');
-            if (savedToken) {
-                initializeActiveSession(savedToken);
-            }
-        });
-
-        function toggleAuthView(showSignup) {
-            document.getElementById('loginFormSubFrame').style.display = showSignup ? 'none' : 'block';
-            document.getElementById('signupFormSubFrame').style.display = showSignup ? 'block' : 'none';
-            document.getElementById('adminPinWrapper').style.display = 'none';
-            
-            if (showSignup) {
-                document.getElementById('regName').addEventListener('input', function(e) {
-                    const isMaster = e.target.value.trim().toLowerCase() === MASTER_ADMIN_NAME.toLowerCase();
-                    document.getElementById('adminPinWrapper').style.display = isMaster ? 'block' : 'none';
-                });
-            }
-        }
-
-        function executeSystemRegistration() {
-            const name = document.getElementById('regName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const pass = document.getElementById('regPass').value;
-            const adminPin = document.getElementById('regAdminPin').value;
-
-            if (!name || !email || !phone || !pass) {
-                alert("Complete all registration input blocks.");
-                return;
-            }
-            if (name.toLowerCase() === MASTER_ADMIN_NAME.toLowerCase() && adminPin !== SECRET_ADMIN_PASSCODE) {
-                alert("Identity Security Violation: Invalid Master Admin PIN registration key.");
-                return;
-            }
-
-            let registry = maskRead('mj_user_registry_node') || [];
-            if (registry.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-                alert("Identity node already registered.");
-                return;
-            }
-
-            const profile = {
-                name,
-                email,
-                phone,
-                pass,
-                role: (name.toLowerCase() === MASTER_ADMIN_NAME.toLowerCase() ? 'Admin' : 'Member')
-            };
-            registry.push(profile);
-            maskWrite('mj_user_registry_node', registry);
-
-            alert("Account registered successfully! Opening terminal session.");
-            initializeActiveSession(profile);
-        }
-
-        function executeSystemLogin() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const pass = document.getElementById('loginPass').value;
-            let registry = maskRead('mj_user_registry_node') || [];
-
-            if (registry.length === 0) {
-                registry = [
-                    { name: "Tahasana", email: "tahasana@mj.edu", phone: "+91-999-0001", pass: "admin123", role: "Admin" },
-                    { name: "Uzair Ibrahim Bhat", email: "uzair@mj.edu", phone: "+91-999-0002", pass: "uzair123", role: "Member" },
-                    { name: "Danish Nazir", email: "danish@mj.edu", phone: "+91-999-0003", pass: "danish123", role: "Member" }
-                ];
-                maskWrite('mj_user_registry_node', registry);
-            }
-
-            const match = registry.find(u => u.email.toLowerCase() === email.toLowerCase() && u.pass === pass);
-            if (!match) {
-                alert("Authentication failed. Invalid verification access token.");
-                return;
-            }
-            initializeActiveSession(match);
-        }
-
-        function initializeActiveSession(profile) {
-            activeUserSessionProfile = profile;
-            maskWrite('mj_active_session_token', profile);
-            
-            document.getElementById('lockdownWindow').style.display = 'none';
-            document.getElementById('navUserDisplay').textContent = `User: ${profile.name} [${profile.role}]`;
-            document.getElementById('navUserDisplay').style.background = profile.role === 'Admin' ? '#2e7d32' : 'var(--accent-rust)';
-            document.getElementById('adminTabSelectorButton').style.display = profile.role === 'Admin' ? 'block' : 'none';
-
-            logSystemAction("Authorized Connection Linked", `Profile validated node identifier: ${profile.email}`);
-            initInactivityWatcher();
-            renderGlobalSystemMembersList();
-            restoreAutosaveValues();
-            switchTab(null, 'tab-analytics');
-        }
-
-        function executeSystemLogout() {
-            if (activeUserSessionProfile) {
-                logSystemAction("Connection Destroyed", "User signed out.");
-            }
-            activeUserSessionProfile = null;
-            localStorage.removeItem('mj_active_session_token');
-            document.getElementById('lockdownWindow').style.display = 'flex';
-            document.getElementById('loginEmail').value = '';
-            document.getElementById('loginPass').value = '';
-            toggleAuthView(false);
-        }
-
-        // --- WORKSPACE AUTOSAVE STRUCTURAL RECOVERY ---
-        function initAutosaveListeners() {
-            document.querySelectorAll('.autosave').forEach(el => {
-                el.addEventListener('input', () => {
-                    if (!activeUserSessionProfile) return;
-                    let cache = maskRead('mj_workspace_autosave_cache') || {};
-                    cache[el.id] = el.value;
-                    maskWrite('mj_workspace_autosave_cache', cache);
-                });
-            });
-        }
-
-        function restoreAutosaveValues() {
-            let cache = maskRead('mj_workspace_autosave_cache');
-            if (!cache) return;
-            document.querySelectorAll('.autosave').forEach(el => {
-                if (cache[el.id] !== undefined) {
-                    el.value = cache[el.id];
-                }
-            });
-        }
-
-        // --- TIMED BENCH LOCKDOWN WATCHER ---
-        let idleTimerCache;
-        function initInactivityWatcher() {
-            const resetTimer = () => {
-                clearTimeout(idleTimerCache);
-                idleTimerCache = setTimeout(() => {
-                    alert("System Lockdown Timeout: Session locked down due to 10 minutes terminal inactivity.");
-                    executeSystemLogout();
-                }, 600000);
-            };
-            document.onmousemove = resetTimer;
-            document.onkeypress = resetTimer;
-        }
-
-        // --- SECURITY PANIC PURGE SHORTCUT KEY TRIGGER ---
-        window.addEventListener('keydown', (e) => {
-            if (e.shiftKey && e.altKey && e.code === 'KeyP') {
-                e.preventDefault();
-                if (prompt("🚨 EMERGENCY FLUSH MATRIX OVERRIDE\nEnter Admin PIN to clear terminal cache database arrays:") === SECRET_ADMIN_PASSCODE) {
-                    localStorage.clear();
-                    alert("Memory purged. System offline.");
-                    window.location.reload();
-                }
-            }
-        });
-
-        // --- BACKGROUND DATA LEDGER FORENSIC ENGINE ---
-        function logSystemAction(name, rawPayload) {
-            let logs = maskRead('mj_forensic_audit_ledger') || [];
-            const d = new Date();
-            const dateStr = d.getDate() + " " + d.toLocaleString('en-US', { month: 'short' }) + " " + d.getFullYear();
-            const timeStr = d.toLocaleTimeString('en-US', { hour12: false });
-            
-            logs.unshift({
-                timestamp: `${dateStr}, ${timeStr}`,
-                user: activeUserSessionProfile ? activeUserSessionProfile.name : "Guest Session",
-                action: name,
-                payload: rawPayload
-            });
-            maskWrite('mj_forensic_audit_ledger', logs);
-            renderGlobalSystemLogMatrix();
-        }
-
-        function renderGlobalSystemLogMatrix() {
-            const tbody = document.getElementById('adminGlobalLoggerTableBody');
-            if (!tbody) return;
-            const logs = maskRead('mj_forensic_audit_ledger') || [];
-            const anonymize = document.getElementById('adminAnonymizeCheckbox').checked;
-
-            if (logs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#8c736c;">No data logged.</td></tr>';
-                return;
-            }
-            tbody.innerHTML = logs.map((l, index) => `
-                <tr>
-                    <td><strong>${l.timestamp}</strong></td>
-                    <td><span style="color:var(--accent-rust); font-weight:bold;">${anonymize ? "🔒 Masked_Researcher_Node" : l.user}</span></td>
-                    <td>
-                        <div><strong>${l.action}</strong></div>
-                        <span class="toggle-drawer-btn" onclick="toggleDrawer(${index})">Toggle Parameters Data Matrix</span>
-                        <div id="drawer-${index}" class="log-data-drawer">${l.payload}</div>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function toggleDrawer(index) {
-            const drawer = document.getElementById(`drawer-${index}`);
-            if (drawer) {
-                drawer.style.display = drawer.style.display === 'block' ? 'none' : 'block';
-            }
-        }
-
-        function renderGlobalSystemMembersList() {
-            const target = document.getElementById('adminUserProfilesDisplayContainer');
-            if (!target) return;
-            const registry = maskRead('mj_user_registry_node') || [];
-            target.innerHTML = registry.map(u => `• Name string: <strong>${u.name}</strong> | Email Node: <code>${u.email}</code> | Access Rank: [${u.role}]`).join('<br>');
-        }
-
-        function purgeSystemAuditLogs() {
-            if (confirm("Purge global matrix arrays logs permanently?")) {
-                localStorage.removeItem('mj_forensic_audit_ledger');
-                renderGlobalSystemLogMatrix();
-            }
-        }
-
-        function exportLogMatrixToCSV() {
-            const logs = maskRead('mj_forensic_audit_ledger') || [];
-            if (logs.length === 0) return;
-            const anonymize = document.getElementById('adminAnonymizeCheckbox').checked;
-            let csv = "Timestamp,User Node,Action Type,Payload Metrics\n";
-            logs.forEach(l => {
-                csv += `"${l.timestamp}","${anonymize ? 'ANON_NODE' : l.user}","${l.action}","${l.payload.replace(/"/g, '""')}"\n`;
-            });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
-            link.download = "mj_anonymized_biochem_dataset.csv";
-            link.click();
-        }
-
-        // --- BIOCHEMISTRY OPERATIONS CONTROLLERS ---
-        function switchTab(event, tabId) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            if (event && event.currentTarget) {
-                event.currentTarget.classList.add('active');
-            }
-            if (tabId === 'tab-kinetics') {
-                initBlankCanvas('kineticsCanvas');
-                initBlankCanvas('titrationCanvas');
-            }
-            if (tabId === 'tab-notebook') {
-                initBlankCanvas('chargeCanvas');
-            }
-        }
-
-        function initBlankCanvas(canvasId) {
-            const canvas = document.getElementById(canvasId);
-            if (canvas) {
-                const ctx = canvas.getContext('2d');
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
-        }
-
-        function clearField(inputId, outputId) {
-            document.getElementById(inputId).value = '';
-            document.getElementById(outputId).style.display = 'none';
-        }
-
-        function runSequenceAnalyzer() {
-            var raw = document.getElementById('sequenceInput').value.trim().toUpperCase();
-            var out = document.getElementById('sequenceResult');
-            out.style.display = "block";
-            if (!raw) return;
-            out.innerHTML = `Length: ${raw.length} residues<br>GC Content Ratio: ${(((raw.match(/[GC]/g) || []).length / raw.length) * 100).toFixed(2)}%`;
-            logSystemAction("Sequence Analysis Executed", `String Array Input: ${raw} (Size: ${raw.length})`);
-        }
-
-        function runCentralDogmaEngine() {
-            var input = document.getElementById('dogmaInput').value.trim().toUpperCase().replace(/[^ATCG-]/g, '').replace(/-/g, '');
-            var out = document.getElementById('dogmaResult');
-            out.style.display = "block";
-            if (!input) {
-                out.innerHTML = "❌ Provide standard, un-mutated DNA parameters.";
-                return;
-            }
-            
-            var mrna = input.replace(/T/g, 'U');
-            var codonWheel = {
-                'AUG': 'Met', 'UUU': 'Phe', 'UUC': 'Phe', 'UUA': 'Leu', 'UUG': 'Leu', 'UCU': 'Ser', 'UCC': 'Ser', 'UCA': 'Ser', 'UCG': 'Ser',
-                'UAU': 'Tyr', 'UAC': 'Tyr', 'UGU': 'Cys', 'UGC': 'Cys', 'UGG': 'Trp', 'CUU': 'Leu', 'CUC': 'Leu', 'CUA': 'Leu', 'CUG': 'Leu',
-                'CCU': 'Pro', 'CCC': 'Pro', 'CCA': 'Pro', 'CCG': 'Pro', 'CAU': 'His', 'CAC': 'His', 'CAA': 'Gln', 'CAG': 'Gln', 'CGU': 'Arg',
-                'CGC': 'Arg', 'CGA': 'Arg', 'CGG': 'Arg', 'AUU': 'Ile', 'AUC': 'Ile', 'AUA': 'Ile', 'ACU': 'Thr', 'ACC': 'Thr', 'ACA': 'Thr',
-                'ACG': 'Thr', 'AAU': 'Asn', 'AAC': 'Asn', 'AAA': 'Lys', 'AAG': 'Lys', 'AGU': 'Ser', 'AGC': 'Ser', 'AGA': 'Arg', 'AGG': 'Arg',
-                'GUU': 'Val', 'GUC': 'Val', 'GUA': 'Val', 'GUG': 'Val', 'GCU': 'Ala', 'GCC': 'Ala', 'GCA': 'Ala', 'GCG': 'Ala', 'GAU': 'Asp',
-                'GAC': 'Asp', 'GAA': 'Glu', 'GAG': 'Glu', 'GGU': 'Gly', 'GGC': 'Gly', 'GGA': 'Gly', 'GGG': 'Gly'
-            };
-
-            var residues = [];
-            for (var i = 0; i < mrna.length - 2; i += 3) {
-                var codon = mrna.substring(i, i + 3);
-                var trans = codonWheel[codon] || '[Stop/Unk]';
-                residues.push(trans);
-                if (trans === '[Stop/Unk]') break;
-            }
-
-            out.innerHTML = `<strong>Synthesized mRNA Vector Strand:</strong> 5'- ${mrna} -3'<br><strong>Translated Primary Protein Peptide Fold:</strong> ${residues.join(' ➔ ')}`;
-            logSystemAction("Dogma Transcriptor Run", `DNA Input Uploaded: ${input} | Transcribed mRNA Matrix: ${mrna} | Output Peptide: ${residues.join('-')}`);
-        }
-
-        var aaDatabase = {
-            'A': { name: "Alanine", mass: "89.10", pI: "6.00", sidechain: "Aliphatic Nonpolar Hydrophobic" },
-            'R': { name: "Arginine", mass: "174.20", pI: "10.76", sidechain: "Positively Charged Basic Hydrophilic" },
-            'C': { name: "Cysteine", mass: "121.16", pI: "5.07", sidechain: "Reactive Structural Sulfhydryl Thiol" },
-            'D': { name: "Aspartic Acid", mass: "133.10", pI: "2.77", sidechain: "Negatively Charged Carboxyl Acidic" },
-            'G': { name: "Glycine", mass: "75.07", pI: "5.97", sidechain: "Minimalist Achiral Secondary Conformational Flex" },
-            'H': { name: "Histidine", mass: "155.16", pI: "7.59", sidechain: "Aromatic Imidazole Active Catalytic Junction" },
-            'K': { name: "Lysine", mass: "146.19", pI: "9.74", sidechain: "Charged Butylammonium Basic Group" },
-            'W': { name: "Tryptophan", mass: "204.23", pI: "5.89", sidechain: "Indole Outer Electronic UV Fluorescent Ring" }
+        const aaData = {
+            'A': { name: 'Alanine', mass: '89.09', pI: '6.00' },
+            'R': { name: 'Arginine', mass: '174.20', pI: '10.76' },
+            'D': { name: 'Aspartic Acid', mass: '133.10', pI: '2.77' },
+            'N': { name: 'Asparagine', mass: '132.12', pI: '5.41' },
+            'C': { name: 'Cysteine', mass: '121.16', pI: '5.07' },
+            'E': { name: 'Glutamic Acid', mass: '147.13', pI: '3.22' },
+            'Q': { name: 'Glutamine', mass: '146.14', pI: '5.65' },
+            'G': { name: 'Glycine', mass: '75.07', pI: '5.97' },
+            'H': { name: 'Histidine', mass: '155.15', pI: '7.59' },
+            'I': { name: 'Isoleucine', mass: '131.17', pI: '6.02' },
+            'L': { name: 'Leucine', mass: '131.17', pI: '5.98' },
+            'K': { name: 'Lysine', mass: '146.19', pI: '9.74' },
+            'M': { name: 'Methionine', mass: '149.21', pI: '5.74' },
+            'F': { name: 'Phenylalanine', mass: '165.19', pI: '5.48' },
+            'P': { name: 'Proline', mass: '115.13', pI: '6.30' },
+            'S': { name: 'Serine', mass: '105.09', pI: '5.68' },
+            'T': { name: 'Threonine', mass: '119.12', pI: '5.87' },
+            'W': { name: 'Tryptophan', mass: '204.23', pI: '5.89' },
+            'Y': { name: 'Tyrosine', mass: '181.19', pI: '5.66' },
+            'V': { name: 'Valine', mass: '117.15', pI: '5.96' }
         };
 
-        function runAminoAcidLookup() {
-            var val = document.getElementById('aaSelect').value;
-            var out = document.getElementById('aaResultContainer');
-            if (!val) {
-                out.style.display = "none";
-                return;
-            }
-            var item = aaDatabase[val] || { name: "Unknown Profile", mass: "0.00", pI: "N/A", sidechain: "Unclassified" };
-            out.style.display = "block";
-            out.innerHTML = `<strong>Amino Residue:</strong> ${item.name} (${val})<br><strong>Sidechain Profile:</strong> ${item.sidechain}<br><strong>Monoisotopic Mass:</strong> ${item.mass} g/mol | <strong>Isoelectric Point (pI): ${item.pI}</strong>`;
-            logSystemAction("Monomer Parameters Lookup Checked", `Target Residue Node: ${val}`);
-        }
-
-        var elementDatabase = {
-            'C': { mass: "12.011", electro: "2.55", bond: "C-C: 348 kJ/mol", note: "Backbone infrastructure scaffolding node." },
-            'H': { mass: "1.008", electro: "2.20", bond: "H-H: 436 kJ/mol", note: "Solvation matrix proton gradient active element." },
-            'N': { mass: "14.007", electro: "3.04", bond: "C-N: 305 kJ/mol", note: "Amide resonance structural planar generator." },
-            'O': { mass: "15.999", electro: "3.44", bond: "C=O: 743 kJ/mol", note: "High coordinating dipoles hydrogen bonding acceptor." },
-            'P': { mass: "30.974", electro: "2.19", bond: "P-O: 335 kJ/mol", note: "High-energy phosphoanhydride kinetic structural bridge." }
+        const codonTable = {
+            'AUG': 'Met', 'UUU': 'Phe', 'UUC': 'Phe', 'UUA': 'Leu', 'UUG': 'Leu',
+            'UCU': 'Ser', 'UCC': 'Ser', 'UCA': 'Ser', 'UCG': 'Ser', 'UAU': 'Tyr',
+            'UAC': 'Tyr', 'UGU': 'Cys', 'UGC': 'Cys', 'UGG': 'Trp', 'CUU': 'Leu',
+            'CUC': 'Leu', 'CUA': 'Leu', 'CUG': 'Leu', 'CCU': 'Pro', 'CCC': 'Pro',
+            'CCA': 'Pro', 'CCG': 'Pro', 'CAU': 'His', 'CAC': 'His', 'CAA': 'Gln',
+            'CAG': 'Gln', 'CGU': 'Arg', 'CGC': 'Arg', 'CGA': 'Arg', 'CGG': 'Arg',
+            'AUU': 'Ile', 'AUC': 'Ile', 'AUA': 'Ile', 'ACU': 'Thr', 'ACC': 'Thr',
+            'ACA': 'Thr', 'ACG': 'Thr', 'AAU': 'Asn', 'AAC': 'Asn', 'AAA': 'Lys',
+            'AAG': 'Lys', 'AGU': 'Ser', 'AGC': 'Ser', 'AGA': 'Arg', 'AGG': 'Arg',
+            'GUU': 'Val', 'GUC': 'Val', 'GUA': 'Val', 'GUG': 'Val', 'GCU': 'Ala',
+            'GCC': 'Ala', 'GCA': 'Ala', 'GCG': 'Ala', 'GAU': 'Asp', 'GAC': 'Asp',
+            'GAA': 'Glu', 'GAG': 'Glu', 'GGU': 'Gly', 'GGC': 'Gly', 'GGA': 'Gly', 'GGG': 'Gly'
         };
 
-        function runElementLookup() {
-            var val = document.getElementById('elementSelect').value;
-            var out = document.getElementById('elementResultContainer');
-            if (!val) {
-                out.style.display = "none";
-                return;
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function analyzeSequence() {
+            const seq = document.getElementById('seqInput').value.trim().toUpperCase();
+            const result = document.getElementById('seqResult');
+            if (!seq) { result.style.display = 'none'; return; }
+            const gc = ((seq.match(/[GC]/g) || []).length / seq.length * 100).toFixed(2);
+            result.innerHTML = `<strong>Length:</strong> ${seq.length} bp<br><strong>GC Content:</strong> ${gc}%`;
+            result.style.display = 'block';
+        }
+
+        function translate() {
+            let dna = document.getElementById('dnaInput').value.trim().toUpperCase().replace(/[^ATCG]/g, '');
+            const result = document.getElementById('transResult');
+            if (!dna) { result.style.display = 'none'; return; }
+            
+            const mrna = dna.replace(/T/g, 'U');
+            let protein = '';
+            for (let i = 0; i < mrna.length - 2; i += 3) {
+                const codon = mrna.substring(i, i + 3);
+                protein += codonTable[codon] ? codonTable[codon][0] : '?';
+                if (codonTable[codon] === 'Stop') break;
             }
-            var item = elementDatabase[val];
-            out.style.display = "block";
-            out.innerHTML = `<strong>Element Block:</strong> ${val}<br><strong>Atomic Mass:</strong> ${item.mass} g/mol | <strong>Electronegativity Scale:</strong> ${item.electro}<br><strong>Bond Dissociation Enthalpy:</strong> ${item.bond}<br><small style="color:#666;">Structural Function: ${item.note}</small>`;
-            logSystemAction("Atomic Profile Reference Inspected", `Target Atom: ${val}`);
+            result.innerHTML = `<strong>mRNA:</strong> ${mrna}<br><strong>Protein:</strong> ${protein}`;
+            result.style.display = 'block';
         }
 
-        function runStatisticalOutlierEngine() {
-            var raw = document.getElementById('dataInput').value;
-            var out = document.getElementById('dataResult');
-            out.style.display = "block";
-            var dataArr = raw.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
-            if (dataArr.length < 3) {
-                out.innerHTML = "❌ Sample distribution population densities insufficient (N>=3 required).";
-                return;
-            }
-            
-            var mean = dataArr.reduce((a, b) => a + b, 0) / dataArr.length;
-            var stdev = Math.sqrt(dataArr.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (dataArr.length - 1));
-            var upper = mean + (3 * stdev);
-            var lower = mean - (3 * stdev);
-            var failures = dataArr.filter(x => x > upper || x < lower);
-
-            out.innerHTML = `Count (N): ${dataArr.length} | Mean Average (μ): ${mean.toFixed(4)} | Std Dev (σ): ${stdev.toFixed(4)}<br>` +
-                            (failures.length > 0 ? `<span style="color:#b71c1c; font-weight:bold;">⚠️ Outliers Flagged Beyond 3-Sigma Limits: [${failures.join(', ')}]</span>` : `<span style="color:#2e7d32; font-weight:bold;">✅ System Baseline Cleared: Zero experimental pipetting anomalies found.</span>`);
-            logSystemAction("Outlier Tracking Array Matrix Processed", `N: ${dataArr.length} | Anomalies Count: ${failures.length}`);
+        function lookupAA() {
+            const aa = document.getElementById('aaSelect').value;
+            const result = document.getElementById('aaResult');
+            if (!aa) { result.style.display = 'none'; return; }
+            const data = aaData[aa];
+            result.innerHTML = `<strong>${data.name} (${aa})</strong><br>Mass: ${data.mass} g/mol<br>pI: ${data.pI}`;
+            result.style.display = 'block';
         }
 
-        function runAIPredictorEngine() {
-            var input = document.getElementById('aiPeptideInput').value.toUpperCase().trim().replace(/[^ACDEFGHIKLMNPQRSTVWY]/g, '');
-            var out = document.getElementById('aiResultContainer');
-            out.style.display = "block";
-            if (!input) return;
-            
-            var hydroCount = (input.match(/[IVLFMACYW]/g) || []).length;
-            var pct = (hydroCount / input.length) * 100;
-            var solubility = pct > 45 ? "Low Fluidity Zone (Organic Co-Solvent Carriers Required)" : "High Fluidity Zone (Aqueous Solution Buffer Stable)";
-            
-            out.innerHTML = `<strong>Sequence Segment:</strong> ${input}<br><strong>Hydrophobic Ratio Density:</strong> ${pct.toFixed(1)}%<br><strong>🧠 Local AI Separation Forecast:</strong> ${solubility}<br><strong>🎯 Recommended Column Routing:</strong> ${pct > 45 ? "Reverse-Phase Lipophilic Matrix (C18 HPLC Parsing Lines)" : "Ion-Exchange Chromatography (IEX Gradient Lines)"}`;
-            logSystemAction("Heuristic Peptide AI Predictor Deployed", `Sequence: ${input} | Hydrophobicity Ratio: ${pct.toFixed(1)}%`);
+        function calcMolarity() {
+            const mw = parseFloat(document.getElementById('mw').value);
+            const m = parseFloat(document.getElementById('molarity').value);
+            const vol = parseFloat(document.getElementById('volume').value);
+            const result = document.getElementById('molResult');
+            if (!mw || !m || !vol) return;
+            const mass = m * (vol / 1000) * mw;
+            result.innerHTML = `<strong>Mass needed:</strong> ${mass.toFixed(4)} grams`;
+            result.style.display = 'block';
         }
 
-        function runMolarityCalculator() {
-            var mw = parseFloat(document.getElementById('molInputMW').value);
-            var m = parseFloat(document.getElementById('molInputMolarity').value);
-            var vol = parseFloat(document.getElementById('molInputVolume').value);
-            var out = document.getElementById('molarityResultContainer');
-            out.style.display = "block";
-            
-            var mass = m * (vol / 1000) * mw;
-            out.innerHTML = `<strong>⚖️ Calculated Allocation Target Mass:</strong> ${mass.toFixed(4)} grams of dry reagent required.`;
-            logSystemAction("Molarity Equation Solved", `Inputs -> MW:${mw}, M:${m}, Vol:${vol}mL ➔ Mass Needed: ${mass.toFixed(4)}g`);
+        function calcBeerLambert() {
+            const a = parseFloat(document.getElementById('absorbance').value);
+            const ext = parseFloat(document.getElementById('extinction').value);
+            const path = parseFloat(document.getElementById('pathLength').value);
+            const result = document.getElementById('beerResult');
+            if (!a || !ext || !path) return;
+            const conc = (a / (ext * path)) * 1000000;
+            result.innerHTML = `<strong>Concentration:</strong> ${conc.toFixed(2)} µM`;
+            result.style.display = 'block';
         }
 
-        function runBeerLambertCalculator() {
-            var a = parseFloat(document.getElementById('beerAbsorbance').value);
-            var ex = parseFloat(document.getElementById('beerExtinction').value);
-            var l = parseFloat(document.getElementById('beerPathLength').value);
-            var out = document.getElementById('beerResultContainer');
-            out.style.display = "block";
-            
-            var uM = (a / (ex * l)) * 1000000;
-            out.innerHTML = `<strong>🔬 Calculated Absorbance Concentration Value:</strong> ${uM.toFixed(3)} μM (Micromolar concentration)`;
-            logSystemAction("Beer-Lambert Optical Absorption Processed", `A:${a}, Extinction:${ex} ➔ Yield: ${uM.toFixed(3)}uM`);
+        function calcDilution() {
+            const c1 = parseFloat(document.getElementById('c1').value);
+            const c2 = parseFloat(document.getElementById('c2').value);
+            const v2 = parseFloat(document.getElementById('v2').value);
+            const result = document.getElementById('dilResult');
+            if (!c1 || !c2 || !v2) return;
+            const v1 = (c2 * v2) / c1;
+            result.innerHTML = `<strong>Stock needed (V₁):</strong> ${v1.toFixed(2)} mL<br><strong>Diluent needed:</strong> ${(v2 - v1).toFixed(2)} mL`;
+            result.style.display = 'block';
         }
 
-        function runPurityRatioInspector() {
-            var a260 = parseFloat(document.getElementById('purityA260').value);
-            var a280 = parseFloat(document.getElementById('purityA280').value);
-            var out = document.getElementById('purityResultContainer');
-            out.style.display = "block";
-            
-            var ratio = a260 / a280;
-            var flag = "";
-            if (ratio >= 1.75 && ratio <= 1.85) flag = "<span style='color:#2e7d32; font-weight:bold;'>Pure DNA Elution Fraction Cleared.</span>";
-            else if (ratio >= 1.95 && ratio <= 2.05) flag = "<span style='color:#2e7d32; font-weight:bold;'>Pure RNA Elution Fraction Cleared.</span>";
-            else flag = "<span style='color:#b71c1c; font-weight:bold;'>⚠️ Warning: High Protein/Phenol organic residue contamination detected. Recommendation: Re-precipitate solution immediately.</span>";
-
-            out.innerHTML = `<strong>Optical Quotient Absorbance Ratio (A₂₆₀/A₂₈₀):</strong> ${ratio.toFixed(3)}<br><strong>QC Diagnostics Metric:</strong> ${flag}`;
-            logSystemAction("Nucleic Acid Quality Control Checked", `A260:${a260} | A280:${a280} ➔ Quotient Ratio: ${ratio.toFixed(3)}`);
+        function calcBuffer() {
+            const pH = parseFloat(document.getElementById('targetPH').value);
+            const pka = parseFloat(document.getElementById('pka').value);
+            const conc = parseFloat(document.getElementById('bufConc').value);
+            const result = document.getElementById('bufResult');
+            if (!pH || !pka || !conc) return;
+            const ratio = Math.pow(10, pH - pka);
+            const base = conc * ratio / (1 + ratio);
+            const acid = conc - base;
+            result.innerHTML = `<strong>Acid [HA]:</strong> ${acid.toFixed(4)} M<br><strong>Base [A⁻]:</strong> ${base.toFixed(4)} M`;
+            result.style.display = 'block';
         }
 
-        function runHendersonHasselbalchCalculator() {
-            var ph = parseFloat(document.getElementById('bufferTargetPH').value);
-            var pka = parseFloat(document.getElementById('bufferPKa').value);
-            var total = parseFloat(document.getElementById('bufferTotalConc').value);
-            var out = document.getElementById('bufferResultContainer');
-            out.style.display = "block";
-            
-            var r = Math.pow(10, ph - pka);
-            var acid = total / (r + 1);
-            var base = total - acid;
-            out.innerHTML = `<strong>Weak Acid Proportions [HA]:</strong> ${acid.toFixed(4)} M<br><strong>Conjugate Base Proportions [A⁻]:</strong> ${base.toFixed(4)} M<br><strong>Proportion Quotient Ratio Base/Acid:</strong> ${r.toFixed(4)}`;
-            logSystemAction("Henderson-Hasselbalch Equilibrium Calculated", `Target pH:${ph} | Constant pKa:${pka} ➔ Acid Molarity:${acid.toFixed(4)}M`);
+        function calcEnzyme() {
+            const vmax = parseFloat(document.getElementById('vmax').value);
+            const km = parseFloat(document.getElementById('km').value);
+            const s = parseFloat(document.getElementById('substrate').value);
+            const result = document.getElementById('enzymeResult');
+            if (!vmax || !km || !s) return;
+            const v0 = (vmax * s) / (km + s);
+            result.innerHTML = `<strong>v₀ (initial velocity):</strong> ${v0.toFixed(4)} µmol/min`;
+            result.style.display = 'block';
         }
 
-        function runDilutionEquation() {
-            var c1 = parseFloat(document.getElementById('dilutionC1').value);
-            var c2 = parseFloat(document.getElementById('dilutionC2').value);
-            var v2 = parseFloat(document.getElementById('dilutionV2').value);
-            var out = document.getElementById('dilutionResultContainer');
-            out.style.display = "block";
-            
-            var v1 = (c2 * v2) / c1;
-            out.innerHTML = `<strong>Concentrated Stock Aliquot Required (V₁):</strong> ${v1.toFixed(2)} mL<br><strong>Solvent Diluent Buffer Volume to Apportion:</strong> ${(v2 - v1).toFixed(2)} mL`;
-            logSystemAction("Dilution Volumetric Matrix Solved", `C1:${c1}V1 = C2:${c2}*V2:${v2}mL ➔ Aliquot Volume Size: ${v1.toFixed(2)}mL`);
+        function calcRCF() {
+            const r = parseFloat(document.getElementById('radius').value);
+            const rpm = parseFloat(document.getElementById('rpm').value);
+            const result = document.getElementById('rcfResult');
+            if (!r || !rpm) return;
+            const rcf = 0.00001118 * r * Math.pow(rpm, 2);
+            result.innerHTML = `<strong>RCF (g-force):</strong> ${Math.round(rcf)} × g`;
+            result.style.display = 'block';
         }
 
-        function runPCRMasterMixFormulator() {
-            var tubes = parseInt(document.getElementById('pcrTubesCount').value);
-            var out = document.getElementById('pcrMixResultContainer');
-            out.style.display = "block";
-            if (isNaN(tubes) || tubes <= 0) return;
+        function findOutliers() {
+            const data = document.getElementById('dataInput').value.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x));
+            const result = document.getElementById('outlierResult');
+            if (data.length < 3) { result.innerHTML = 'Need at least 3 values'; result.style.display = 'block'; return; }
             
-            var bulkFactor = tubes * 1.1;
-            var reagents = [
-                { name: "Nuclease-Free Molecular Grade H₂O", unit: 12.5 },
-                { name: "10X Taq Reaction Buffer Standard Matrix", unit: 2.5 },
-                { name: "Forward Primer Oligo String Node (10 μM)", unit: 1.0 },
-                { name: "Reverse Primer Oligo String Node (10 μM)", unit: 1.0 },
-                { name: "dNTPs Core Reactant Mix Selection (10 mM)", unit: 0.5 },
-                { name: "Active Thermophilic Taq Polymerase Enzyme", unit: 0.25 },
-                { name: "Template Target Extraction DNA Matrix", unit: 7.25 }
-            ];
-
-            var tableHtml = `<table style="width:100%; font-size:12px; border:1px solid var(--border-oat);">`;
-            tableHtml += `<tr style="background:#decbba;"><th>Component Ingredient Parameter</th><th>Single Unit (25 uL)</th><th style="color:var(--accent-rust);">Bulk Batch Total Vol</th></tr>`;
-            reagents.forEach(r => {
-                tableHtml += `<tr><td>${r.name}</td><td>${r.unit} uL</td><td><strong>${(r.unit * bulkFactor).toFixed(2)} uL</strong></td></tr>`;
-            });
-            tableHtml += `</table>`;
-            out.innerHTML = `<h4>Bulk Mix Formulation Parameters (N=${tubes} tubes + 10% pipetting adjustment padding applied):</h4>` + tableHtml;
-            logSystemAction("PCR Reagent Master Mix Scaled", `Requested Tubes Target: ${tubes} blocks | Scaled Unit Multiplier: ${bulkFactor.toFixed(1)}`);
+            const mean = data.reduce((a, b) => a + b) / data.length;
+            const stdev = Math.sqrt(data.reduce((a, b) => a + Math.pow(b - mean, 2)) / (data.length - 1));
+            const outliers = data.filter(x => Math.abs(x - mean) > 3 * stdev);
+            
+            result.innerHTML = `<strong>Mean:</strong> ${mean.toFixed(4)}<br><strong>Std Dev:</strong> ${stdev.toFixed(4)}<br><strong>Outliers (3σ):</strong> ${outliers.length > 0 ? outliers.join(', ') : 'None'}`;
+            result.style.display = 'block';
         }
 
-        function runEnzymeKineticsEngine() {
-            var vmax = parseFloat(document.getElementById('enzymeVmax').value);
-            var km = parseFloat(document.getElementById('enzymeKm').value);
-            var s = parseFloat(document.getElementById('enzymeSubstrate').value);
-            var out = document.getElementById('enzymeResultContainer');
-            out.style.display = "block";
+        function startTimer() {
+            const seconds = parseInt(document.getElementById('timerInput').value);
+            let remaining = seconds;
+            const display = document.getElementById('timerDisplay');
             
-            var v0 = (vmax * s) / (km + s);
-            out.innerHTML = `<strong>Initial Volumetric Velocity Yield (v₀):</strong> ${v0.toFixed(4)} μmol/min`;
-            
-            var canvas = document.getElementById('kineticsCanvas');
-            var ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            const lm = 25, bm = 135, gw = 260, gh = 115;
-            ctx.beginPath();
-            ctx.strokeStyle = '#cdbfb0';
-            ctx.moveTo(lm, 10);
-            ctx.lineTo(lm, bm);
-            ctx.lineTo(lm + gw, bm);
-            ctx.stroke();
-            
-            var maxScaleS = Math.max(s * 2, km * 4, 10);
-            ctx.beginPath();
-            ctx.strokeStyle = 'var(--accent-rust)';
-            ctx.lineWidth = 2;
-            for (var x = lm; x <= lm + gw; x++) {
-                var curS = ((x - lm) / gw) * maxScaleS;
-                var curV = (vmax * curS) / (km + curS);
-                var y = bm - (curV / vmax) * gh;
-                if (x === lm) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            }
-            ctx.stroke();
-            
-            var pointX = lm + (s / maxScaleS) * gw;
-            var pointY = bm - (v0 / vmax) * gh;
-            if (pointX <= lm + gw && pointY >= 10) {
-                ctx.beginPath();
-                ctx.fillStyle = '#2e7d32';
-                ctx.arc(pointX, pointY, 4, 0, 2 * Math.PI);
-                ctx.fill();
-            }
-            logSystemAction("Enzyme Kinetics Calculated & Plotted", `Vmax:${vmax} | Km:${km} | [S]:${s} ➔ Velocity Run Output: ${v0.toFixed(4)}`);
+            const interval = setInterval(() => {
+                remaining--;
+                const mins = Math.floor(remaining / 60);
+                const secs = remaining % 60;
+                display.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+                if (remaining <= 0) { clearInterval(interval); alert('Timer finished!'); }
+            }, 1000);
         }
 
-        function runTitrationSimulator() {
-            var pka = parseFloat(document.getElementById('titrationPKa').value);
-            var out = document.getElementById('titrationResultContainer');
-            out.style.display = "block";
+        function calcPCR() {
+            const tubes = parseInt(document.getElementById('numReactions').value);
+            const result = document.getElementById('pcrResult');
+            if (!tubes) return;
             
-            out.innerHTML = `<strong>Midpoint Equivalence Inflection Center Node:</strong> pH = ${pka.toFixed(2)}<br><strong>Safe Buffer System Window (±1 pH region):</strong> pH ${(pka - 1).toFixed(2)} to ${(pka + 1).toFixed(2)}`;
-            
-            var canvas = document.getElementById('titrationCanvas');
-            var ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            const lm = 25, bm = 135, gw = 260, gh = 115;
-            ctx.beginPath();
-            ctx.strokeStyle = '#cdbfb0';
-            ctx.moveTo(lm, 10);
-            ctx.lineTo(lm, bm);
-            ctx.lineTo(lm + gw, bm);
-            ctx.stroke();
-            
-            ctx.beginPath();
-            ctx.strokeStyle = 'var(--accent-rust)';
-            ctx.lineWidth = 2;
-            for (var x = lm; x <= lm + gw; x++) {
-                var ratio = (x - lm) / gw;
-                if (ratio <= 0) ratio = 0.001;
-                if (ratio >= 1) ratio = 0.999;
-                var currentPH = pka + Math.log10(ratio / (1 - ratio)
+            const factor = tubes * 1.1;
+            const mix = `
+            <strong>Master Mix for ${tubes} reactions (with 10% overage):</strong><br>
+            • Water: ${(12.5 * factor).toFixed(1)} µL<br>
+            • 10X Buffer: ${(2.5 * factor).toFixed(1)} µL<br>
+            • Forward Primer: ${(1 * factor).toFixed(1)} µL<br>
+            • Reverse Primer: ${(1 * factor).toFixed(1)} µL<br>
+            • dNTPs: ${(0.5 * factor).toFixed(1)} µL<br>
+            • Taq: ${(0.25 * factor).toFixed(1)} µL<br>
+            • Template DNA: ${(7.25 * factor).toFixed(1)} µL
+            `;
+            result.innerHTML = mix;
+            result.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
